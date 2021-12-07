@@ -1,0 +1,41 @@
+.container-fluid.lateral {
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    height: 1080px;
+    width: 240px;
+
+    box-shadow: gray 0px 0px 2px;
+
+}
+
+.lateral a {
+    text-decoration: none;
+    color: red;
+
+}
+
+.lateral .col-6 {
+    color: blue;
+    margin-top: 10px;
+}
+
+.lateral .col-3 {
+    color: blue;
+    margin-top: 10px;
+
+}
+
+.col-3.icon {
+    padding-left: 20px;
+}
+
+.lateral .row.button {
+    width: 240px;
+}
+
+.lateral .row.justify-content-md-center img {
+    margin-top: 20%;
+    width: 200px;
+    padding-bottom: 50%;
+}
