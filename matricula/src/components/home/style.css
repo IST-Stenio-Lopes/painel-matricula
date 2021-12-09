@@ -1,8 +1,13 @@
 .login .col-2 {
     /*background-color: lightblue;*/
     padding: 0;
+    background-color: #F5F6F9;
+    z-index: 1;
 }
 
 .login .col-10 {
-    padding: 0;
+    padding: 0 ;
+   
+    background-color: #F5F6F9;
+    z-index: 2;
 }
