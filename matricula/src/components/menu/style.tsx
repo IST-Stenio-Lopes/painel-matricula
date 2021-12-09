@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { css } from "styled-components";
-
-interface DivProps {
+import { DivProps } from '../../utils/utilities';
+/*interface DivProps {
     status?: boolean;
     notifications?: number;
-}
+}*/
 
 export const ButtonPainel = styled.div<DivProps>`
     width: 240px;

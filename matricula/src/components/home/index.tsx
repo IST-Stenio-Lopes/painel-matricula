@@ -14,15 +14,15 @@ export default function Home() {
             <div className="container-fluid login">
 
                 <div className="row login">
-                    
+
                     <div className="col-2 ">
-                        <NavCompensing/>
+                        <NavCompensing status={false} />
                         <Menu />
-                        
+
                     </div>
 
                     <div className="col-10 ">
-                        <Navbar/>
+                        <Navbar />
                     </div>
 
                 </div>

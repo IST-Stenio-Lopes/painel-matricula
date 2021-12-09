@@ -61,3 +61,11 @@ export const useStyles = makeStyles((theme) => ({
     },
 }));
 
+export interface DivProps {
+    status?: boolean;
+    notifications?: number;
+}
+
+export interface DahboardAreaExpand {
+    status?: boolean;
+}
