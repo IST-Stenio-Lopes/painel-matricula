@@ -1,0 +1,17 @@
+.card {
+    flex-wrap: nowrap;
+    margin-right: 30px;
+    background-color: #F5F6F9;
+    border: none;
+
+
+}
+
+.card .row {
+    height: 152px;
+}
+
+.elementMargin {
+    margin-top: 60px;
+    z-index: 0;
+}
