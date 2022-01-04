@@ -5,9 +5,10 @@ import Navbar from "../navbar";
 import './style.css';
 import { NavCompensing } from "./style";
 import StickyHeadTable from "../dashboard/turmas";
-import Card from "../dashboard/cards";
+//import Card from "../dashboard/cards";  <Card matriculadosApp={10} matriculadosUnidade={50} vagasPreenchidas={86} status={true} />
 import DashBoard from "../dashboard";
 import EditProfile from "../dashboard/edit-profile";
+import UsersList from "../dashboard/users"; //<UsersList />
 //<DashBoard />
 export default function Home() {
 

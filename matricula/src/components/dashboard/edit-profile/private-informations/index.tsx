@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Align, Bottom, Head, UserInformations } from "./style";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Key from "../../../inputs/key";
 import { SaveButton } from "../../../inputs/style";
+import Modal from "../../../modal";
 
 
 
@@ -58,10 +59,14 @@ export default function Informations() {
         setCurrency(event.target.value);
     };
 
-
+    const [showExit, setShowExit] = useState<boolean>();
 
     return (
+
         <UserInformations>
+            {
+                (showExit && <Modal img={5} msg="Você tem certeza que deseja salvar as informações?" show={showExit} onClose={() => setShowExit(false)} />)
+            }
             <Head>
                 <div className="row">
                     <div className="col-3">
@@ -104,7 +109,7 @@ export default function Informations() {
             </Align>
 
             <Bottom>
-                <SaveButton>SALVAR</SaveButton>
+                <SaveButton onClick={() => setShowExit(true)}>SALVAR</SaveButton>
             </Bottom>
 
 

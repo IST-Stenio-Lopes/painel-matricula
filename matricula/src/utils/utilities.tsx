@@ -131,6 +131,16 @@ export interface ModalItens {
     onClose: () => void;
 }
 
+export interface ModalUploadItens {
+    img?: number;
+    msg?: string;
+    show?: boolean;
+    onClose: () => void;
+}
+export interface DropZoneI {
+
+}
+
 export interface Name {
     name: string;
 }

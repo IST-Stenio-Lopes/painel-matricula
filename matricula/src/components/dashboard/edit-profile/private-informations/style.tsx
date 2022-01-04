@@ -5,7 +5,7 @@ import { css } from "styled-components";
 export const UserInformations = styled.div`
     background-color: white;
     width: 80vh;
-    height: 80vh;
+    height: 105%;
     border: 1px solid #DFE2E6;
     border-radius: 5px;
 
@@ -27,7 +27,6 @@ export const Head = styled.div`
 
     .row{
         padding: 2%;
-
     }
     .col-3{
         color: #3A3B3F;
