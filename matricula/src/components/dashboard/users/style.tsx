@@ -39,6 +39,7 @@ export const LiSearch = styled.li`
 export const TopContainer = styled.div`
     display: flex;
 `
+
 export const AddButton = styled.button`
     color: white;
     width: 10%;
@@ -51,6 +52,7 @@ export const AddButton = styled.button`
     margin-top: 1.8%;
     font-size: 14px;
 `
+
 export const ListContainer = styled.div`
     margin-top: 5%;
     padding-right: 5%;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -8,10 +8,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Data from './mock-data.json';
+
 import { DataEdit } from './style';
 import Trash from '../../../assets/trash.svg';
 import './style-table.css';
+import Modal from '../../modal/index';
+import { UserTable } from '../../../utils/utilities';
 
 interface Column {
     //id: 'name' | 'code' | 'population' | 'size' | 'density' | 'id' | 'Curso';
@@ -50,7 +52,10 @@ const useStyles = makeStyles({
 
 });
 
-export default function UsersTable() {
+
+
+
+const UsersTable: React.FC<UserTable> = ({ onDelete, usuarios }) => {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -67,6 +72,7 @@ export default function UsersTable() {
     return (
 
         <Paper className={classes.root}>
+
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead className="title">
@@ -84,10 +90,11 @@ export default function UsersTable() {
                     </TableHead>
                     <TableBody>
                         {
-                            Data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((post) => {
+                            usuarios && usuarios.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((post) => {
 
 
                                 return (
+
                                     <TableRow key={post.id} >
 
                                         <TableCell>
@@ -103,7 +110,7 @@ export default function UsersTable() {
                                             <DataEdit>{post.email}</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            <img src={Trash} />
+                                            <img src={Trash} onClick={() => { onDelete() }} />
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -116,15 +123,17 @@ export default function UsersTable() {
             <TablePagination
                 rowsPerPageOptions={[5, 20, 100]}
                 component="div"
-                count={Data.length}
+                count={usuarios.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 labelRowsPerPage={""}
+
             />
 
         </Paper>
     );
 }
 
+export default UsersTable;

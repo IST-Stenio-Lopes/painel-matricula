@@ -145,6 +145,21 @@ export interface Name {
     name: string;
 }
 
+export interface WorkerUser {
+    id: number,
+    name: string,
+    access: string,
+    matricula: string,
+    email: string,
+}
+
+
+
+export interface UserTable {
+    onDelete: () => void;
+    usuarios: WorkerUser[]
+}
+
 /*export const lowTheme = createTheme({
     palette: {
         secondary: {

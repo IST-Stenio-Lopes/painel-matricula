@@ -6,6 +6,7 @@ import { InputAdornment } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { RememberKey } from '../style';
 
 
 export default function LoginHome() {
@@ -62,7 +63,7 @@ export default function LoginHome() {
                         } />
                 </div>
                 <div className="campos-inferior">
-                    <input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
+                    <input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." /><RememberKey>Lembrar dados</RememberKey>
                     <a href="#" className="text-decoration-none position-sticky  start-100 translate-middle">Esqueceu a senha?</a>
                 </div>
                 <div className="d-grid gap-2 col-6 mx-auto mt-5">

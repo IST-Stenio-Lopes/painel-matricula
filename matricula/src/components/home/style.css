@@ -11,3 +11,7 @@
     background-color: #F5F6F9;
     z-index: 2;
 }
+
+.login {
+    padding: 0;
+}

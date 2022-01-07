@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { AddButton, ImgSearch, LiSearch, ListContainer, Search, SearchBar, TopContainer, UlSearch } from "./style";
-import Data from './mock-data.json';
+import Data from './users.json';
 import UsersTable from "./table";
+import Modal from '../../modal/index';
+
 
 // import search from '../../../assets/search.svg';
 
@@ -9,6 +11,9 @@ import UsersTable from "./table";
 export default function UsersList() {
     const [busca, setBusca] = useState('');
     const [selected, setSelected] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
+
+
     /*{usuariosFiltrados.map((user) => (
                         <LiSearch key={user.name}>{user.name}</LiSearch>
                     )
@@ -25,20 +30,23 @@ export default function UsersList() {
     }, [busca])
 
     return (
+
         <div>
+
             <TopContainer>
+                {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true} />}
                 <SearchBar>
                     <ImgSearch />
                     <Search type="text" value={busca} onChange={(ev) => setBusca(ev.target.value)} placeholder="Digite o nome do usuário" onFocus={() => setSelected(true)} onBlur={() => setSelected(false)} />
                     <UlSearch>
-                        {selected &&
+                        {/* {selected &&
                             usuariosFiltrados.slice(0, 8).map((user) => (
                                 <LiSearch key={user.id}>{user.name}</LiSearch>
 
                             )
 
                             )
-                        }
+                        } */}
                     </UlSearch>
                 </SearchBar>
                 <AddButton>+ NOVO USUÁRIO</AddButton>
@@ -47,7 +55,7 @@ export default function UsersList() {
 
 
             <ListContainer>
-                <UsersTable />
+                <UsersTable onDelete={() => setShowDelete(true)} usuarios={usuariosFiltrados} />
             </ListContainer>
 
 
