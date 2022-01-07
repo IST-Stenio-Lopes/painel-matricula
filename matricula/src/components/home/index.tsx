@@ -22,7 +22,7 @@ export default function Home() {
                 </div>
                 <div className="col-10 ">
                     <Navbar />
-                    <EditProfile />
+                    <UsersList />
                 </div>
 
             </div>
