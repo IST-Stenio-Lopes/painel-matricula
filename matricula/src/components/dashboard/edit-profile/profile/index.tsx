@@ -2,8 +2,9 @@ import Avatar from "@material-ui/core/Avatar";
 import React from "react";
 import { ButtonsContainer, NameProfile, SmallProfile, WorkProfile } from "./style";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { ProfileIn } from "../../../../utils/utilities";
 
-export default function Profile() {
+const Profile: React.FC<ProfileIn> = ({ nome, cargo, foto }) => {
     const useStyles = makeStyles((theme: Theme) =>
         createStyles({
             root: {
@@ -28,11 +29,11 @@ export default function Profile() {
     return (
         <SmallProfile className="row">
             <div className="col-7">
-                <NameProfile>Laura Pradella</NameProfile>
-                <WorkProfile>Diretora</WorkProfile>
+                <NameProfile>{nome}</NameProfile>
+                <WorkProfile>{cargo}</WorkProfile>
             </div>
             <div className="col-5">
-                <Avatar className={classes.large}>LP</Avatar>
+                <Avatar className={classes.large}>{foto}</Avatar>
             </div>
             <ButtonsContainer className="row">
                 <div className="col-6 ">
@@ -45,3 +46,4 @@ export default function Profile() {
         </SmallProfile>
     );
 }
+export default Profile;

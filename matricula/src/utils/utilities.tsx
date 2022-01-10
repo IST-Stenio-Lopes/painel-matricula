@@ -160,6 +160,28 @@ export interface UserTable {
     usuarios: WorkerUser[]
 }
 
+export interface SenaiStudents {
+    id: number,
+    nome: string,
+    cpf: string,
+    curso: string,
+    telefone: string,
+    email: string,
+}
+
+export interface StudentTable {
+    onDelete: () => void;
+    estudantes: SenaiStudents[];
+}
+
+export interface ValueStatusProgressMatricula {
+    num: number;
+}
+export interface ProfileIn {
+    nome: string;
+    cargo: string;
+    foto: string;
+}
 /*export const lowTheme = createTheme({
     palette: {
         secondary: {

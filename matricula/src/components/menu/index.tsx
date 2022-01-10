@@ -30,7 +30,7 @@ import { ButtonPainel, LateralIcon, LateralText, LateralNotification } from "./s
 }*/
 
 export default function Menu(/*{ routeV }: fullValue*/) {
-    const [routeValue, setRouteValue] = useState("dashboard");
+    const [routeValue, setRouteValue] = useState(window.location.pathname.slice(1).split("/")[0]);
     const [activeButton, setActiveButton] = useState("Dashboard");
     var userMensagesNumber = 31;
     var financeNumber = 12;
@@ -41,7 +41,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
             <div className="row justify-content-md-center">
                 <img src={logo} />
             </div>
-            <a href="#" onClick={() => setRouteValue("dashboard")} >
+            <a href="http://localhost:3000/dashboard" onClick={() => setRouteValue("dashboard")} >
                 <ButtonPainel status={routeValue === "dashboard"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -56,7 +56,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("matricula") }} >
+            <a href="http://localhost:3000/matricula" onClick={() => { setRouteValue("matricula") }} >
                 <ButtonPainel status={routeValue === "matricula"} >
                     <div className="row button">
                         <div className="col-3 icon">
