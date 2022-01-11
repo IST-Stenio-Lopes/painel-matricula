@@ -1,6 +1,5 @@
-.row.profile {
-    padding: 0px;
-    margin-right: auto;
-}
+.row {
+    width: 100%;
+    padding-right: -10%;
 
-.row.profile .col-8 {}
+}

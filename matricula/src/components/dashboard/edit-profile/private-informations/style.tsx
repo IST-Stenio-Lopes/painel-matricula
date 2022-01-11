@@ -4,8 +4,8 @@ import { css } from "styled-components";
 
 export const UserInformations = styled.div`
     background-color: white;
-    width: 80vh;
-    height: 108%;
+    width: 70vh;
+    height: 75vh;
     border: 1px solid #DFE2E6;
     border-radius: 5px;
     padding-bottom: 2%;

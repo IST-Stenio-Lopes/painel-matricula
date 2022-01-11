@@ -34,3 +34,4 @@ export const AddButton = styled.button`
     margin-top: 1.8%;
     font-size: 14px;
 `
+
