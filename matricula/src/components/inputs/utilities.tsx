@@ -22,7 +22,13 @@ export interface SelectInput {
     size: number
 }
 
+export interface MoneyInput {
+    size: number
+}
 
+export interface MatriculaChangePage {
+    change: () => void
+}
 
 export function ChangeArrayInputSelect(array: string[]) {
     const arraySelect: SelectObject[] = [];

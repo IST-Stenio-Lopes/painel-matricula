@@ -80,3 +80,8 @@ export const SubTitleHeadFormMatricula = styled.p`
     margin-left: 5%;
     margin-top: 1%;
 `
+export const BottomMatricula = styled.div`
+    border-top: 1px solid #DFE2E6;
+    margin-top: 3%;
+    text-align: right;
+`

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Profile from "../../dashboard/edit-profile/profile";
 import { NavCompensing } from "../../home/style";
 import Menu from "../../menu";
@@ -14,6 +14,7 @@ import { Fluxo } from "./style";
 export default function EditStudent() {
 
     const [value, setValue] = useState(1);
+
 
     return (
         <div className="container-fluid login">
@@ -40,7 +41,8 @@ export default function EditStudent() {
 
                             <div className="col-9">
                                 {
-                                    value === 1 ? <StepOne /> : value === 2 ? <StepTwo /> : value === 3 ? <StepThree /> : <p>Fail</p>
+                                    value === 1 ? <StepOne change={() => setValue(value + 1)} /> : value === 2 ? <StepTwo /> : value === 3 ? <StepThree /> : <p>Fail</p>
+
                                 }
                             </div>
                         </div>
