@@ -31,7 +31,7 @@ const StepOne: React.FC<MatriculaChangePage> = (props) => {
                 <ConteudoDivStep1>
                     <Select options={['Jogos Digitais', 'Arquitetura', 'Artes na Praia']} title="Curso" size={40} />
                     <Select options={['2419 - Programação em Jogos Digitais', '007 - Desenhos em Jogos Digitais', '2012 - O fim do Mundo em Jogos Digitais']} title="Turma" size={40} />
-                    <DateInput />
+                    <DateInput title="Data de Inicio" size={30} />
                     <Select options={['Manhã', 'Tarde', 'Noite']} title="Turno" size={30} />
                     <Select options={['Particular', 'Gratuito', 'Artes na Praia']} title="Parceria" size={30} />
                     <Select options={['Nada', 'Completo', 'Apenas taxa de Matricula']} title="Pagou" size={30} />

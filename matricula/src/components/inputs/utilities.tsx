@@ -26,6 +26,16 @@ export interface MoneyInput {
     size: number
 }
 
+export interface NormalInputI {
+    title: string;
+    size: number;
+}
+
+export interface DateInputI {
+    title: string;
+    size: number;
+}
+
 export interface MatriculaChangePage {
     change: () => void
 }
