@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -8,12 +8,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-
-import { DataEdit } from './style';
+import { ReservedStudentTableI } from '../../../utils/utilities';
+import { DataEdit, DivHoverOnTable } from '../../dashboard/users/style';
 import Trash from '../../../assets/trash.svg';
-import './style-table.css';
-import Modal from '../../modal/index';
-import { UserTable } from '../../../utils/utilities';
+import './style.css';
 
 interface Column {
     //id: 'name' | 'code' | 'population' | 'size' | 'density' | 'id' | 'Curso';
@@ -25,41 +23,37 @@ interface Column {
     format?: (value: number) => string;
 }
 const columns: Column[] = [
-    { label: 'Nome', minWidth: 40 },
-    { label: 'Nivel de Acesso', minWidth: 130 },
-    { label: 'Matricula', minWidth: 70 },
-    { label: 'Email', minWidth: 130 },
+    { label: 'Nome', minWidth: 130 },
+    { label: 'Curso', minWidth: 130 },
+    { label: 'Whatsapp', minWidth: 80 },
+    { label: 'Email', minWidth: 80 },
+    { label: 'Dias Restantes', minWidth: 80 },
     { label: '', minWidth: 10 }
 ];
 interface Data {
     id: number;
-    name: string;
-    access: string;
-    matricula: string;
+    nome: string;
+    curso: string;
+    whatsapp: string;
     email: string;
+    dias_restantes: number;
 }
-
-
-
 
 const useStyles = makeStyles({
     root: {
         width: '100%',
     },
     container: {
-        maxHeight: 440,
+        maxHeight: 620,
     },
 
 });
 
+const ReservedStudentTable: React.FC<ReservedStudentTableI> = ({ onDelete, estudantes }) => {
 
-
-
-const UsersTable: React.FC<UserTable> = ({ onDelete, usuarios }) => {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -69,8 +63,8 @@ const UsersTable: React.FC<UserTable> = ({ onDelete, usuarios }) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    return (
 
+    return (
         <Paper className={classes.root}>
 
             <TableContainer className={classes.container}>
@@ -90,28 +84,32 @@ const UsersTable: React.FC<UserTable> = ({ onDelete, usuarios }) => {
                     </TableHead>
                     <TableBody>
                         {
-                            usuarios && usuarios.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((post) => {
+                            estudantes && estudantes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((post) => {
 
 
                                 return (
 
-                                    <TableRow key={post.id} className="table-hover">
+                                    <TableRow key={post.id} className="table-hover" onClick={() => console.log(post.id)}>
 
                                         <TableCell>
-                                            <DataEdit>{post.name}</DataEdit>
+                                            <DataEdit>{post.nome}</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            <DataEdit>{post.access}</DataEdit>
+                                            <DataEdit>{post.curso}</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            <DataEdit>{post.matricula}</DataEdit>
+                                            <DataEdit>{post.whatsapp}</DataEdit>
                                         </TableCell>
                                         <TableCell>
                                             <DataEdit>{post.email}</DataEdit>
                                         </TableCell>
                                         <TableCell>
+                                            <DataEdit>{post.dias_restantes} dias</DataEdit>
+                                        </TableCell>
+                                        <TableCell>
                                             <img src={Trash} onClick={() => { onDelete() }} />
                                         </TableCell>
+
                                     </TableRow>
                                 );
                             })
@@ -121,9 +119,9 @@ const UsersTable: React.FC<UserTable> = ({ onDelete, usuarios }) => {
             </TableContainer>
 
             <TablePagination
-                rowsPerPageOptions={[5, 20, 100]}
+                rowsPerPageOptions={[10, 20, 100]}
                 component="div"
-                count={usuarios.length}
+                count={estudantes.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -134,6 +132,6 @@ const UsersTable: React.FC<UserTable> = ({ onDelete, usuarios }) => {
 
         </Paper>
     );
-}
 
-export default UsersTable;
+}
+export default ReservedStudentTable;

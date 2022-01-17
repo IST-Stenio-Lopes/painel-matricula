@@ -5,7 +5,7 @@ import { css } from "styled-components";
 
 export const PrincipalDivStep2 = styled.div`
     width: 80%;
-    height: 80vh;
+    height: 82vh;
     background-color: white;
     border-radius: 4px;
     box-shadow: 0px 0px 0px 1px rgba(63, 63, 68, 0.05), 0px 1px 3px rgba(63, 63, 68, 0.15);
@@ -59,4 +59,26 @@ export const Align2NormalInputStep2 = styled.div`
   @media(max-width: 1400px){
       margin-top: 5%
   }
+`
+
+export const FooterFormMatricula = styled.div`
+    border-top: 1px solid rgba(228, 231, 235, 1);
+    margin-top: -2%;
+    width: 100%;
+    position: relative;
+`
+
+export const ButtonNextStep2Matricula = styled.button`
+    text-decoration: none;
+    border: none;
+    position: absolute;
+    color: white;
+    background-color: rgba(22, 101, 216, 1);
+    border-radius: 4px;
+    width: 20%;
+    padding-bottom: 2%;
+    padding-top: 2%;
+    right: 0;
+    margin-right: 2%;
+    margin-top: 1.8%;
 `

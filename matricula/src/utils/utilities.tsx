@@ -167,13 +167,41 @@ export interface SenaiStudents {
     cpf: string,
     curso: string,
     telefone: string,
-    email: string,
+    email: string
 }
 
 export interface StudentTable {
     onDelete: () => void;
     estudantes: SenaiStudents[];
 }
+export interface SenaiReservedStudents {
+    id: number,
+    nome: string,
+    curso: string,
+    whatsapp: string,
+    email: string,
+    dias_restantes: number
+}
+
+export interface ReservedStudentTableI {
+    onDelete: () => void;
+    estudantes: SenaiReservedStudents[];
+}
+
+export interface Cursos {
+    id: number,
+    nome: string,
+    area: string,
+    valor: number,
+    modalidade: string,
+    duracao: number
+}
+export interface CursosTableI {
+    onDelete: () => void;
+    cursos: Cursos[];
+}
+
+
 
 export interface ValueStatusProgressMatricula {
     num: number;

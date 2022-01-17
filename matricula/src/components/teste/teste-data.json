@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "first_name": "Leroi",
+        "last_name": "Corby",
+        "email": "lcorby0@gizmodo.com",
+        "gender": "Female",
+        "ip_address": "68.81.12.104"
+    },
+    {
+        "id": 2,
+        "first_name": "Carilyn",
+        "last_name": "Plumb",
+        "email": "cplumb1@springer.com",
+        "gender": "Female",
+        "ip_address": "211.23.150.208"
+    },
+    {
+        "id": 3,
+        "first_name": "Chase",
+        "last_name": "Sawrey",
+        "email": "csawrey2@boston.com",
+        "gender": "Male",
+        "ip_address": "4.54.25.99"
+    },
+    {
+        "id": 4,
+        "first_name": "Heall",
+        "last_name": "Trevaskus",
+        "email": "htrevaskus3@gravatar.com",
+        "gender": "Male",
+        "ip_address": "105.0.85.107"
+    },
+    {
+        "id": 5,
+        "first_name": "Michail",
+        "last_name": "Addyman",
+        "email": "maddyman4@va.gov",
+        "gender": "Female",
+        "ip_address": "10.19.66.148"
+    },
+    {
+        "id": 6,
+        "first_name": "Dwight",
+        "last_name": "Crannage",
+        "email": "dcrannage5@xrea.com",
+        "gender": "Female",
+        "ip_address": "73.16.93.98"
+    },
+    {
+        "id": 7,
+        "first_name": "Eloisa",
+        "last_name": "Yashaev",
+        "email": "eyashaev6@1und1.de",
+        "gender": "Agender",
+        "ip_address": "213.46.7.219"
+    },
+    {
+        "id": 8,
+        "first_name": "Chrisse",
+        "last_name": "Ravillas",
+        "email": "cravillas7@wiley.com",
+        "gender": "Genderfluid",
+        "ip_address": "248.164.214.28"
+    },
+    {
+        "id": 9,
+        "first_name": "Karon",
+        "last_name": "Dibden",
+        "email": "kdibden8@google.com.au",
+        "gender": "Male",
+        "ip_address": "248.149.176.69"
+    }
+]

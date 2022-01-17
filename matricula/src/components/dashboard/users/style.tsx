@@ -60,14 +60,16 @@ export const ListContainer = styled.div`
 
 `
 
-
-
-
-
-
-
 export const DataEdit = styled.p`
     color: #9EA0A5;
     padding: 0px;
     margin: 0px;
+    
+`
+
+export const DivHoverOnTable = styled.div`
+    
+    :hover{
+        background-color: rgba(246, 249, 253, 1);
+    }
 `

@@ -8,7 +8,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Data from '../mock-data.json';
 import { StudentTable } from '../../../utils/utilities';
 import { DataEdit } from '../../dashboard/users/style';
 import Trash from '../../../assets/trash.svg';
@@ -32,14 +31,14 @@ const columns: Column[] = [
     { label: 'Email', minWidth: 130 },
     { label: '', minWidth: 10 }
 ];
-interface Data {
+/*interface Data {
     id: number;
     nome: string;
     cpf: string;
     curso: string;
     telefone: string;
     email: string;
-}
+}*/
 
 const useStyles = makeStyles({
     root: {
@@ -92,7 +91,7 @@ const StudentsTable: React.FC<StudentTable> = ({ onDelete, estudantes }) => {
 
                                 return (
 
-                                    <TableRow key={post.id} >
+                                    <TableRow key={post.id} className="table-hover">
 
                                         <TableCell>
                                             <DataEdit>{post.nome}</DataEdit>

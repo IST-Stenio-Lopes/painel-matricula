@@ -23,12 +23,15 @@ export interface SelectInput {
 }
 
 export interface MoneyInput {
-    size: number
+    size: number;
+    pValue?: number;
+
 }
 
 export interface NormalInputI {
     title: string;
     size: number;
+    pValue?: string;
 }
 
 export interface DateInputI {

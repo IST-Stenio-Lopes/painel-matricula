@@ -1,15 +1,16 @@
 import React from "react";
-import { HeadFormMatricula, SubTitleHeadFormMatricula, TitleHeadFormMatricula } from "../style";
+import { BottomMatricula, HeadFormMatricula, SubTitleHeadFormMatricula, TitleHeadFormMatricula } from "../style";
 import axios from 'axios';
-import { Align2NormalInputStep2, AlignNormalInputStep2, ContainerDividerStep2, ConteudoDivStep2, ConteudoLeftStep2, ConteudoRightStep2, PrincipalDivStep2 } from "./style";
+import { Align2NormalInputStep2, AlignNormalInputStep2, ButtonNextStep2Matricula, ContainerDividerStep2, ConteudoDivStep2, ConteudoLeftStep2, ConteudoRightStep2, FooterFormMatricula, PrincipalDivStep2 } from "./style";
 import { useEffect } from "react";
 import NormalInput from "../../../inputs/normal";
 import DateInput from "../../../inputs/date";
 import Select from "../../../inputs/select";
-import './style.css'
+import { SaveButton } from "../../../inputs/style";
+import { MatriculaChangePage } from "../../../inputs/utilities";
 
 
-export default function StepTwo() {
+const StepTwo: React.FC<MatriculaChangePage> = (props) => {
 
     /*
     const cep = "58117000";
@@ -90,11 +91,32 @@ export default function StepTwo() {
 
                             <ConteudoRightStep2>
                                 <AlignNormalInputStep2>
-                                    <NormalInput title="Orgão Emissor" size={11} />
+                                    <NormalInput title="Whatssapp" size={11} />
                                 </AlignNormalInputStep2>
                             </ConteudoRightStep2>
 
                         </ContainerDividerStep2>
+
+
+                        <ContainerDividerStep2>
+
+                            <ConteudoLeftStep2>
+                                <AlignNormalInputStep2>
+                                    <NormalInput title="CEP" size={11} />
+                                </AlignNormalInputStep2>
+                            </ConteudoLeftStep2>
+
+                            <ConteudoRightStep2>
+                                <AlignNormalInputStep2>
+                                    Botão
+                                </AlignNormalInputStep2>
+                            </ConteudoRightStep2>
+
+                        </ContainerDividerStep2>
+
+
+                        <NormalInput title="Rua" size={28} />
+
 
 
 
@@ -162,7 +184,40 @@ export default function StepTwo() {
 
                         </ContainerDividerStep2>
 
+                        <NormalInput title="Email" size={28} />
 
+                        <ContainerDividerStep2>
+
+                            <ConteudoLeftStep2>
+                                <AlignNormalInputStep2>
+                                    <NormalInput title="Cidade" size={11} />
+                                </AlignNormalInputStep2>
+                            </ConteudoLeftStep2>
+
+                            <ConteudoRightStep2>
+                                <AlignNormalInputStep2>
+                                    <NormalInput title="Estado" size={11} />
+                                </AlignNormalInputStep2>
+                            </ConteudoRightStep2>
+
+                        </ContainerDividerStep2>
+
+
+                        <ContainerDividerStep2>
+
+                            <ConteudoLeftStep2>
+                                <AlignNormalInputStep2>
+                                    <NormalInput title="Número" size={11} />
+                                </AlignNormalInputStep2>
+                            </ConteudoLeftStep2>
+
+                            <ConteudoRightStep2>
+                                <AlignNormalInputStep2>
+                                    <NormalInput title="Bairro" size={11} />
+                                </AlignNormalInputStep2>
+                            </ConteudoRightStep2>
+
+                        </ContainerDividerStep2>
 
 
 
@@ -172,6 +227,11 @@ export default function StepTwo() {
 
             </ConteudoDivStep2>
 
+            <FooterFormMatricula>
+                <ButtonNextStep2Matricula onClick={props.change}>PRÓXIMO</ButtonNextStep2Matricula>
+            </FooterFormMatricula>
+
         </PrincipalDivStep2>
     );
 }
+export default StepTwo;

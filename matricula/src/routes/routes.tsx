@@ -11,42 +11,47 @@ import EditProfile from '../components/dashboard/edit-profile';
 import UsersList from '../components/dashboard/users';
 import NewUser from '../components/dashboard/users/new-user';
 import EditStudent from '../components/matricula/edit-student';
+import ReservedStudents from '../components/matricula/reserved-students';
+import Cursos from '../components/cursos/index';
 
 
 const Routees = () => {
 
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/">
-          <Route index element={<Login />} />
-          <Route path="forgot" element={<ForgotPassword />} />
-          <Route path="sendmail" element={<SendMail />} />
-        </Route>
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/">
+                    <Route index element={<Login />} />
+                    <Route path="forgot" element={<ForgotPassword />} />
+                    <Route path="sendmail" element={<SendMail />} />
+                </Route>
 
-        <Route path="dashboard">
-          <Route index element={<DashBoard />} />
-          <Route path="edit" element={<EditProfile />} />
-          <Route path="users" element={<UsersList />} />
-          <Route path="adduser" element={<NewUser />} />
+                <Route path="dashboard">
+                    <Route index element={<DashBoard />} />
+                    <Route path="edit" element={<EditProfile />} />
+                    <Route path="users" element={<UsersList />} />
+                    <Route path="adduser" element={<NewUser />} />
 
-        </Route>
-        <Route path="matricula">
-          <Route index element={<Matricula />} />
-          <Route path="edit" element={<EditStudent />} />
-        </Route>
-        <Route path="cursos" element={<Login />} />
-        <Route path="turmas" element={<Login />} />
-        <Route path="anuncios" element={<Login />} />
-        <Route path="unidade" element={<Login />} />
-        <Route path="mensagens" element={<Login />} />
-        <Route path="relatorio" element={<Login />} />
-        <Route path="faq" element={<Login />} />
-        <Route path="financeiro" element={<Login />} />
-        <Route path='*' element={<Error />} />
-      </Routes>
-    </BrowserRouter>
-  );
+                </Route>
+                <Route path="matricula">
+                    <Route index element={<Matricula />} />
+                    <Route path="edit" element={<EditStudent />} />
+                    <Route path="reserved" element={<ReservedStudents />} />
+                </Route>
+                <Route path="cursos">
+                    <Route index element={<Cursos />} />
+                </Route>
+                <Route path="turmas" element={<Login />} />
+                <Route path="anuncios" element={<Login />} />
+                <Route path="unidade" element={<Login />} />
+                <Route path="mensagens" element={<Login />} />
+                <Route path="relatorio" element={<Login />} />
+                <Route path="faq" element={<Login />} />
+                <Route path="financeiro" element={<Login />} />
+                <Route path='*' element={<Error />} />
+            </Routes>
+        </BrowserRouter>
+    );
 };
 export default Routees;

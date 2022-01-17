@@ -16,6 +16,7 @@ export const ButtonPainel = styled.div<DivProps>`
         background: linear-gradient(to right, rgba(16, 85, 152, 0.3001) , rgba(74,144,226,0.01)70%);
         border-left: 6px solid rgba(16, 85, 152, 0.5);
     `}
+    
 
 `
 export const LateralIcon = styled.img`

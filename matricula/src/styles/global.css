@@ -7,3 +7,7 @@
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
 }
+
+.table-hover:hover {
+    background-color: rgba(246, 249, 253, 1);
+}

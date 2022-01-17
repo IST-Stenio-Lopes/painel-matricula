@@ -41,7 +41,7 @@ export default function EditStudent() {
 
                             <div className="col-9">
                                 {
-                                    value === 1 ? <StepOne change={() => setValue(value + 1)} /> : value === 2 ? <StepTwo /> : value === 3 ? <StepThree /> : <p>Fail</p>
+                                    value === 1 ? <StepOne change={() => setValue(value + 1)} /> : value === 2 ? <StepTwo change={() => setValue(value + 1)} /> : value === 3 ? <StepThree /> : <p>Fail</p>
 
                                 }
                             </div>
