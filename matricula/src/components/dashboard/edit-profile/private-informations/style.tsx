@@ -4,8 +4,8 @@ import { css } from "styled-components";
 
 export const UserInformations = styled.div`
     background-color: white;
-    width: 70vh;
-    height: 75vh;
+    width: 60%;
+    height: 98%;
     border: 1px solid #DFE2E6;
     border-radius: 5px;
     padding-bottom: 2%;
@@ -43,6 +43,6 @@ export const Head = styled.div`
 
 export const Bottom = styled.div`
     border-top: 1px solid #DFE2E6;
-    margin-top: 3%;
+ 
     text-align: right;
 `

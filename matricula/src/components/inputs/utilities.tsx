@@ -24,6 +24,7 @@ export interface SelectInput {
 
 export interface MoneyInput {
     size: number;
+    title: string;
     pValue?: number;
 
 }

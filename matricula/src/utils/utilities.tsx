@@ -211,6 +211,16 @@ export interface ProfileIn {
     cargo: string;
     foto: string;
 }
+
+export interface TagI {
+    id?: string,
+    text?: string;
+}
+export interface ConteudoProgramaticoI {
+    id?: number;
+    description: string;
+    hours: number;
+}
 /*export const lowTheme = createTheme({
     palette: {
         secondary: {

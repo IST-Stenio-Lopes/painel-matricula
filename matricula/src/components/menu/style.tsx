@@ -42,4 +42,7 @@ export const LateralNotification = styled.div<DivProps>`
         font-size: 13px;
         color: #005CA4;
     }
+    @media (max-width: 1700px) {
+        margin-left: -70%;
+    }
 `

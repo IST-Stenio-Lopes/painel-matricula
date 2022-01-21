@@ -13,6 +13,7 @@ import NewUser from '../components/dashboard/users/new-user';
 import EditStudent from '../components/matricula/edit-student';
 import ReservedStudents from '../components/matricula/reserved-students';
 import Cursos from '../components/cursos/index';
+import EditCurso from '../components/cursos/edit-curso';
 
 
 const Routees = () => {
@@ -41,6 +42,7 @@ const Routees = () => {
                 </Route>
                 <Route path="cursos">
                     <Route index element={<Cursos />} />
+                    <Route path="details" element={<EditCurso />} />
                 </Route>
                 <Route path="turmas" element={<Login />} />
                 <Route path="anuncios" element={<Login />} />

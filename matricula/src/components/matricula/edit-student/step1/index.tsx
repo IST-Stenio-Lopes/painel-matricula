@@ -35,7 +35,7 @@ const StepOne: React.FC<MatriculaChangePage> = (props) => {
                     <Select options={['Manhã', 'Tarde', 'Noite']} title="Turno" size={30} />
                     <Select options={['Particular', 'Gratuito', 'Artes na Praia']} title="Parceria" size={30} />
                     <Select options={['Nada', 'Completo', 'Apenas taxa de Matricula']} title="Pagou" size={30} />
-                    <Money size={30} />
+                    <Money size={30} title="valor" />
                 </ConteudoDivStep1>
                 <BottomMatricula>
                     <SaveButton onClick={props.change}>PRÓXIMO</SaveButton>

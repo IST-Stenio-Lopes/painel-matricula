@@ -20,7 +20,7 @@ export default function Matricula() {
         const lowerBusca = busca.toLocaleLowerCase();
 
         return Data.filter((post) =>
-            post.nome.toLocaleLowerCase().includes(lowerBusca)
+            post.nome.toLocaleLowerCase().includes(lowerBusca)|| post.cpf.includes(lowerBusca)
         );
 
 

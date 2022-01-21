@@ -1,3 +1,5 @@
+
+
 .container-fluid.lateral {
     padding: 0;
     margin: 0;
@@ -6,7 +8,6 @@
     width: 26.2vh;
     box-shadow: gray 0px 0px 2px;
     z-index: 5;
-
 }
 
 .lateral a {
@@ -38,5 +39,15 @@
     margin-top: 20%;
     width: 200px;
     padding-bottom: 50%;
+
+}
+
+@media (max-width: 1400px) {
+    .container-fluid.lateral {
+        background-color: white;
+        height: 100%;
+        width: 26.2vh;
+    }
+
 
 }
