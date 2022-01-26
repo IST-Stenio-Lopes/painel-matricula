@@ -3,7 +3,7 @@ import { ModalItens } from "../../utils/utilities";
 import { ModalContainer, Msg, ImgModal, Anc, Btn } from './style';
 import { GetModalImage } from "../../utils/utilities";
 
-const Modal: React.FC<ModalItens> = ({ img, msg, onClose, show }) => {
+const Modal: React.FC<ModalItens> = ({ img, msg, onClose, show, onConfirm }) => {
 
 
 
@@ -23,7 +23,7 @@ const Modal: React.FC<ModalItens> = ({ img, msg, onClose, show }) => {
                         <Btn onClick={() => onClose()}>NÃO</Btn>
                     </div>
                     <div className="col-6">
-                        <Btn change={true} onClick={() => onClose()}>SIM</Btn>
+                        <Btn change={true} onClick={() => onConfirm()}>SIM</Btn>
                     </div>
                 </div>
 

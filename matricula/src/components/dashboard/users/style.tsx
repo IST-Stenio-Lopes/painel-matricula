@@ -51,6 +51,11 @@ export const AddButton = styled.button`
     margin-left: 40%;
     margin-top: 1.8%;
     font-size: 14px;
+
+    a{
+        text-decoration: none;
+        color: white;
+    }
 `
 
 export const ListContainer = styled.div`

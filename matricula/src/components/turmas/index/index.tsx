@@ -1,28 +1,32 @@
 import React, { useMemo, useState } from "react";
-import CursosTable from "./table";
-import Data from '../cursos.json';
+import { AddButton, ImgSearch, ListContainer, Search, SearchBar, TopContainer, UlSearch } from "../../dashboard/users/style";
 import { NavCompensing } from "../../home/style";
 import Menu from "../../menu";
-import Navbar from "../../navbar";
-import { AddButton, ImgSearch, ListContainer, Search, SearchBar, TopContainer, UlSearch } from "../../dashboard/users/style";
 import Modal from "../../modal";
+import Navbar from "../../navbar";
+import { updateTurmasStatus } from "../turmas-utils/turmas-utilities";
+import Data from '../turmas.json';
+import TurmasTable from "./table";
 
 
-export default function Cursos() {
+export default function Turmas() {
+
 
     const [busca, setBusca] = useState('');
     const [selected, setSelected] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
+    const [showChange, setShowChange] = useState(false);
 
 
-    const cursosFiltrados = useMemo(() => {
+    const tumasFiltradas = useMemo(() => {
         const lowerBusca = busca.toLocaleLowerCase();
 
         return Data.filter((post) =>
-            post.nome.toLocaleLowerCase().includes(lowerBusca) || post.area.toLocaleLowerCase().includes(lowerBusca)
+            post.curso.toLocaleLowerCase().includes(lowerBusca) || post.modalidade.toLocaleLowerCase().includes(lowerBusca)
         );
 
-    }, [busca])
+    }, [busca]);
+
 
 
     return (
@@ -36,7 +40,8 @@ export default function Cursos() {
                     <Navbar />
                     <div>
                         <TopContainer>
-                            {showDelete && <Modal msg="Você tem certeza que deseja deletar o curso?" onClose={() => setShowDelete(false)} img={3} show={true} onConfirm={() => setShowDelete(false)} />}
+                            {showDelete && <Modal msg="Você tem certeza que deseja deletar a turma?" onClose={() => setShowDelete(false)} img={3} show={true} onConfirm={() => setShowDelete(false)} />}
+                            {showChange && <Modal img={2} msg="Você tem certeza que deseja alterar o status da turma?" onClose={() => setShowChange(!showChange)} onConfirm={() => updateTurmasStatus("a")} />}
                             <SearchBar>
                                 <ImgSearch />
                                 <Search type="text" value={busca} onChange={(ev) => setBusca(ev.target.value)} placeholder="Pesquise o curso pelo nome ou área" onFocus={() => setSelected(true)} onBlur={() => setSelected(false)} />
@@ -49,13 +54,11 @@ export default function Cursos() {
                     } */}
                                 </UlSearch>
                             </SearchBar>
-                            <AddButton>+ NOVO CURSO</AddButton>
+                            <AddButton>+ NOVA TURMA</AddButton>
 
                         </TopContainer>
-
-
                         <ListContainer>
-                            <CursosTable onDelete={() => setShowDelete(true)} cursos={cursosFiltrados} />
+                            <TurmasTable onDelete={() => setShowDelete(true)} turmas={tumasFiltradas} />
                         </ListContainer>
                     </div>
                 </div>
@@ -63,3 +66,4 @@ export default function Cursos() {
         </div>
     );
 }
+

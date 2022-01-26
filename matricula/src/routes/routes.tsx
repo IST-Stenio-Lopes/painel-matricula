@@ -14,6 +14,7 @@ import EditStudent from '../components/matricula/edit-student';
 import ReservedStudents from '../components/matricula/reserved-students';
 import Cursos from '../components/cursos/index';
 import EditCurso from '../components/cursos/edit-curso';
+import Turmas from '../components/turmas/index';
 
 
 const Routees = () => {
@@ -44,7 +45,10 @@ const Routees = () => {
                     <Route index element={<Cursos />} />
                     <Route path="details" element={<EditCurso />} />
                 </Route>
-                <Route path="turmas" element={<Login />} />
+                <Route path="turmas">
+                    <Route index element={<Turmas />} />
+                    
+                </Route>
                 <Route path="anuncios" element={<Login />} />
                 <Route path="unidade" element={<Login />} />
                 <Route path="mensagens" element={<Login />} />

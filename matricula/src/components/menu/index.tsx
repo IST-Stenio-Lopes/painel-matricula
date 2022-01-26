@@ -86,7 +86,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("turmas") }} >
+            <a href="http://localhost:3000/turmas" onClick={() => { setRouteValue("turmas") }} >
                 <ButtonPainel status={routeValue === "turmas"}>
                     <div className="row button">
                         <div className="col-3 icon">

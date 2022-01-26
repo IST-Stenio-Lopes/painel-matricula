@@ -71,7 +71,7 @@ export default function EditCurso() {
                     <Navbar />
                     <div>
                         <TopLine name="Editar Curso" />
-                        {showSave && <Modal msg="Você tem certeza que deseja salvar as informações?" onClose={() => setShowSave(false)} img={5} show={true} />}
+                        {showSave && <Modal msg="Você tem certeza que deseja salvar as informações?" onClose={() => setShowSave(false)} img={5} show={true} onConfirm={() => setShowSave(false)} />}
                         <PrincipalDivEditCurso>
                             <HeadFormCurso>
                                 <TitleHeadFormCurso>Informações do Curso</TitleHeadFormCurso>

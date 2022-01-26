@@ -5,7 +5,7 @@ import { css } from "styled-components";
 export const LinearContainer = styled.div`
 width: 150px;
 margin-right: 30px;
-
+z-index: 1;
 
 `
 export const VagasPreenchidas = styled.div`
@@ -15,4 +15,5 @@ export const VagasPreenchidas = styled.div`
     margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
+    z-index: 0;
 `

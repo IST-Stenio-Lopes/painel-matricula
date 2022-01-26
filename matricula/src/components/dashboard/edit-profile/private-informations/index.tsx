@@ -65,7 +65,7 @@ export default function Informations() {
 
         <UserInformations>
             {
-                (showExit && <Modal img={5} msg="Você tem certeza que deseja salvar as informações?" show={showExit} onClose={() => setShowExit(false)} />)
+                (showExit && <Modal img={5} msg="Você tem certeza que deseja salvar as informações?" show={showExit} onClose={() => setShowExit(false)} onConfirm={() => setShowExit(false)} />)
             }
             <Head>
                 <div className="row">

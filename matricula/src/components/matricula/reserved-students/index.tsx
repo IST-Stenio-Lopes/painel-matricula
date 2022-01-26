@@ -37,7 +37,7 @@ export default function ReservedStudents() {
                 <div className="col-10 ">
                     <Navbar />
                     <div>
-                        {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true}/>}
+                        {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true} onConfirm={() => setShowDelete(false)} />}
                         <TopLine name="Reservados" />
                         <ListContainer>
                             <ReservedStudentTable onDelete={() => setShowDelete(true)} estudantes={Data} />

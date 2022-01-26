@@ -130,6 +130,7 @@ export interface ModalItens {
     status?: boolean;
     show?: boolean;
     onClose: () => void;
+    onConfirm: () => void;
 }
 
 export interface ModalUploadItens {
@@ -199,6 +200,22 @@ export interface Cursos {
 export interface CursosTableI {
     onDelete: () => void;
     cursos: Cursos[];
+}
+
+export interface Turmas {
+    id: number,
+    curso: string,
+    modalidade: string,
+    turno: string,
+    tipo: string,
+    vagas: number,
+    vagas_preenchidas: number,
+    status: string
+}
+
+export interface TurmasTableI {
+    onDelete: () => void;
+    turmas: Turmas[];
 }
 
 

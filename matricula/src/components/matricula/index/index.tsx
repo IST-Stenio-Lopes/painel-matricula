@@ -20,7 +20,7 @@ export default function Matricula() {
         const lowerBusca = busca.toLocaleLowerCase();
 
         return Data.filter((post) =>
-            post.nome.toLocaleLowerCase().includes(lowerBusca)|| post.cpf.includes(lowerBusca)
+            post.nome.toLocaleLowerCase().includes(lowerBusca) || post.cpf.includes(lowerBusca)
         );
 
 
@@ -37,7 +37,7 @@ export default function Matricula() {
                 <div className="col-10 ">
                     <Navbar />
                     <div>
-                        {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true} />}
+                        {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true} onConfirm={() => setShowDelete(false)} />}
                         <TopContainerMatriculaIndex>
                             <SearchBar>
                                 <ImgSearch />

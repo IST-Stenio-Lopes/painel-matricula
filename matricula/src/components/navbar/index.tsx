@@ -52,7 +52,7 @@ export default function Navbar() {
               <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" style={{ width: 40, height: 40 }} />
             </div>
             <div className="col-sm-6">
-              <p className="text-justify">Mysael Ribeiro</p>
+              <p className="text-justify name">Mysael Ribeiro</p>
 
             </div>
             <div className="col-sm-3">

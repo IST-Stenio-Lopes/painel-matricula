@@ -1,6 +1,6 @@
 import React, { Children, useEffect, useState } from "react";
 import { Window, WindowSetting } from './style';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
 
 import Edit from '../../../assets/dashboard-user/edit-profile.svg';
 import Users from '../../../assets/dashboard-user/user-list.svg';
@@ -18,7 +18,7 @@ export default function User() {
     return (
         <div>
             {
-                (showExit && <Modal img={4} msg="Você tem certeza que deseja sair?" show={showExit} onClose={() => setShowExit(false)} />)
+                (showExit && <Modal img={4} msg="Você tem certeza que deseja sair?" show={showExit} onClose={() => setShowExit(false)} onConfirm={() => setShowExit(false)} />)
             }
             <Window>
                 <WindowSetting>

@@ -43,7 +43,7 @@ export default function UsersList() {
                     <Navbar />
                     <div>
                         <TopContainer>
-                            {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true} />}
+                            {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true} onConfirm={() => setShowDelete(false)} />}
                             <SearchBar>
                                 <ImgSearch />
                                 <Search type="text" value={busca} onChange={(ev) => setBusca(ev.target.value)} placeholder="Digite o nome do usuário" onFocus={() => setSelected(true)} onBlur={() => setSelected(false)} />
@@ -56,7 +56,7 @@ export default function UsersList() {
                         } */}
                                 </UlSearch>
                             </SearchBar>
-                            <AddButton>+ NOVO USUÁRIO</AddButton>
+                            <AddButton ><a href="http://localhost:3000/dashboard/edit">+ NOVO USUÁRIO</a></AddButton>
 
                         </TopContainer>
 

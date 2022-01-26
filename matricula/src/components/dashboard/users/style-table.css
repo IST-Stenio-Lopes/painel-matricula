@@ -1,4 +1,8 @@
-.MuiPaper-rounded * {
-    z-index: 0 !important;
+.MuiPaper-rounded {
+    /* z-index: 0 !important; */
+}
 
+/* MuiTableRow-root title MuiTableRow-head */
+.MuiTableRow-root.title * {
+    z-index: 0 !important;
 }
