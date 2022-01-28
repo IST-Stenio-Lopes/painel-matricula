@@ -218,6 +218,9 @@ export interface TurmasTableI {
     turmas: Turmas[];
 }
 
+export interface DashboardTableI {
+    turmas: Turmas[];
+}
 
 
 export interface ValueStatusProgressMatricula {

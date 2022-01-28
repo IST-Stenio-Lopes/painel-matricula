@@ -33,6 +33,9 @@ export interface NormalInputI {
     title: string;
     size: number;
     pValue?: string;
+    selfCode?: string;
+    outCode?: string;
+    msgErro?: string;
 }
 
 export interface DateInputI {

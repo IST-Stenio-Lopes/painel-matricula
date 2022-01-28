@@ -18,7 +18,7 @@ export const Window = styled.div`
     padding-bottom: 10px;
     padding-bottom: 10px;
     margin-top: 1%;
-    margin-left: 8%;
+    margin-left: 14%;
     position: absolute;
     z-index: 1;
     button{

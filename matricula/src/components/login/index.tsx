@@ -5,6 +5,8 @@ import '../login/style.css';
 import LoginHome from './home';
 import ForgotPassword from './forgotPassword';
 import SendMail from './sendMail';
+import { BackgroundImgLateralLogin, ImageLateralLogin } from './style';
+
 
 
 //import MaterialIcon from 'react-google-material-icons';
@@ -21,7 +23,9 @@ export default function Login() {
                         <img src={logo} />
                     </div>
                     <div className="row align-items-center">
+                         
                         <LoginHome />
+                       
                     </div>
 
                     <div className="row align-items-end">
@@ -31,7 +35,8 @@ export default function Login() {
                     </div>
                 </div>
                 <div className="col-7">
-                    <img src={book} />
+                    <BackgroundImgLateralLogin />
+
                 </div>
 
             </div>

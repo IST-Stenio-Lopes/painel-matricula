@@ -9,6 +9,8 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { RememberKey } from '../style';
 import ForgotPassword from '../forgotPassword';
 import { Link } from 'react-router-dom';
+import NormalInput from '../../inputs/normal';
+
 
 
 export default function LoginHome() {
@@ -42,10 +44,14 @@ export default function LoginHome() {
             </div>
             <div className="preenchimento">
                 <div className="campos">
-                    <TextField fullWidth id="test" placeholder="Email" variant="standard" error={error} helperText={error ? 'email ou senha incorretos' : ''} />
+                    {/* <TextField fullWidth id="test" placeholder="Email" variant="standard" error={error} helperText={error ? 'email ou senha incorretos' : ''} /> */}
+                    <NormalInput size={window.screen.width < 1600 ? 36 : 50} title='Email' />
+
                 </div>
                 <div className="campos">
-                    <Input
+                    <NormalInput size={window.screen.width < 1600 ? 36 : 50} title='Email' />
+
+                    {/* <Input
                         error={error}
                         id="standard-adornment-password"
                         fullWidth
@@ -62,7 +68,8 @@ export default function LoginHome() {
                                     {showPassword ? <VisibilityOff /> : <Visibility />}
                                 </IconButton>
                             </InputAdornment>
-                        } />
+                        } />*/}
+
                 </div>
                 <div className="campos-inferior">
                     <input className="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..." /><RememberKey>Lembrar dados</RememberKey>

@@ -7,9 +7,11 @@
     height: 100%;
 }
 
-.login .row {
-    margin: 0 auto;
+.login {}
 
+.login .row {
+
+    padding: 0px;
     /*Remove a margem excedente, tirando o scroll lateral*/
 }
 
@@ -35,7 +37,7 @@
 }
 
 .campos {
-    margin-top: 10%;
+    margin-top: 9.3%;
 }
 
 .campos-inferior {
@@ -50,11 +52,34 @@
     padding-right: 0px;
 }
 
-.login .col-7 img {
-    width: 100%;
-}
+.login .col-7 img {}
 
 .login .align-items-end {
-    position: absolute;
-    bottom: 0;
+    margin-top: 10%;
+
+}
+
+.col-5 .forgot {
+    margin-top: 39%;
+}
+
+.col-5 .send {
+    margin-top: 50.2%;
+}
+
+
+@media (max-width: 1500px) {
+    .login .align-items-end {
+        margin-top: 7%;
+        font-size: 12px;
+
+    }
+
+    .col-5 .forgot {
+        margin-top: 31%;
+    }
+
+    .col-5 .send {
+        margin-top: 47%;
+    }
 }

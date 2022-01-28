@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import book from '../../../assets/books.png';
 import logo from '../../../assets/logoSenai.png';
+import { BackgroundImgLateralLogin } from "../style";
 
 
 
@@ -34,14 +34,14 @@ export default function SendMail() {
                         </div>
                     </div>
 
-                    <div className="row align-items-end">
+                    <div className="row align-items-end send">
                         <p className="text-muted">© Soluções Digitais. 2020</p>
                         <p className="text-secondary  text-opacity-25">Esta é uma versão final do software desenvolvido pelo IST do SENAI PB.</p>
 
                     </div>
                 </div>
                 <div className="col-7">
-                    <img src={book} />
+                    <BackgroundImgLateralLogin />
                 </div>
 
             </div>

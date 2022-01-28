@@ -74,6 +74,8 @@ const TurmasTable: React.FC<TurmasTableI> = ({ onDelete, turmas }) => {
         setPage(0);
     };
 
+    
+
     return (
 
         <Paper className={classes.root} >
@@ -123,7 +125,7 @@ const TurmasTable: React.FC<TurmasTableI> = ({ onDelete, turmas }) => {
                                         <TableCell>
                                             <VagasPreenchidas>
                                                 <LoadBar value={percent} />
-                                                {console.log(post.status)}
+                                                {/* console.log(post.status) */}
                                                 <DataEdit>{post.vagas_preenchidas}/{post.vagas}</DataEdit>
                                             </VagasPreenchidas>
                                         </TableCell>
