@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Profile from "../../dashboard/edit-profile/profile";
+import { PreencherCol10 } from "../../dashboard/style";
 import { NavCompensing } from "../../home/style";
 import Menu from "../../menu";
 import Navbar from "../../navbar";
@@ -25,7 +26,7 @@ export default function EditStudent() {
                 </div>
                 <div className="col-10 ">
                     <Navbar />
-                    <div>
+                    <PreencherCol10>
                         <TopLine name="Editar Aluno" />
 
                         <div className="row">
@@ -46,7 +47,9 @@ export default function EditStudent() {
                                 }
                             </div>
                         </div>
-                    </div>
+                    </PreencherCol10>
+
+
                 </div>
             </div>
         </div>

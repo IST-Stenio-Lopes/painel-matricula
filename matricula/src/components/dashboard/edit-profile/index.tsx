@@ -7,6 +7,7 @@ import ModalUpload from "../modal-upload";
 import Navbar from "../../navbar";
 import Menu from "../../menu";
 import { NavCompensing } from "../../home/style";
+import { PreencherCol10 } from "../style";
 
 export default function EditProfile() {
     const [showExit, setShowExit] = useState<boolean>(false);
@@ -20,8 +21,8 @@ export default function EditProfile() {
             </div>
             <div className="col-10 ">
                 <Navbar />
-                <div>
-                    <TopLine name="Editar Perfil" />
+                <PreencherCol10>
+                <TopLine name="Editar Perfil" />
                     <div className="row profile">
                         {showExit && <ModalUpload msg="Carregue sua foto" show={showExit} onClose={() => setShowExit(false)} />}
 
@@ -32,7 +33,9 @@ export default function EditProfile() {
                             <Informations />
                         </div>
                     </div>
-                </div>
+                </PreencherCol10>
+   
+                   
             </div>
         </div>
 

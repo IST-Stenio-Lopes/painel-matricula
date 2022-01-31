@@ -14,3 +14,11 @@ export const NavCompensing = styled.div<DahboardAreaExpand>`
     `}
 
 `
+
+export const PreencherCol10 = styled.div`
+    height: 89vh;
+
+    @media(max-width: 1500px) {
+    height: 100vh;
+  }
+`

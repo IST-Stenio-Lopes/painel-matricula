@@ -25,7 +25,7 @@ export default function Mensagens() {
         }),
     );
     const classes = useStyles();
-
+    var resolution = window.screen.width > 1500? classes.large : classes.root;
     return (
 
         <Mensages>
@@ -34,7 +34,7 @@ export default function Mensagens() {
             <div className="mensages-container">
                 <div className="row">
                     <div className="col-3">
-                        <Avatar className={classes.large}>JM</Avatar>
+                        <Avatar className={resolution}>JM</Avatar>
                     </div>
                     <div className="col-9">
                         <div className="row">
@@ -53,7 +53,7 @@ export default function Mensagens() {
             <div className="mensages-container">
                 <div className="row">
                     <div className="col-3">
-                        <Avatar className={classes.large}>PO</Avatar>
+                        <Avatar className={resolution}>PO</Avatar>
                     </div>
                     <div className="col-9">
                         <div className="row">
@@ -73,7 +73,7 @@ export default function Mensagens() {
             <div className="mensages-container">
                 <div className="row">
                     <div className="col-3">
-                        <Avatar className={classes.large}>LP</Avatar>
+                        <Avatar className={resolution}>LP</Avatar>
                     </div>
                     <div className="col-9">
                         <div className="row">
@@ -93,7 +93,7 @@ export default function Mensagens() {
             <div className="mensages-container">
                 <div className="row">
                     <div className="col-3">
-                        <Avatar className={classes.large}>RM</Avatar>
+                        <Avatar className={resolution}>RM</Avatar>
                     </div>
                     <div className="col-9">
                         <div className="row">

@@ -20,6 +20,12 @@ export const ReservedButton = styled.button`
     margin-left: 25%;
     margin-top: 1.8%;
     font-size: 14px;
+
+    white-space: nowrap;
+
+    @media(max-width: 1500px) {
+        margin-left: 15%;
+    }
 `
 
 export const AddButton = styled.button`
@@ -33,5 +39,7 @@ export const AddButton = styled.button`
     background-color: #1665D8;
     margin-top: 1.8%;
     font-size: 14px;
+
+    white-space: nowrap;
 `
 

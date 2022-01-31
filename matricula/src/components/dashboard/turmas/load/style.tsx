@@ -5,7 +5,7 @@ import { css } from "styled-components";
 export const LinearContainer = styled.div`
 width: 150px;
 margin-right: 30px;
-z-index: 1;
+z-index: 0;
 
 `
 export const VagasPreenchidas = styled.div`

@@ -43,6 +43,6 @@ export const Head = styled.div`
 
 export const Bottom = styled.div`
     border-top: 1px solid #DFE2E6;
- 
     text-align: right;
+    padding-bottom: 2%;
 `

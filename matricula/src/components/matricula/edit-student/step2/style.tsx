@@ -10,6 +10,9 @@ export const PrincipalDivStep2 = styled.div`
     border-radius: 4px;
     box-shadow: 0px 0px 0px 1px rgba(63, 63, 68, 0.05), 0px 1px 3px rgba(63, 63, 68, 0.15);
     
+    @media(max-width: 1500px) {
+        height: 93.6vh;
+    }
 `;
 
 

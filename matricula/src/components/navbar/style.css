@@ -6,7 +6,8 @@
     z-index: 1;
 
 }
-.navbar .col-sm-1{
+
+.navbar .col-sm-1 {
     margin-top: 1%;
 }
 
@@ -39,13 +40,18 @@
 
 
 @media (max-width: 1500px) {
-    
-    .navbar .col-sm-1{
+    .navbar {
+ 
+    }
+
+    .navbar .col-sm-1 {
         margin-top: 1.8%;
     }
+
     .navbar .col-sm-3 .row .col-sm-3 {
         padding-top: 8%;
     }
+
     .navbar .col-sm-3 .row .col-sm-6 {
         margin-top: 4%;
         padding-top: 8%;

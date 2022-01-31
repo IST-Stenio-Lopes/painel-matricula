@@ -11,6 +11,10 @@ export const SearchBar = styled.div`
     margin-top: 2%;
     border-radius: 5px;
     background-color: white;
+
+    @media(max-width: 1500px) {
+        white-space: nowrap;
+    }
 `
 export const ImgSearch = styled(SearchIcon)`
     margin-top: 1%;
@@ -55,6 +59,11 @@ export const AddButton = styled.button`
     a{
         text-decoration: none;
         color: white;
+    }
+    @media(max-width: 1500px) {
+        width: 13%;
+        margin-left: 28%;
+        white-space: nowrap;
     }
 `
 

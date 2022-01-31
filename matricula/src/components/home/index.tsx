@@ -14,11 +14,11 @@ import UsersList from "../dashboard/users"; //<UsersList />
 import Routees from '../../routes/routes';
 export default function Home() {
 
-    return window.location.pathname === "/login"? 
-        <Login/> :
+    return window.location.pathname === "/login" ?
+        <Login /> :
         (
 
-        
+
             <div className="container-fluid login">
                 <div className="row login">
                     <div className="col-2 ">
@@ -29,10 +29,10 @@ export default function Home() {
                         <Navbar />
                         <Routees />
                     </div>
-    
+
                 </div>
             </div>
         );
-        
-    }
-    
+
+}
+

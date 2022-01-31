@@ -65,6 +65,7 @@ export const HeadFormMatricula = styled.div`
     padding: 2%;
     border-bottom: 1px solid rgba(228, 231, 235, 1);
     display: flex;
+    
 `
 export const TitleHeadFormMatricula = styled.p`
     font-size: 18px;
@@ -73,12 +74,21 @@ export const TitleHeadFormMatricula = styled.p`
     font-weight: bolder;
     line-height: 20px;
     margin-top: 1%;
+    white-space: nowrap;
+    @media(max-width: 1500px) {
+        font-size: 15px;
+    }
 `
 export const SubTitleHeadFormMatricula = styled.p`
     font-size: 14px;
     color: rgba(180, 191, 201, 1);
-    margin-left: 5%;
+    margin-left: 4%;
     margin-top: 1%;
+    white-space: nowrap;
+    @media(max-width: 1500px) {
+        font-size: 10px;
+        margin-top: 1.5%;
+    }
 `
 export const BottomMatricula = styled.div`
     border-top: 1px solid #DFE2E6;

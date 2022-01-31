@@ -5,7 +5,7 @@ import UsersTable from "./table";
 import Modal from '../../modal/index';
 import Menu from "../../menu";
 import Navbar from "../../navbar";
-import { NavCompensing } from "../style";
+import { NavCompensing, PreencherCol10 } from "../style";
 
 
 // import search from '../../../assets/search.svg';
@@ -41,7 +41,8 @@ export default function UsersList() {
                 </div>
                 <div className="col-10 ">
                     <Navbar />
-                    <div>
+
+                    <PreencherCol10>
                         <TopContainer>
                             {showDelete && <Modal msg="Você tem certeza que deseja deletar este usuário?" onClose={() => setShowDelete(false)} img={3} show={true} onConfirm={() => setShowDelete(false)} />}
                             <SearchBar>
@@ -64,7 +65,8 @@ export default function UsersList() {
                         <ListContainer>
                             <UsersTable onDelete={() => setShowDelete(true)} usuarios={usuariosFiltrados} />
                         </ListContainer>
-                    </div>
+                    </PreencherCol10>
+
                 </div>
             </div>
         </div>

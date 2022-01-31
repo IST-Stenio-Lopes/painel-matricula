@@ -14,7 +14,7 @@ export const Mensages = styled.div`
     padding-top: 6px;
     padding-right: 4px;
     padding-bottom: 1px;
-    margin-top: 15%;
+    margin-top: 17%;
 
     .row:first-child{
         border-bottom: 1px solid #E4E7EB;
@@ -30,13 +30,22 @@ export const Mensages = styled.div`
         margin-top: 10px;
         margin-bottom: -50px;
         height: 80px;
+
+        @media(max-width: 1500px) {
+            
+        }
     }
+   
 `
 
 export const Title = styled.p`
     font-size: 20px;
     font-weight: bolder;
     margin-bottom: 10%;
+
+    @media(max-width: 1500px) {
+        font-size: 15px;
+    }
 `
 
 export const Hours = styled.p`
@@ -47,12 +56,21 @@ export const Hours = styled.p`
     margin-bottom: 0px;
     padding: 0px;
 
+    @media(max-width: 1500px) {
+        margin-left: -20px;
+        white-space: nowrap;
+    }
 `
 export const NameUserMensager = styled.p`
     font-weight: bolder;
     font-size: 16px;
     margin-top: 5%;
     margin-bottom: 0px;
+
+    @media(max-width: 1500px) {
+        font-size: 12px;
+        white-space: nowrap;
+    }
 `
 export const UserMensagerContent = styled.p`
     font-size: 12px;
