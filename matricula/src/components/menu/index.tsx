@@ -1,4 +1,5 @@
 import React, { Children, Props, PropsWithChildren, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './style.css';
 import logo from '../../assets/logoSenai.png';
 import dashboard from '../../assets/dashboard.svg';
@@ -35,13 +36,16 @@ export default function Menu(/*{ routeV }: fullValue*/) {
     var userMensagesNumber = 31;
     var financeNumber = 12;
 
+    let navigate = useNavigate();
+
+
     return (
 
         <div className="container-fluid lateral" onClick={() => console.log(routeValue)}>
             <div className="row justify-content-md-center">
                 <img src={logo} />
             </div>
-            <a href="http://localhost:3000/dashboard" onClick={() => setRouteValue("dashboard")} >
+            <a onClick={() => { setRouteValue("dashboard"); navigate("/dashboard") }} >
                 <ButtonPainel status={routeValue === "dashboard"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -56,7 +60,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="http://localhost:3000/matricula" onClick={() => { setRouteValue("matricula") }} >
+            <a onClick={() => { setRouteValue("matricula"); navigate("/matricula") }} >
                 <ButtonPainel status={routeValue === "matricula"} >
                     <div className="row button">
                         <div className="col-3 icon">
@@ -71,7 +75,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="http://localhost:3000/cursos" onClick={() => { setRouteValue("cursos") }} >
+            <a onClick={() => { setRouteValue("cursos"); navigate("/cursos") }} >
                 <ButtonPainel status={routeValue === "cursos"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -86,7 +90,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="http://localhost:3000/turmas" onClick={() => { setRouteValue("turmas") }} >
+            <a onClick={() => { setRouteValue("turmas"); navigate("/turmas") }} >
                 <ButtonPainel status={routeValue === "turmas"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -101,7 +105,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("anuncios") }} >
+            <a onClick={() => { setRouteValue("anuncios"); navigate("/anuncios") }} >
                 <ButtonPainel status={routeValue === "anuncios"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -116,8 +120,8 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("unidade") }} >
-                <ButtonPainel status={routeValue === "unidade"}>
+            <a onClick={() => { setRouteValue("unidade"); navigate("/unidades") }} >
+                <ButtonPainel status={routeValue === "unidades"}>
                     <div className="row button">
                         <div className="col-3 icon">
                             <LateralIcon src={routeValue === "unidade" ? unidadeActivated : unidade} />
@@ -131,7 +135,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("mensagens") }} >
+            <a onClick={() => { setRouteValue("mensagens"); navigate("/mensagens") }} >
                 <ButtonPainel status={routeValue === "mensagens"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -146,7 +150,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("relatorio") }} >
+            <a onClick={() => { setRouteValue("relatorio"); navigate("/relatorio") }} >
                 <ButtonPainel status={routeValue === "relatorio"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -161,7 +165,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("faq") }} >
+            <a onClick={() => { setRouteValue("faq"); navigate("/faq") }} >
                 <ButtonPainel status={routeValue === "faq"}>
                     <div className="row button">
                         <div className="col-3 icon">
@@ -176,7 +180,7 @@ export default function Menu(/*{ routeV }: fullValue*/) {
                     </div>
                 </ButtonPainel>
             </a>
-            <a href="#" onClick={() => { setRouteValue("financeiro") }} >
+            <a onClick={() => { setRouteValue("financeiro"); navigate("/financeiro") }} >
                 <ButtonPainel status={routeValue === "financeiro"}>
                     <div className="row button">
                         <div className="col-3 icon">

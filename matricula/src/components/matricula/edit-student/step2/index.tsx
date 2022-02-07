@@ -39,9 +39,12 @@ const StepTwo: React.FC<MatriculaChangePage> = (props) => {
                         <NormalInput title="Nome" size={28} />
 
                         <ContainerDividerStep2>
-                            <ConteudoLeftStep2>
-                                <DateInput title="Data de Nascimento" size={13} />
+                        <ConteudoLeftStep2>
+                                <AlignNormalInputStep2>
+                                    <NormalInput title="CPF" size={13} />
+                                </AlignNormalInputStep2>
                             </ConteudoLeftStep2>
+
                             <ConteudoRightStep2>
                                 <AlignNormalInputStep2>
                                     <Select options={["Masculino", "Feminino"]} size={11} title="Sexo" />
@@ -66,10 +69,8 @@ const StepTwo: React.FC<MatriculaChangePage> = (props) => {
 
                         <ContainerDividerStep2>
 
-                            <ConteudoLeftStep2>
-                                <AlignNormalInputStep2>
-                                    <NormalInput title="CPF" size={13} />
-                                </AlignNormalInputStep2>
+                        <ConteudoLeftStep2>
+                                <DateInput title="Data de Nascimento" size={13} />
                             </ConteudoLeftStep2>
 
                             <ConteudoRightStep2>

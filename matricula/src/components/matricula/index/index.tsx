@@ -46,9 +46,9 @@ export default function Matricula() {
                                 </UlSearch>
                             </SearchBar>
 
-                            <ReservedButton>RESERVADOS</ReservedButton>
+                            <ReservedButton onClick={() => { window.location.href = "/matricula/reserved" }}>RESERVADOS</ReservedButton>
 
-                            <AddButton>+ NOVO ALUNO</AddButton>
+                            <AddButton onClick={() => { window.location.href = "/matricula/edit" }}>+ NOVO ALUNO</AddButton>
                         </TopContainerMatriculaIndex>
                         <ListContainer>
                             <StudentsTable onDelete={() => setShowDelete(true)} estudantes={usuariosFiltrados} />

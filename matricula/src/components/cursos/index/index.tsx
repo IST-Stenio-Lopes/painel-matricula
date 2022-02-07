@@ -49,7 +49,7 @@ export default function Cursos() {
                     } */}
                                 </UlSearch>
                             </SearchBar>
-                            <AddButton>+ NOVO CURSO</AddButton>
+                            <AddButton onClick={() => window.location.href = "/cursos/details"}>+ NOVO CURSO</AddButton>
 
                         </TopContainer>
 

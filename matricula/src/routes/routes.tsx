@@ -15,6 +15,12 @@ import ReservedStudents from '../components/matricula/reserved-students';
 import Cursos from '../components/cursos/index';
 import EditCurso from '../components/cursos/edit-curso';
 import Turmas from '../components/turmas/index';
+import Anuncios from '../components/anuncios/index';
+import Unidades from '../components/unidades/index';
+import { Mensagens } from '../components/mensagens/index';
+import { Faq } from '../components/faq/index';
+import { Financeiro } from '../components/financeiro/index';
+import Relatorio from '../components/relatorio/index';
 
 
 const Routees = () => {
@@ -47,14 +53,27 @@ const Routees = () => {
                 </Route>
                 <Route path="turmas">
                     <Route index element={<Turmas />} />
-                    
+
                 </Route>
-                <Route path="anuncios" element={<Login />} />
-                <Route path="unidade" element={<Login />} />
-                <Route path="mensagens" element={<Login />} />
-                <Route path="relatorio" element={<Login />} />
-                <Route path="faq" element={<Login />} />
-                <Route path="financeiro" element={<Login />} />
+                <Route path="anuncios">
+                    <Route index element={<Anuncios />} />
+                </Route>
+                <Route path="unidades">
+                    <Route index element={<Unidades />} />
+                </Route>
+
+                <Route path="mensagens">
+                    <Route index element={<Mensagens />} />
+                </Route>
+                <Route path="relatorio">
+                    <Route index element={<Relatorio />} />
+                </Route>
+                <Route path="faq">
+                    <Route index element={<Faq />} />
+                </Route>
+                <Route path="financeiro">
+                    <Route index element={<Financeiro />} />
+                </Route>
                 <Route path='*' element={<Error />} />
             </Routes>
         </BrowserRouter>

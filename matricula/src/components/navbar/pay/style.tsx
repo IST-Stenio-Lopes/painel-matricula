@@ -9,7 +9,7 @@ export const Mensages = styled.div`
     border: 2px solid #E4E7EB;
     border-radius: 5px;
     //width: 100%;
-    height: 518px;
+    height: 540px;
     padding-left: 10px;
     padding-top: 6px;
     padding-right: 4px;
@@ -18,6 +18,9 @@ export const Mensages = styled.div`
     margin-right: 3%;
     position: absolute;
     z-index: 1;
+    @media (max-width: 1500px) {
+        height: 518px;
+    }
     .row:first-child{
         border-bottom: 1px solid #E4E7EB;
         margin-left: 2px;
@@ -82,6 +85,5 @@ export const LinkExpandMessages = styled.a`
     text-decoration: none;
     margin-top: 2%;
     padding-left: 38%;
-
 
 `

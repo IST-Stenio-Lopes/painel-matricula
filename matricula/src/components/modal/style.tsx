@@ -34,6 +34,10 @@ export const ModalContainer = styled.div`
 	background: #fff;
 
     z-index: 5;
+
+    @media (max-width: 1500px) {
+        height: 45vh;
+    }
     }
 
 

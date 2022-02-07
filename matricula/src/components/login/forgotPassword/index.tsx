@@ -41,7 +41,7 @@ export default function ForgotPassword() {
 
                                 <TextField fullWidth id="standard-basic" label="Email" variant="standard" error={error} />
                                 <div className="d-grid gap-2 col-6 mx-auto mt-5">
-                                    <button className="btn btn-primary" type="button" onClick={() => { setError(!error) }}>Entrar</button>
+                                    <button className="btn btn-primary" type="button" onClick={() => { !error ? setError(!error) : window.location.href = "/sendmail" }}>Entrar</button>
                                 </div>
 
                             </div>

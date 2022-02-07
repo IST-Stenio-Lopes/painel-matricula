@@ -1,0 +1,182 @@
+[
+    {
+        "id": 1,
+        "titulo": "Norean",
+        "data_expiracao": "13/1/2022",
+        "tipo": "desconto",
+        "porcentagem_desconto": 16,
+        "curso_desconto": "instalação predial",
+        "texto": "morbi non lectus aliquam sit amet diam in magna bibendum imperdiet"
+    },
+    {
+        "id": 2,
+        "titulo": "Beverly",
+        "data_expiracao": "15/8/2021",
+        "tipo": "desconto",
+        "porcentagem_desconto": 8,
+        "curso_desconto": "jogos digitais",
+        "texto": "sed interdum venenatis turpis enim blandit "
+    },
+    {
+        "id": 3,
+        "titulo": "Quincy",
+        "data_expiracao": "26/11/2021",
+        "tipo": "alerta",
+        "porcentagem_desconto": 15,
+        "curso_desconto": "instalação predial",
+        "texto": "habitasse platea dictumst morbi vestibulum velit id pretium iaculis diam erat fermentum justo nec condimentum neque"
+    },
+    {
+        "id": 4,
+        "titulo": "Debera",
+        "data_expiracao": "16/12/2021",
+        "tipo": "alerta",
+        "porcentagem_desconto": 14,
+        "curso_desconto": "jogos digitais",
+        "texto": "metus sapien ut nunc vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia"
+    },
+    {
+        "id": 5,
+        "titulo": "Glyn",
+        "data_expiracao": "25/12/2021",
+        "tipo": "divulgação",
+        "porcentagem_desconto": 11,
+        "curso_desconto": "jogos digitais",
+        "texto": "orci luctus et ultrices posuere cubilia"
+    },
+    {
+        "id": 6,
+        "titulo": "Raymond",
+        "data_expiracao": "5/1/2022",
+        "tipo": "alerta",
+        "porcentagem_desconto": 15,
+        "curso_desconto": "administração",
+        "texto": "sapien ut nunc vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia"
+    },
+    {
+        "id": 7,
+        "titulo": "Tomi",
+        "data_expiracao": "6/12/2021",
+        "tipo": "desconto",
+        "porcentagem_desconto": 9,
+        "curso_desconto": "administração",
+        "texto": "metus sapien ut nunc vestibulum ante ipsum primis in faucibus orci"
+    },
+    {
+        "id": 8,
+        "titulo": "Shelden",
+        "data_expiracao": "5/3/2021",
+        "tipo": "alerta",
+        "porcentagem_desconto": 13,
+        "curso_desconto": "jogos digitais",
+        "texto": "est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut"
+    },
+    {
+        "id": 9,
+        "titulo": "Ban",
+        "data_expiracao": "27/4/2022",
+        "tipo": "alerta",
+        "porcentagem_desconto": 11,
+        "curso_desconto": "administração",
+        "texto": "penatibus et magnis dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque aenean"
+    },
+    {
+        "id": 10,
+        "titulo": "Winny",
+        "data_expiracao": "20/11/2021",
+        "tipo": "alerta",
+        "porcentagem_desconto": 9,
+        "curso_desconto": "mecânica",
+        "texto": "amet nulla quisque arcu libero rutrum ac lobortis vel dapibus at"
+    },
+    {
+        "id": 11,
+        "titulo": "Sig",
+        "data_expiracao": "8/12/2021",
+        "tipo": "divulgação",
+        "porcentagem_desconto": 11,
+        "curso_desconto": "mecânica",
+        "texto": "etiam justo etiam pretium iaculis justo in hac habitasse platea"
+    },
+    {
+        "id": 12,
+        "titulo": "Jobi",
+        "data_expiracao": "20/2/2022",
+        "tipo": "alerta",
+        "porcentagem_desconto": 19,
+        "curso_desconto": "jogos digitais",
+        "texto": "penatibus et magnis dis parturient montes nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque"
+    },
+    {
+        "id": 13,
+        "titulo": "Eduino",
+        "data_expiracao": "5/4/2022",
+        "tipo": "alerta",
+        "porcentagem_desconto": 8,
+        "curso_desconto": "jogos digitais",
+        "texto": "curabitur convallis duis consequat dui nec nisi volutpat eleifend donec ut"
+    },
+    {
+        "id": 14,
+        "titulo": "Rudy",
+        "data_expiracao": "3/10/2021",
+        "tipo": "alerta",
+        "porcentagem_desconto": 16,
+        "curso_desconto": "administração",
+        "texto": "mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet"
+    },
+    {
+        "id": 15,
+        "titulo": "Tyrone",
+        "data_expiracao": "23/8/2021",
+        "tipo": "alerta",
+        "porcentagem_desconto": 14,
+        "curso_desconto": "mecânica",
+        "texto": "in blandit ultrices enim lorem ipsum dolor sit amet consectetuer adipiscing elit proin interdum mauris non ligula pellentesque ultrices"
+    },
+    {
+        "id": 16,
+        "titulo": "Eugine",
+        "data_expiracao": "21/10/2021",
+        "tipo": "divulgação",
+        "porcentagem_desconto": 9,
+        "curso_desconto": "jogos digitais",
+        "texto": "dui proin leo odio porttitor id consequat in consequat ut nulla sed accumsan felis ut at dolor"
+    },
+    {
+        "id": 17,
+        "titulo": "Katharyn",
+        "data_expiracao": "31/3/2022",
+        "tipo": "alerta",
+        "porcentagem_desconto": 5,
+        "curso_desconto": "jogos digitais",
+        "texto": "in est risus auctor sed tristique in tempus sit amet sem fusce consequat"
+    },
+    {
+        "id": 18,
+        "titulo": "Harwilll",
+        "data_expiracao": "24/3/2022",
+        "tipo": "desconto",
+        "porcentagem_desconto": 9,
+        "curso_desconto": "todos",
+        "texto": "ut volutpat sapien arcu sed augue aliquam erat volutpat in congue etiam justo etiam pretium"
+    },
+    {
+        "id": 19,
+        "titulo": "Benedict",
+        "data_expiracao": "16/2/2022",
+        "tipo": "desconto",
+        "porcentagem_desconto": 20,
+        "curso_desconto": "todos",
+        "texto": "eleifend luctus ultricies eu nibh quisque id justo sit amet sapien dignissim vestibulum vestibulum ante ipsum primis in faucibus orci"
+    },
+    {
+        "id": 20,
+        "titulo": "Martina",
+        "data_expiracao": "17/3/2022",
+        "tipo": "divulgação",
+        "porcentagem_desconto": 20,
+        "curso_desconto": "instalação predial",
+        "texto": "nibh quisque id justo sit amet sapien dignissim vestibulum vestibulum ante ipsum primis"
+    }
+]

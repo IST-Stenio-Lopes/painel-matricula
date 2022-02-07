@@ -10,6 +10,7 @@ import { RememberKey } from '../style';
 import ForgotPassword from '../forgotPassword';
 import { Link } from 'react-router-dom';
 import NormalInput from '../../inputs/normal';
+import DashBoard from '../../dashboard';
 
 
 
@@ -26,6 +27,9 @@ export default function LoginHome() {
 
     };
 
+    function GoToDashboard() {
+        window.location.href = "/dashboard";
+    }
 
     /*const useStyles = makeStyles((theme: Theme) =>
         createStyles({
@@ -45,11 +49,11 @@ export default function LoginHome() {
             <div className="preenchimento">
                 <div className="campos">
                     {/* <TextField fullWidth id="test" placeholder="Email" variant="standard" error={error} helperText={error ? 'email ou senha incorretos' : ''} /> */}
-                    <NormalInput size={window.screen.width < 1600 ? 36 : 50} title='Email' />
+                    <NormalInput size={window.screen.width < 1600 ? 36 : 50} title='Email' error={error} msgErro="Email está incorreto" />
 
                 </div>
                 <div className="campos">
-                    <NormalInput size={window.screen.width < 1600 ? 36 : 50} title='Email' />
+                    <NormalInput size={window.screen.width < 1600 ? 36 : 50} title='Senha' />
 
                     {/* <Input
                         error={error}
@@ -76,7 +80,7 @@ export default function LoginHome() {
                     <Link to="/forgot" className="text-decoration-none position-sticky  start-100 translate-middle">Esqueceu a senha?</Link>
                 </div>
                 <div className="d-grid gap-2 col-6 mx-auto mt-5">
-                    <button className="btn btn-primary" type="button" onClick={() => setError(!error)}>Entrar</button>
+                    <button className="btn btn-primary" type="button" onClick={() => { !error ? setError(!error) : GoToDashboard() }}>Entrar</button>
                 </div>
 
             </div>

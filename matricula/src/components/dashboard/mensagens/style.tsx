@@ -85,6 +85,6 @@ export const LinkExpandMessages = styled.a`
     font-size: 12px;
     ::after{content: '⏵';};
     text-decoration: none;
-    padding-left: 75%;
-
+    padding-left: 70%;
+    white-space: nowrap;
 `
