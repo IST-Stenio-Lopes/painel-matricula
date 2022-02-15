@@ -9,6 +9,13 @@
 
 .navbar .col-sm-1 {
     margin-top: 1%;
+
+
+}
+
+.col-sm-1 button.btn {
+    margin-left: 70%;
+
 }
 
 .navbar .col-sm-3 {
@@ -40,12 +47,11 @@
 
 
 @media (max-width: 1500px) {
-    .navbar {
- 
-    }
+    .navbar {}
 
     .navbar .col-sm-1 {
         margin-top: 1.8%;
+
     }
 
     .navbar .col-sm-3 .row .col-sm-3 {

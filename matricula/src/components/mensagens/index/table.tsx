@@ -36,7 +36,7 @@ const columns: Column[] = [
     { label: 'Whatsapp', minWidth: 70 },
     { label: 'Telefone', minWidth: 70 },
     { label: 'Email', minWidth: 100 },
-    { label: 'Data', minWidth: 70},
+    { label: 'Data', minWidth: 70 },
     { label: '', minWidth: 50 }
 ];
 
@@ -54,10 +54,11 @@ interface Mensagens {
     id: number;
     nome: string;
     assunto: string;
+    telefone: string;
     whatsapp: string;
-    telefone: number;
     email: string;
-    data: Date;
+    data: string;
+
 }
 interface MensagensTableI {
     onDelete: () => void;

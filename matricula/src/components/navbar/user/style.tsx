@@ -21,8 +21,8 @@ export const Window = styled.div`
     margin-left: 14%;
     position: absolute;
     z-index: 1;
-    button{
-     
+    button.btn{
+        margin-left: 0;
         width: 100%;
         :hover{
             //caso seja necessário

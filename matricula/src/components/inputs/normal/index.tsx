@@ -18,7 +18,7 @@ const NormalInput: React.FC<NormalInputI> = (props) => {
 
 
     return (
-        <TextField id="standard-basic" label={props.title} className={classes.textField} value={props.pValue} error={props.error} helperText={props.error ? props.msgErro : ''} />
+        <TextField id="standard-basic" label={props.title} className={classes.textField} value={props.pValue} error={props.error} helperText={props.error ? props.msgErro : ''} defaultValue={props.dValue} />
     );
 }
 export default NormalInput;

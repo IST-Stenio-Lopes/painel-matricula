@@ -26,7 +26,7 @@ export const ModalContainer = styled.div`
     
     >div {
 	width: 50vh;
-    height: 40vh;
+    height: 42vh;
 	position: relative;
 	margin: 10% auto;
 	padding: 5px 20px 13px 20px;

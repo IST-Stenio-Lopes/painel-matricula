@@ -1,6 +1,5 @@
-import React from "react";
-import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,9 +7,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { DataEdit } from "../../dashboard/users/style";
-import Trash from '../../../assets/trash.svg';
+import React from "react";
 
+import Trash from '../../../assets/trash.svg';
+import { FaqActions, useFaq } from '../../contexts/faq';
+import { DataEdit } from "../../dashboard/users/style";
 
 interface Column {
     //id: 'name' | 'code' | 'population' | 'size' | 'density' | 'id' | 'Curso';
@@ -64,6 +65,7 @@ const FaqTable: React.FC<FaqTableI> = ({ onDelete, faqs }) => {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(8);
+    const { stateFaq, dispatch } = useFaq();
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -72,6 +74,26 @@ const FaqTable: React.FC<FaqTableI> = ({ onDelete, faqs }) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    //Aqui vem o uso do hook de form
+    const handleFaqChange = (id: string, title: string, category: string, content: string) => {
+        dispatch({
+            type: FaqActions.setId,
+            payload: id
+        });
+        dispatch({
+            type: FaqActions.setTitle,
+            payload: title
+        });
+        dispatch({
+            type: FaqActions.setCategory,
+            payload: category
+        });
+        dispatch({
+            type: FaqActions.setContent,
+            payload: content
+        });
+    }
 
 
     return (
@@ -100,7 +122,7 @@ const FaqTable: React.FC<FaqTableI> = ({ onDelete, faqs }) => {
 
                                 return (
 
-                                    <TableRow key={post.id} className="table-hover">
+                                    <TableRow key={post.id} className="table-hover" onClick={() => handleFaqChange(post.id.toString(), post.topico, post.categoria, post.texto)}>
 
                                         <TableCell>
                                             <DataEdit>{post.topico}</DataEdit>
@@ -112,7 +134,7 @@ const FaqTable: React.FC<FaqTableI> = ({ onDelete, faqs }) => {
                                             <DataEdit>25/05/77</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            <DataEdit>{post.texto}</DataEdit>
+                                            <DataEdit>{post.texto.length < 50 ? post.texto : post.texto.substring(0, 70) + "..."}</DataEdit>
                                         </TableCell>
                                         <TableCell>
                                             <img src={Trash} onClick={() => { onDelete() }} />

@@ -19,7 +19,8 @@ interface SelectObject {
 export interface SelectInput {
     options: string[];
     title: string;
-    size: number
+    size: number;
+    defaultValue?: string;
 }
 
 export interface MoneyInput {
@@ -32,7 +33,8 @@ export interface MoneyInput {
 export interface NormalInputI {
     title: string;
     size: number;
-    pValue?: string;
+    pValue?: string; //É o valor em sí do campo
+    dValue?: string; //É o valor inicial preenchido no campo
     selfCode?: string;
     outCode?: string;
     msgErro?: string;

@@ -1,6 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,11 +7,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import React from 'react';
+
+import Trash from '../../../assets/trash.svg';
 import { StudentTable } from '../../../utils/utilities';
 import { DataEdit } from '../../dashboard/users/style';
-import Trash from '../../../assets/trash.svg';
-
-
 
 interface Column {
     //id: 'name' | 'code' | 'population' | 'size' | 'density' | 'id' | 'Curso';
@@ -91,9 +90,9 @@ const StudentsTable: React.FC<StudentTable> = ({ onDelete, estudantes }) => {
 
                                 return (
 
-                                    <TableRow key={post.id} className="table-hover">
+                                    <TableRow key={post.id} className="table-hover" onClick={() => console.log(post)}>
 
-                                        <TableCell>
+                                        <TableCell >
                                             <DataEdit>{post.nome}</DataEdit>
                                         </TableCell>
                                         <TableCell>

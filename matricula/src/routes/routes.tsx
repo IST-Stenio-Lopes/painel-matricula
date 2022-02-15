@@ -1,29 +1,35 @@
 import React from 'react';
-import { Routes, Route, BrowserRouter, useLocation, } from 'react-router-dom';
-import Login from '../components/login';
-import Home from '../components/home';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+
 import Error from '../components/404';
+import Anuncios from '../components/anuncios/index';
+import { useFaq } from '../components/contexts/faq';
+import EditCurso from '../components/cursos/edit-curso';
+import Cursos from '../components/cursos/index';
 import DashBoard from '../components/dashboard';
-import Matricula from '../components/matricula/index/index';
-import ForgotPassword from '../components/login/forgotPassword';
-import SendMail from '../components/login/sendMail';
 import EditProfile from '../components/dashboard/edit-profile';
 import UsersList from '../components/dashboard/users';
 import NewUser from '../components/dashboard/users/new-user';
-import EditStudent from '../components/matricula/edit-student';
-import ReservedStudents from '../components/matricula/reserved-students';
-import Cursos from '../components/cursos/index';
-import EditCurso from '../components/cursos/edit-curso';
-import Turmas from '../components/turmas/index';
-import Anuncios from '../components/anuncios/index';
-import Unidades from '../components/unidades/index';
-import { Mensagens } from '../components/mensagens/index';
 import { Faq } from '../components/faq/index';
+import EditFaq from '../components/faq/index/edit-faq';
 import { Financeiro } from '../components/financeiro/index';
+import Home from '../components/home';
+import Login from '../components/login';
+import ForgotPassword from '../components/login/forgotPassword';
+import SendMail from '../components/login/sendMail';
+import EditStudent from '../components/matricula/edit-student';
+import Matricula from '../components/matricula/index/index';
+import ReservedStudents from '../components/matricula/reserved-students';
+import { Mensagens } from '../components/mensagens/index';
 import Relatorio from '../components/relatorio/index';
+import Turmas from '../components/turmas/index';
+import Unidades from '../components/unidades/index';
+
+//import FormLearn from '../components/teste/formTestUnform';
 
 
 const Routees = () => {
+    const { stateFaq, dispatch } = useFaq();
 
 
     return (
@@ -70,10 +76,15 @@ const Routees = () => {
                 </Route>
                 <Route path="faq">
                     <Route index element={<Faq />} />
+                    <Route path="edit" element={<EditFaq o={stateFaq}
+                    />} />
                 </Route>
                 <Route path="financeiro">
                     <Route index element={<Financeiro />} />
                 </Route>
+                {/*  <Route path="testform">
+                   <Route index element={<FormLearn name={''} />} />
+                </Route> */}
                 <Route path='*' element={<Error />} />
             </Routes>
         </BrowserRouter>

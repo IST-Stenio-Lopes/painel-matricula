@@ -28,7 +28,7 @@ const Select: React.FC<SelectInput> = (props) => {
     const currencies = ChangeArrayInputSelect(props.options);
 
     const classes = useStyles();
-    const [currency, setCurrency] = React.useState(props.options[0]);
+    const [currency, setCurrency] = React.useState(props.defaultValue ? props.defaultValue : props.options[0]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrency(event.target.value);
@@ -37,7 +37,7 @@ const Select: React.FC<SelectInput> = (props) => {
     return (
         <TextField
             id="standard-select-currency-native"
-            select
+
             label={props.title}
             value={currency}
             onChange={handleChange}
