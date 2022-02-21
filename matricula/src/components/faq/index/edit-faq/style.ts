@@ -17,8 +17,9 @@ export const PrincipalDivFaq = styled.div`
 
 export const ConteudoDivFaq= styled.div`
     padding: 5%;
-    
+    position: relative;
     align-items: flex-start;
+    height: 65%;
 
     *{
         margin-bottom: 8%;
@@ -26,5 +27,42 @@ export const ConteudoDivFaq= styled.div`
     }
     form{
         display: grid;
+        max-height: 100%
+        
     }
+`
+
+export const ButtonSaveFooterFaq = styled.button`
+    background-color: #1665D8;
+    color: white;
+    text-align: center;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 4px;
+    margin-top: 2%;
+    margin-left: 78%;
+    border: none;
+
+
+    @media (max-width: 1500px) {
+   
+        margin-top: 3%;
+        margin-left: 76%;
+    }
+`
+
+export const BottomLineFaq = styled.div`
+    position: relative;
+    //bottom: 0;
+    width: 100%;
+    //height: 15%;
+    margin-top: 14%;
+    border-top: 1px solid #E4E7EB;
+
+    @media (max-width: 1500px) {
+        margin-top: 22%;
+    }
+    
 `

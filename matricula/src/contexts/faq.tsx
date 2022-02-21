@@ -81,7 +81,6 @@ export const FaqProvider = ({ children }: FaqProviderProps) => {
 
 
 // Context Hook
-
 export const useFaq = () => {
     const context = useContext(FaqContext);
 

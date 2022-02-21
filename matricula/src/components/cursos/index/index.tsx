@@ -6,6 +6,7 @@ import Menu from "../../menu";
 import Navbar from "../../navbar";
 import { AddButton, ImgSearch, ListContainer, Search, SearchBar, TopContainer, UlSearch } from "../../dashboard/users/style";
 import Modal from "../../modal";
+import { useCourse } from "../../../contexts/curso";
 
 
 export default function Cursos() {
@@ -13,13 +14,24 @@ export default function Cursos() {
     const [busca, setBusca] = useState('');
     const [selected, setSelected] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
+    const { stateCourse, dispatch } = useCourse();
+
+
+
+    interface CourseSimplified {
+        name: string;
+        field: string;
+        cost: string;
+        modality: string;
+        duration: string;
+    }
 
 
     const cursosFiltrados = useMemo(() => {
         const lowerBusca = busca.toLocaleLowerCase();
 
         return Data.filter((post) =>
-            post.nome.toLocaleLowerCase().includes(lowerBusca) || post.area.toLocaleLowerCase().includes(lowerBusca)
+            post.name.toLocaleLowerCase().includes(lowerBusca) || post.field.toLocaleLowerCase().includes(lowerBusca)
         );
 
     }, [busca])
@@ -53,7 +65,7 @@ export default function Cursos() {
 
                         </TopContainer>
 
-
+                        <button onClick={() => console.log(stateCourse)}>ver</button>
                         <ListContainer>
                             <CursosTable onDelete={() => setShowDelete(true)} cursos={cursosFiltrados} />
                         </ListContainer>

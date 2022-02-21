@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
-import { FaqActions, useFaq } from "../../contexts/faq";
+import { FaqActions, useFaq } from "../../../contexts/faq";
+import api from "../../../services/api";
 import { NavCompensing } from "../../dashboard/style";
 import { ImgSearch, ListContainer, Search, SearchBar, TopContainer, UlSearch } from "../../dashboard/users/style";
 import { AddButton } from "../../matricula/index/style";
@@ -20,6 +21,16 @@ export function Faq() {
     const [busca, setBusca] = useState('');
     const [selected, setSelected] = useState(false);
     const { stateFaq, dispatch } = useFaq();
+    const [dataFaq, setDataFaq] = useState<DataFaq[]>(); //Array de Faq que será passado pelo backend
+
+    interface DataFaq {
+        title: string;
+        category: string;
+        content: string;
+        created_at: Date;
+    }
+
+
 
     const FaqFiltrados = useMemo(() => {
         const lowerBusca = busca.toLocaleLowerCase();
@@ -29,6 +40,19 @@ export function Faq() {
         );
 
     }, [busca]);
+
+
+    useEffect(() => {
+        api
+            .get(`/faq/`, { params: { page: 1 } })
+            .then((response) => setDataFaq(response.data))
+            .catch((err) => {
+                console.error("ops! ocorreu um erro" + err);
+            });
+    }, []);
+
+
+
 
 
     const handleFaqClear = (reset: boolean) => {
@@ -70,8 +94,8 @@ export function Faq() {
                             </SearchBar>
 
                             <AddFaq onClick={() => { handleFaqClear(true); navigate('edit') }} >NOVO TÓPICO</AddFaq>
-                            <button onClick={() => { console.log(stateFaq) }}>test</button>
-                            {/* window.location.href = "/faq/edit" */}
+                            {/*<button onClick={() => { console.log(stateFaq) }}>test</button> */}
+
                         </TopContainer>
 
                         <ListContainer>

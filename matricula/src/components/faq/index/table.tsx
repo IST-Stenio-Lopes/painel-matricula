@@ -8,9 +8,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
 import Trash from '../../../assets/trash.svg';
-import { FaqActions, useFaq } from '../../contexts/faq';
+import { FaqActions, useFaq } from '../../../contexts/faq';
 import { DataEdit } from "../../dashboard/users/style";
 
 interface Column {
@@ -66,6 +67,7 @@ const FaqTable: React.FC<FaqTableI> = ({ onDelete, faqs }) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(8);
     const { stateFaq, dispatch } = useFaq();
+    let navigate = useNavigate();
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -95,7 +97,6 @@ const FaqTable: React.FC<FaqTableI> = ({ onDelete, faqs }) => {
         });
     }
 
-
     return (
         <Paper className={classes.root} >
             {/* <Modal onClose={() => { }} img={1} onConfirm={() => { }} msg='a' />*/}
@@ -122,7 +123,7 @@ const FaqTable: React.FC<FaqTableI> = ({ onDelete, faqs }) => {
 
                                 return (
 
-                                    <TableRow key={post.id} className="table-hover" onClick={() => handleFaqChange(post.id.toString(), post.topico, post.categoria, post.texto)}>
+                                    <TableRow key={post.id} className="table-hover" onClick={() => { handleFaqChange(post.id.toString(), post.topico, post.categoria, post.texto); navigate('edit') }}>
 
                                         <TableCell>
                                             <DataEdit>{post.topico}</DataEdit>

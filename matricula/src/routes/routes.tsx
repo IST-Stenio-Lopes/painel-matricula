@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 
 import Error from '../components/404';
 import Anuncios from '../components/anuncios/index';
-import { useFaq } from '../components/contexts/faq';
+import { useFaq } from '../contexts/faq';
 import EditCurso from '../components/cursos/edit-curso';
 import Cursos from '../components/cursos/index';
 import DashBoard from '../components/dashboard';
@@ -55,7 +55,7 @@ const Routees = () => {
                 </Route>
                 <Route path="cursos">
                     <Route index element={<Cursos />} />
-                    <Route path="details" element={<EditCurso />} />
+                    <Route path="edit" element={<EditCurso />} />
                 </Route>
                 <Route path="turmas">
                     <Route index element={<Turmas />} />

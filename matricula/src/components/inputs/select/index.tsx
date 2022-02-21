@@ -37,7 +37,9 @@ const Select: React.FC<SelectInput> = (props) => {
     return (
         <TextField
             id="standard-select-currency-native"
-
+            select
+            error={props.error}
+            helperText={props.error ? props.msgErro : ''}
             label={props.title}
             value={currency}
             onChange={handleChange}

@@ -1,6 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,10 +7,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { CursosTableI, StudentTable } from '../../../utils/utilities';
-import { DataEdit } from '../../dashboard/users/style';
-import Trash from '../../../assets/trash.svg';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import Trash from '../../../assets/trash.svg';
+import { CourseActions, useCourse } from '../../../contexts/curso';
+import { DataEdit } from '../../dashboard/users/style';
 
 interface Column {
     //id: 'name' | 'code' | 'population' | 'size' | 'density' | 'id' | 'Curso';
@@ -51,11 +52,34 @@ const useStyles = makeStyles({
     },
 
 });
-
+interface CourseContent {
+    title: string;
+    credits: number;
+}
+interface Cursos {
+    id: string;
+    name: string;
+    field: string;
+    cost: number;
+    modality: string;
+    tags: string[];
+    duration: string;
+    payment_installment: number;
+    enrolment_fee: number;
+    description: string;
+    prerequisites: string;
+    grade: CourseContent[];
+}
+interface CursosTableI {
+    onDelete: () => void;
+    cursos: Cursos[];
+}
 const CursosTable: React.FC<CursosTableI> = ({ onDelete, cursos }) => {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const { stateCourse, dispatch } = useCourse();
+    let navigate = useNavigate();
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -65,6 +89,63 @@ const CursosTable: React.FC<CursosTableI> = ({ onDelete, cursos }) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    const handleCourseChange = (id: string, name: string, field: string, cost: number, modality: string, 
+        duration: string, tags: string[], payment_installment: number, enrolment_fee: number,
+        description: string, prerequisites: string, grade: CourseContent[]) => {
+
+        dispatch({
+            type: CourseActions.setId,
+            payload: id
+        });
+        dispatch({
+            type: CourseActions.setName,
+            payload: name
+        });
+        dispatch({
+            type: CourseActions.setField,
+            payload: field
+        });
+        dispatch({
+            type: CourseActions.setCost,
+            payload: cost
+        });
+        dispatch({
+            type: CourseActions.setModality,
+            payload: modality
+        });
+
+        dispatch({
+            type: CourseActions.setDuration,
+            payload: duration
+        });
+        dispatch({
+            type: CourseActions.setTags,
+            payload: tags
+        });
+        dispatch({
+            type: CourseActions.setPayment_installment,
+            payload: payment_installment
+        });
+        dispatch({
+            type: CourseActions.setEnrolment_fee,
+            payload: enrolment_fee
+        });
+        dispatch({
+            type: CourseActions.setDescription,
+            payload: description
+        });
+        dispatch({
+            type: CourseActions.setPrerequisites,
+            payload: prerequisites
+        });
+        dispatch({
+            type: CourseActions.setGrade,
+            payload: grade
+        });
+
+    }
+
 
     return (
 
@@ -88,26 +169,27 @@ const CursosTable: React.FC<CursosTableI> = ({ onDelete, cursos }) => {
                     <TableBody>
                         {
                             cursos && cursos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((post) => {
-
-
                                 return (
 
-                                    <TableRow key={post.id} className="table-hover">
+                                    <TableRow key={post.id} className="table-hover" onClick={() => {
+                                        handleCourseChange(post.id, post.name, post.field, post.cost, post.modality,
+                                            post.duration, post.tags, post.payment_installment, post.enrolment_fee, post.description, post.prerequisites, post.grade); navigate('edit')
+                                    }}>
 
                                         <TableCell>
-                                            <DataEdit>{post.nome}</DataEdit>
+                                            <DataEdit>{post.name}</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            <DataEdit>{post.area}</DataEdit>
+                                            <DataEdit>{post.field}</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            <DataEdit>R$ {post.valor},00</DataEdit>
+                                            <DataEdit>R$ {post.cost},00</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            <DataEdit>{post.modalidade}</DataEdit>
+                                            <DataEdit>{post.modality}</DataEdit>
                                         </TableCell>
                                         <TableCell>
-                                            {post.duracao === 1 ? <DataEdit>{post.duracao} mês</DataEdit> : <DataEdit>{post.duracao} meses</DataEdit>}
+                                            <DataEdit>{post.duration}</DataEdit> 
                                         </TableCell>
                                         <TableCell>
                                             <img src={Trash} onClick={() => { onDelete() }} />

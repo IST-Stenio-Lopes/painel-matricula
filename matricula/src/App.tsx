@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AppProvider from './components/contexts';
+import AppProvider from './contexts';
 import Home from './components/home';
 import Login from './components/login';
 import TesteFunctions from './components/teste';

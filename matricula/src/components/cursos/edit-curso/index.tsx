@@ -1,4 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import Trash from '../../../assets/trash.svg';
+import { useCourse } from "../../../contexts/curso";
 import { ConteudoProgramaticoI } from "../../../utils/utilities";
 import { NavCompensing } from "../../home/style";
 import Money from "../../inputs/money";
@@ -6,30 +9,135 @@ import NormalInput from "../../inputs/normal";
 import Select from "../../inputs/select";
 import Tags from "../../inputs/tags";
 import Menu from "../../menu";
+import Modal from "../../modal";
 import Navbar from "../../navbar";
 import TopLine from "../../top-line";
-import { /*AlignCenterSec3,*/ BottomLineCurso, /*ButtonAddListSec3, CompleteSpaceSec3, */ConteudoFormCurso, ConteudoSec1FormCurso, ConteudoSec1FormCursoDividido, ConteudoSec2FormCurso, ConteudoSec3FormCurso, HeadFormCurso, AlignSec3,/* LineListSec3,*/ PrincipalDivEditCurso, SubTitleHeadFormCurso, TextBoxContainer, TextBoxCurso, TextBoxSec3, TextBoxSec3Detail, TextBoxTitle, TitleHeadFormCurso, InputSec3Name, InputSec3Hours, ButtonAddListSec3, ConteudoProgramaticoSec3, HoursSec3, LixeiraImgSec3, ButtonSaveFooterCurso } from "./style";
-import Trash from '../../../assets/trash.svg';
-import Modal from "../../modal";
+import { AlignSec3, BottomLineCurso, ButtonAddListSec3, ButtonSaveFooterCurso, ConteudoFormCurso, ConteudoProgramaticoSec3, ConteudoSec1FormCurso, ConteudoSec1FormCursoDividido, ConteudoSec2FormCurso, ConteudoSec3FormCurso, HeadFormCurso, HoursSec3, InputSec3Hours, InputSec3Name, LixeiraImgSec3, PrincipalDivEditCurso, SubTitleHeadFormCurso, TextBoxContainer, TextBoxCurso, TextBoxSec3, TextBoxSec3Detail, TextBoxTitle, TitleHeadFormCurso } from "./style";
+
 //<TopLine name="Editar Curso"/>
 
-export default function EditCurso() {
+
+
+interface CourseContent {
+    title: string;
+    credits: number;
+}
+interface SendObjectCourse {
+    id?: string,
+    name: string,
+    field: string,
+    cost: number,
+    modality: string,
+    tags: string[],
+    duration: string,
+    payment_installment: number,
+    enrolment_fee: number,
+    description: string,
+    prerequisites: string,
+    grade: CourseContent[]
+}
+
+interface data {
+    o?: SendObjectCourse;
+}
+
+export const EditCurso: React.FC<data> = ({ o }) => {
     /* const descriptionRef = useRef<HTMLInputElement>(null);
     const hoursRef = useRef<HTMLInputElement>(null); */
 
     const [conteudoP, setConteudoP] = useState<ConteudoProgramaticoI[]>([]);
     const [conteudo, setConteudo] = useState<ConteudoProgramaticoI>({ id: 0, description: "", hours: NaN });
     const [showSave, setShowSave] = useState(false);
+    const { stateCourse, dispatch } = useCourse();
+    const [valueInputCourseName, setValueInputCourseName] = useState('');
+    const [valueInputCourseField, setValueInputCourseField] = useState('Área');
+    const [valueInputCourseModality, setValueInputCourseModality] = useState('Modalidade');
+    const [valueInputCourseDuration, setValueInputCourseDuration] = useState('');
+    const [valueInputCourseCost, setValueInputCourseCost] = useState<number>();
+    const [valueInputCoursePayment_installment, setValueInputPayment_installment] = useState<number>();
+    const [valueInputEnrolment_fee, setValueInputEnrolment_fee] = useState<number>();
+    const [valueInputCourseDescription, setValueInputCourseDescription] = useState('');
+    const [valueInputCoursePrerequisites, setValueInputCoursePrerequisites] = useState('');
+    const [valueInputCourseGrade, setValueInputCourseGrade] = useState<CourseContent[]>();
+    //
+    const [errorInputCourseName, setErrorInputCourseName] = useState(false);
+    const [errorInputCourseField, setErrorInputCourseField] = useState(false);
+    const [errorInputCourseModality, setErrorInputCourseModality] = useState(false);
+    const [errorInputCourseDuration, setErrorInputCourseDuration] = useState(false);
+    const [errorInputCourseCost, setErrorInputCourseCost] = useState(false);
+    const [errorInputCoursePayment_installment, setErrorInputPayment_installment] = useState(false);
+    const [errorInputEnrolment_fee, setErrorInputEnrolment_fee] = useState(false);
+    const [errorInputCourseDescription, setErrorInputCourseDescription] = useState(false);
+    const [errorInputCoursePrerequisites, setErrorInputCoursePrerequisites] = useState(false);
+    const [errorInputCourseGrade, setErrorInputCourseGrade] = useState(false);
 
 
+
+    useEffect(() => {
+        (o?.name && setValueInputCourseName(o?.name));
+        (o?.field && setValueInputCourseField(o?.field));
+        (o?.modality && setValueInputCourseModality(o?.modality));
+        (o?.duration && setValueInputCourseDuration(o?.duration));
+        (o?.cost && setValueInputCourseCost(o?.cost));
+        (o?.payment_installment && setValueInputPayment_installment(o?.payment_installment));
+        (o?.enrolment_fee && setValueInputEnrolment_fee(o?.enrolment_fee));
+        (o?.description && setValueInputCourseDescription(o?.description));
+        (o?.prerequisites && setValueInputCoursePrerequisites(o?.prerequisites));
+        (o?.grade && setValueInputCourseGrade(o?.grade));
+    }, [])
+
+    function SendObjectCourse() {
+        setErrorInputCourseName(false);
+        setErrorInputCourseField(false);
+        setErrorInputCourseModality(false);
+        setErrorInputCourseDuration(false);
+        setErrorInputCourseCost(false);
+        setErrorInputPayment_installment(false);
+        setErrorInputEnrolment_fee(false);
+        setErrorInputCourseDescription(false);
+        setErrorInputCoursePrerequisites(false);
+        setErrorInputCourseGrade(false);
+
+        if (valueInputCourseName === "") {
+            setErrorInputCourseName(true);
+        }
+        else if (valueInputCourseField === "") {
+            setErrorInputCourseField(true);
+        }
+        else if (valueInputCourseModality === "") {
+            setErrorInputCourseModality(true);
+        }
+        else if (valueInputCourseDuration === "") {
+            setErrorInputCourseDuration(true);
+        }
+        else if (valueInputCourseCost && valueInputCourseCost <= 0) {
+            setErrorInputCourseCost(true);
+        }
+        else if (valueInputCoursePayment_installment && valueInputCoursePayment_installment <= 0) {
+            setErrorInputPayment_installment(true);
+        }
+        else if (valueInputEnrolment_fee && valueInputEnrolment_fee === null) {
+            setErrorInputPayment_installment(true);
+        }
+        else if (valueInputCourseDescription === "") {
+            setErrorInputCourseDescription(true);
+        }
+        else if (valueInputCoursePrerequisites === "") {
+            setErrorInputCoursePrerequisites(true);
+        }
+        else if (valueInputCourseGrade && valueInputCourseGrade.length <= 0) {
+            setErrorInputCourseGrade(true);
+        }
+        else {
+            alert("Cadastrado com sucesso!");
+        }
+
+    }
 
     function addConteudo() {
 
-
         const updateConteudoP = [...conteudoP, conteudo];
         setConteudoP(updateConteudoP);
-
-
 
         console.log(conteudoP);
         setConteudo({ description: "", hours: NaN });
@@ -71,6 +179,7 @@ export default function EditCurso() {
                     <Navbar />
                     <div>
                         <TopLine name="Editar Curso" />
+                        <button onClick={() => console.log(stateCourse)}>ver</button>
                         {showSave && <Modal msg="Você tem certeza que deseja salvar as informações?" onClose={() => setShowSave(false)} img={5} show={true} onConfirm={() => setShowSave(false)} />}
                         <PrincipalDivEditCurso>
                             <HeadFormCurso>
@@ -79,9 +188,23 @@ export default function EditCurso() {
                             </HeadFormCurso>
                             <ConteudoFormCurso className="row">
                                 <ConteudoSec1FormCurso className="col-4">
-                                    <NormalInput title="Nome" size={window.screen.width < 1600 ? 25 : 38} />
-                                    <Select options={["Alimentos", "Mecânica", "Matrizaria", "Eletrica", "Construção"]} title="Área" size={window.screen.width < 1600 ? 13 : 15} />
-                                    <Select options={["Iniciação", "Técnico", "Capacitação", "Superior", "Aperfeiçoamento"]} title="Modalidade" size={window.screen.width < 1600 ? 13 : 15} />
+                                    <NormalInput title="Nome"
+                                        size={window.screen.width < 1600 ? 25 : 38}
+                                        setValueInput={setValueInputCourseName}
+                                        error={errorInputCourseName}
+                                        msgErro={"O campo de Nome deve ser preenchido"}
+                                        dValue={o?.name ? o?.name : valueInputCourseName} />
+                                    <Select options={["Alimentos", "Mecânica", "Matrizaria", "Eletrica", "Construção"]}
+                                    title="Área"
+                                    size={window.screen.width < 1600 ? 13 : 15}
+                                    error={errorInputCourseField}
+                                    msgErro="Deve ser selecionada uma área!" />
+                                    <Select options={["Iniciação", "Técnico", "Capacitação", "Superior", "Aperfeiçoamento"]}
+                                    title="Modalidade"
+                                    error={errorInputCourseModality}
+                                    msgErro="Deve ser selecionada uma Modalidade!"
+                                    size={window.screen.width < 1600 ? 13 : 15} />
+                                    
                                     <Tags />
                                     <NormalInput title="Duração" size={window.screen.width < 1600 ? 13 : 15} />
 
@@ -183,3 +306,4 @@ export default function EditCurso() {
 
     );
 }
+export default EditCurso;

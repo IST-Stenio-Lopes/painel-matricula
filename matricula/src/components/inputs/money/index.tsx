@@ -63,11 +63,15 @@ const Money: React.FC<MoneyInput> = (props) => {
     return (
         <TextField
             label={props.title}
-            value={values.numberformat}
+            //value={values.numberformat}
+            value={props.pValue}
             onChange={handleChange}
             name="numberformat"
             id="Moneyformat-input"
+            error={props.error}
+            helperText={props.error ? props.msgErro : ''}
             className={classes.textField}
+            defaultValue={props.dValue}
             InputProps={{
                 inputComponent: NumberFormatCustom as any
             }}
