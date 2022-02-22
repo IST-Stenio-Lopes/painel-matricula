@@ -65,7 +65,8 @@ const Money: React.FC<MoneyInput> = (props) => {
             label={props.title}
             //value={values.numberformat}
             value={props.pValue}
-            onChange={handleChange}
+            //onChange={handleChange}
+            onChange={(e) => props.setValueInput && props.setValueInput(e.target.value)}
             name="numberformat"
             id="Moneyformat-input"
             error={props.error}

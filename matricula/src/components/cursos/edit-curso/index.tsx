@@ -13,7 +13,8 @@ import Modal from "../../modal";
 import Navbar from "../../navbar";
 import TopLine from "../../top-line";
 import { AlignSec3, BottomLineCurso, ButtonAddListSec3, ButtonSaveFooterCurso, ConteudoFormCurso, ConteudoProgramaticoSec3, ConteudoSec1FormCurso, ConteudoSec1FormCursoDividido, ConteudoSec2FormCurso, ConteudoSec3FormCurso, HeadFormCurso, HoursSec3, InputSec3Hours, InputSec3Name, LixeiraImgSec3, PrincipalDivEditCurso, SubTitleHeadFormCurso, TextBoxContainer, TextBoxCurso, TextBoxSec3, TextBoxSec3Detail, TextBoxTitle, TitleHeadFormCurso } from "./style";
-
+import { Tag } from 'react-tag-input';
+import TextBoxInput from "../../inputs/text-area";
 //<TopLine name="Editar Curso"/>
 
 
@@ -28,7 +29,7 @@ interface SendObjectCourse {
     field: string,
     cost: number,
     modality: string,
-    tags: string[],
+    tags: Tag[],
     duration: string,
     payment_installment: number,
     enrolment_fee: number,
@@ -71,12 +72,14 @@ export const EditCurso: React.FC<data> = ({ o }) => {
     const [errorInputCoursePrerequisites, setErrorInputCoursePrerequisites] = useState(false);
     const [errorInputCourseGrade, setErrorInputCourseGrade] = useState(false);
 
-
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [errorInputCourseTag, setErrorInputCourseTag] = useState(false);
 
     useEffect(() => {
         (o?.name && setValueInputCourseName(o?.name));
         (o?.field && setValueInputCourseField(o?.field));
         (o?.modality && setValueInputCourseModality(o?.modality));
+        (o?.tags && setTags(o?.tags));
         (o?.duration && setValueInputCourseDuration(o?.duration));
         (o?.cost && setValueInputCourseCost(o?.cost));
         (o?.payment_installment && setValueInputPayment_installment(o?.payment_installment));
@@ -90,6 +93,7 @@ export const EditCurso: React.FC<data> = ({ o }) => {
         setErrorInputCourseName(false);
         setErrorInputCourseField(false);
         setErrorInputCourseModality(false);
+        setErrorInputCourseTag(false);
         setErrorInputCourseDuration(false);
         setErrorInputCourseCost(false);
         setErrorInputPayment_installment(false);
@@ -107,17 +111,20 @@ export const EditCurso: React.FC<data> = ({ o }) => {
         else if (valueInputCourseModality === "") {
             setErrorInputCourseModality(true);
         }
+        else if (tags.length < 2) {
+            alert("Devem ser adicionadas ao menos duas Tags!");
+        }
         else if (valueInputCourseDuration === "") {
             setErrorInputCourseDuration(true);
         }
-        else if (valueInputCourseCost && valueInputCourseCost <= 0) {
+        else if (valueInputCourseCost == undefined || valueInputCourseCost <= 0) {
             setErrorInputCourseCost(true);
         }
-        else if (valueInputCoursePayment_installment && valueInputCoursePayment_installment <= 0) {
+        else if (valueInputCoursePayment_installment == undefined ||  valueInputCoursePayment_installment <= 0) {
             setErrorInputPayment_installment(true);
         }
-        else if (valueInputEnrolment_fee && valueInputEnrolment_fee === null) {
-            setErrorInputPayment_installment(true);
+        else if (valueInputEnrolment_fee == undefined) {
+            setErrorInputEnrolment_fee(true);
         }
         else if (valueInputCourseDescription === "") {
             setErrorInputCourseDescription(true);
@@ -129,7 +136,7 @@ export const EditCurso: React.FC<data> = ({ o }) => {
             setErrorInputCourseGrade(true);
         }
         else {
-            alert("Cadastrado com sucesso!");
+            setShowSave(true);
         }
 
     }
@@ -152,13 +159,13 @@ export const EditCurso: React.FC<data> = ({ o }) => {
             var index = conteudoP.indexOf(elemento);
             conteudoP.splice(index, 1);
         }*/
-        console.log("entrou na função")
+        alert("entrou na função")
         var clone = conteudoP;
         for (var i = 0, j = clone.length; i !== j; i++) {
             if (clone[i].id === id) break;
         }
         clone.splice(i, 1);
-        console.log("chegou aqui");
+        alert("chegou aqui");
         setConteudoP(clone);
     }
 
@@ -179,7 +186,7 @@ export const EditCurso: React.FC<data> = ({ o }) => {
                     <Navbar />
                     <div>
                         <TopLine name="Editar Curso" />
-                        <button onClick={() => console.log(stateCourse)}>ver</button>
+                        
                         {showSave && <Modal msg="Você tem certeza que deseja salvar as informações?" onClose={() => setShowSave(false)} img={5} show={true} onConfirm={() => setShowSave(false)} />}
                         <PrincipalDivEditCurso>
                             <HeadFormCurso>
@@ -192,31 +199,52 @@ export const EditCurso: React.FC<data> = ({ o }) => {
                                         size={window.screen.width < 1600 ? 25 : 38}
                                         setValueInput={setValueInputCourseName}
                                         error={errorInputCourseName}
-                                        msgErro={"O campo de Nome deve ser preenchido"}
+                                        msgErro="O campo de Nome deve ser preenchido"
                                         dValue={o?.name ? o?.name : valueInputCourseName} />
                                     <Select options={["Alimentos", "Mecânica", "Matrizaria", "Eletrica", "Construção"]}
-                                    title="Área"
-                                    size={window.screen.width < 1600 ? 13 : 15}
-                                    error={errorInputCourseField}
-                                    msgErro="Deve ser selecionada uma área!" />
+                                        title="Área"
+                                        size={window.screen.width < 1600 ? 13 : 15}
+                                        error={errorInputCourseField}
+                                        msgErro="Deve ser selecionada uma área!" />
                                     <Select options={["Iniciação", "Técnico", "Capacitação", "Superior", "Aperfeiçoamento"]}
-                                    title="Modalidade"
-                                    error={errorInputCourseModality}
-                                    msgErro="Deve ser selecionada uma Modalidade!"
-                                    size={window.screen.width < 1600 ? 13 : 15} />
-                                    
-                                    <Tags />
-                                    <NormalInput title="Duração" size={window.screen.width < 1600 ? 13 : 15} />
+                                        title="Modalidade"
+                                        error={errorInputCourseModality}
+                                        msgErro="Deve ser selecionada uma Modalidade!"
+                                        size={window.screen.width < 1600 ? 13 : 15} />
+
+                                    <Tags tags={tags} setTags={setTags} />
+                                    <NormalInput title="Duração"
+                                        size={window.screen.width < 1600 ? 13 : 15}
+                                        setValueInput={setValueInputCourseDuration}
+                                        error={errorInputCourseDuration}
+                                        msgErro="Deve ser selecionada uma Duração (ex: 2 meses)!"
+
+                                    />
 
                                     <ConteudoSec1FormCursoDividido className="row">
                                         <div className="col-6">
-                                            <Money size={window.screen.width < 1600 ? 13 : 15} title="Valor do curso" />
+                                            <Money title="Valor do curso"
+                                                size={window.screen.width < 1600 ? 13 : 15}
+                                                setValueInput={setValueInputCourseCost}
+                                                error={errorInputCourseCost}
+                                                msgErro="Deve ser adicionado um valor maior que zero!"
+                                            />
                                         </div>
                                         <div className="col-6">
-                                            <NormalInput title="Parcelas" size={window.screen.width < 1600 ? 13 : 15} />
+                                            <NormalInput title="Parcelas"
+                                                size={window.screen.width < 1600 ? 13 : 15}
+                                                setValueInput={setValueInputPayment_installment}
+                                                error={errorInputCoursePayment_installment}
+                                                msgErro="Deve ser adicionada uma quantia minima de parcelas!"
+                                            />
                                         </div>
                                     </ConteudoSec1FormCursoDividido>
-                                    <Money title="Taxa de Matricula" size={window.screen.width < 1600 ? 13 : 15} />
+                                    <Money title="Taxa de Matricula"
+                                        size={window.screen.width < 1600 ? 13 : 15}
+                                        setValueInput={setValueInputEnrolment_fee}
+                                        error={errorInputEnrolment_fee}
+                                        msgErro="Deve ser adicionado um valor, mesmo que esse valor seja zero!"
+                                    />
 
 
 
@@ -225,12 +253,26 @@ export const EditCurso: React.FC<data> = ({ o }) => {
                                 <ConteudoSec2FormCurso className="col-4">
                                     <TextBoxContainer>
                                         <TextBoxTitle>Descrição</TextBoxTitle>
-                                        <TextBoxCurso />
+                                        {/* <TextBoxCurso /> */}
+                                        <TextBoxInput
+                                            error={errorInputCourseDescription}
+                                            hSize={15}
+                                            msgError="O campo de Descrição deve ser preenchido"
+                                            wSize={36}
+                                            setValueInput={setValueInputCourseDescription}
+                                        />
                                     </TextBoxContainer>
 
                                     <TextBoxContainer>
                                         <TextBoxTitle>Pré Requisitos</TextBoxTitle>
-                                        <TextBoxCurso />
+                                        {/* <TextBoxCurso /> */}
+                                        <TextBoxInput
+                                            error={errorInputCoursePrerequisites}
+                                            hSize={15}
+                                            msgError="O campo de Pré Requisitos deve ser preenchido"
+                                            wSize={36}
+                                            setValueInput={setValueInputCoursePrerequisites}
+                                        />
                                     </TextBoxContainer>
                                 </ConteudoSec2FormCurso>
 
@@ -293,7 +335,7 @@ export const EditCurso: React.FC<data> = ({ o }) => {
 
 
                             <BottomLineCurso>
-                                <ButtonSaveFooterCurso onClick={() => setShowSave(true)}>SALVAR</ButtonSaveFooterCurso>
+                                <ButtonSaveFooterCurso onClick={() => SendObjectCourse()}>SALVAR</ButtonSaveFooterCurso>
                             </BottomLineCurso>
 
                         </PrincipalDivEditCurso>
@@ -301,9 +343,6 @@ export const EditCurso: React.FC<data> = ({ o }) => {
                 </div>
             </div>
         </div>
-
-
-
     );
 }
 export default EditCurso;

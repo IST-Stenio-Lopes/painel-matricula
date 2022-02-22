@@ -37,8 +37,8 @@ export interface MoneyInput {
     outCode?: string;
     msgErro?: string;
     error?: boolean;
-    getValueInput?: (e: string) => void; //pegar o valor que está no campo digitado
-    setValueInput?: (e: string) => void; //colocar um valor no campo digitado
+    getValueInput?: (e: number) => void; //pegar o valor que está no campo digitado
+    setValueInput?: (e: any) => void; //colocar um valor no campo digitado
 }
 
 export interface NormalInputI {
@@ -51,7 +51,7 @@ export interface NormalInputI {
     msgErro?: string;
     error?: boolean;
     getValueInput?: (e: string) => void; //pegar o valor que está no campo digitado
-    setValueInput?: (e: string) => void; //colocar um valor no campo digitado
+    setValueInput?: (e: any) => void; //colocar um valor no campo digitado
 }
 
 export interface DateInputI {

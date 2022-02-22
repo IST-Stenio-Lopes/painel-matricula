@@ -87,6 +87,7 @@ export const TextBoxContainer = styled.div`
 export const TextBoxTitle = styled.p`
     color: rgba(180, 191, 201, 1);
     font-size: 13px;
+    padding-bottom: 20px;
 `
 
 export const TextBoxCurso = styled.textarea`

@@ -39,11 +39,10 @@ export const HeadTextAreaBox = styled.p`
 `
 
 export const MsgErrorFaqTexAreaBox = styled.p`
-    margin-top: -7%;
-    padding: 0px;
     color: red;
+    flex-wrap: nowrap;
     @media(max-width: 1500px) {
-        margin-top: -8%;
+
     }
 
 `
