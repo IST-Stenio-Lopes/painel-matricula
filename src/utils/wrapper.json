@@ -1,0 +1,15 @@
+{
+  "Nome": "name",
+  "Email": "email",
+  "Nível de Acesso": "role_name",
+  "Matrícula": "registration_number",
+  "Categoria": "category",
+  "Área": "field",
+  "Modalidade": "modality",
+  "Assunto": "subject",
+  "Cidade": "city",
+  "Estado": "state",
+  "Curso": "course",
+  "Turno": "shift",
+  "Tipo": "type"
+}
