@@ -7,6 +7,7 @@ import { Button } from '../../../../components/Forms/Buttons/Button';
 import DownloadButton from '../../../../components/Forms/Buttons/DownloadButton';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
+import { useStudent } from '../../../../hooks/student';
 import api, { ResponseData } from '../../../../services/api';
 import wrapperNames from '../../../../utils/wrapper.json';
 
@@ -76,6 +77,8 @@ export const initialValue = {
 };
 
 const Enrollments: React.FC = () => {
+  const { setCurrentStudent } = useStudent();
+
   const [responseData, setResponseData] = useState<ResponseData<EnrollmentResponse>>(
     {} as ResponseData<EnrollmentResponse>,
   );
@@ -120,7 +123,6 @@ const Enrollments: React.FC = () => {
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
@@ -146,7 +148,7 @@ const Enrollments: React.FC = () => {
         onSubmit={handleSubmitSearch}
       >
         <Button
-          onClick={() => navigate('detalhes')}
+          onClick={() => { setCurrentStudent(undefined); navigate('detalhes'); }}
           maxWidth="200px"
           maxHeight="100%"
           leftIcon={<HiPlus size={18} />}

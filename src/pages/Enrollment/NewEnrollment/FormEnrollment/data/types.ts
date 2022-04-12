@@ -37,6 +37,7 @@ export interface IStudent {
   street: string,
   number: string,
   neighborhood: string,
+  address_complement: string,
   edition_log?: string[],
   avatar?: string,
   status?: string,

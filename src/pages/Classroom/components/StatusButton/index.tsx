@@ -9,15 +9,28 @@ import { ReactComponent as CloseSvg } from '../../../../assets/icons/classroom/l
 import { ReactComponent as EndSvg } from '../../../../assets/icons/classroom/lock-end.svg';
 import { theme } from '../../../../global/styles/styles';
 import { OptionsPanel } from '../../../../components/Panels/OptionsPanel';
-import { ActionButton } from '../../../../components/Profile/components/ActionButton';
 import { CurrentStatusButton } from '../CurrentStatusButton';
+import Spinner from '../../../../components/Spinner';
 
 interface StatusButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  classroomId: string;
   status?: string;
+  handleClick?: Function;
 }
 
-const StatusButton: React.FC<StatusButtonProps> = ({ status = 'close', ...rest }) => {
+const StatusButton: React.FC<StatusButtonProps> = ({
+  classroomId, handleClick = () => {}, status = 'close', ...rest
+}) => {
   const [isOpenOptions, setIsOpenOptions] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const setStatus = useCallback(async (newStatus) => {
+    setLoading(true);
+
+    await handleClick(classroomId, newStatus);
+
+    setLoading(false);
+  }, [classroomId, handleClick]);
 
   const actionsButtons = useMemo(() => [
     {
@@ -25,7 +38,7 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status = 'close', ...rest }
       icon: CloseSvg,
       iconColor: theme.colors.secondary20,
       path: 'usuarios',
-      onClick: () => {},
+      onClick: () => setStatus('Fechada'),
     },
     {
       name: 'Aberta',
@@ -33,23 +46,24 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status = 'close', ...rest }
       iconColor: theme.colors.green,
 
       path: 'usuarios/detalhes',
-      onClick: () => {},
+      onClick: () => setStatus('Aberta'),
     },
     {
       name: 'Finalizada',
       icon: EndSvg,
       iconColor: theme.colors.secondary70,
-      onClick: () => {},
+      onClick: () => setStatus('Finalizada'),
     },
-  ], []);
+  ], [setStatus]);
 
-  const [selectedStatus, setSelectedStatus] = useState(actionsButtons[0].name);
+  const [selectedStatus, setSelectedStatus] = useState(() => actionsButtons
+    .find((item: any) => item.name === status)?.name);
 
   const renderIcon = useCallback(() => {
     switch (status) {
-      case 'close':
+      case 'Fechada':
         return <CloseSvg color={theme.colors.secondary20} />;
-      case 'open':
+      case 'Aberta':
         return <OpenSvg color={theme.colors.green} />;
       default:
         return <EndSvg color={theme.colors.secondary70} />;
@@ -64,7 +78,7 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status = 'close', ...rest }
           e.stopPropagation(); setIsOpenOptions(!isOpenOptions);
         }}
       >
-        {renderIcon()}
+        {loading ? <Spinner /> : renderIcon()}
       </Container>
       {isOpenOptions && (
       <OptionsPanel onOutsideClick={() => setIsOpenOptions(false)}>
@@ -79,7 +93,7 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status = 'close', ...rest }
               icon={icon}
               iconColor={iconColor}
               handleClick={() => { onClick(); setIsOpenOptions(false); }}
-              selectedStatus={selectedStatus}
+              selectedStatus={selectedStatus as string}
               handleChangeStatus={setSelectedStatus}
             />
           ))}

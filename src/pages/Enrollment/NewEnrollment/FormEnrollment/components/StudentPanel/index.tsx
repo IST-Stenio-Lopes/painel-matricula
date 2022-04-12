@@ -36,7 +36,7 @@ import { studentValidationScheme } from '../../data/validation';
 interface StudentPanelProps {
   student: IStudent | undefined;
   getStudent: (cpf: string) => void;
-  nextStage: () => void;
+  nextStage: (value: number) => void;
 }
 
 // 321.548.330-04
@@ -197,7 +197,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextSt
         configModal('O aluno foi cadastrado com sucesso, agora é possível realizar sua matrícula', 'success');
         handleVisible();
         getStudent(cpf as string);
-        nextStage();
+        nextStage(1);
       }
     });
   }, [
@@ -451,7 +451,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextSt
             />
 
             <InputLine
-              name="complement"
+              name="address_complement"
               label="Complemento"
             />
 

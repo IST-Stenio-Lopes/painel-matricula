@@ -37,9 +37,10 @@ export const Container = styled.div<ButtonProps>`
   justify-content: space-between;
   align-items: center;
   height: 100%;
-  pointer-events:none
+  pointer-events:none;
 
   ${(props) => !props.disabled && css`
+  pointer-events:all;
     cursor: pointer;
 
     :hover{

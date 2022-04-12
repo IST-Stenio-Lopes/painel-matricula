@@ -45,6 +45,13 @@ const FormEnrollment: React.FC = () => {
     setCurrentEnrollment(undefined);
   }, []);
 
+  const nextStage = useCallback((value: number) => {
+    if (stage >= 2) return;
+
+    setStage(value);
+    buttonsMenu[value];
+  }, [stage]);
+
   const getStudent = useCallback(async (cpf) => {
     await api.get(`/student/dashboard/search/${removeMask(cpf as string)}`).catch((err) => {
       configModal(err.response.data.message, 'error');
@@ -52,16 +59,10 @@ const FormEnrollment: React.FC = () => {
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
         setCurrentStudent(response.data);
+        nextStage(1);
       }
     });
-  }, [configModal, handleVisible, setCurrentStudent]);
-
-  const nextStage = useCallback(() => {
-    if (stage >= 2) return;
-
-    setStage(stage + 1);
-    buttonsMenu[stage + 1];
-  }, [stage]);
+  }, [configModal, handleVisible, setCurrentStudent, nextStage]);
 
   const renderPanel = useCallback(() => {
     switch (selectedMenu) {
@@ -77,6 +78,7 @@ const FormEnrollment: React.FC = () => {
         return (
           <EnrollmentsPanel
             enrollment={currentEnrollment}
+            student={currentStudent as IStudent}
             setEnrollment={setCurrentEnrollment}
             handleCancel={() => handleCancelEnrollment()}
             nextStage={nextStage}
@@ -132,12 +134,12 @@ const FormEnrollment: React.FC = () => {
       getCurrentEnrollment();
     } else setCurrentEnrollment(undefined);
 
-    return () => {
-      setCurrentEnrollment(undefined);
-      setCurrentStudent(undefined);
-      setIsEditing(false);
-      setIsEditingEnrollment(false);
-    };
+    // return () => {
+    //   setCurrentEnrollment(undefined);
+    //   setCurrentStudent(undefined);
+    //   setIsEditing(false);
+    //   setIsEditingEnrollment(false);
+    // };
   }, [
     getCurrentEnrollment,
     location.state?.enrollment,

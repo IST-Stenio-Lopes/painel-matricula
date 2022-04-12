@@ -17,17 +17,19 @@ import getValidationErros from '../../../../../../utils/getValidationErrors';
 import { removeMask } from '../../../../../../utils/masks';
 import { IClassroom } from '../../../../../Classroom/data/types';
 import { enrollmentTypeOptions } from '../../data/options';
-import { IEnrollment } from '../../data/types';
+import { IEnrollment, IStudent } from '../../data/types';
 import { paymentOptions, sgeOptions } from '../../../../../Classroom/data/options';
 
 import { Container, FormContent } from './styles';
 import { currencyFormatted } from '../../../../../../utils/currencyUtilities';
+import { useEnrollment } from '../../../../../../hooks/enrollment';
 
 interface EnrollmentsPanelProps {
   handleCancel: Function;
   enrollment?:IEnrollment;
+  student:IStudent;
   setEnrollment: (newValue: IEnrollment) => void;
-  nextStage: () => void;
+  nextStage: (value: number) => void;
 }
 
 interface OptionsResponse {
@@ -40,11 +42,13 @@ interface OptionsResponse {
 const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
   handleCancel,
   enrollment,
+  student,
   setEnrollment,
   nextStage,
 }) => {
   const formRef = useRef<FormHandles>(null);
   const { configModal, handleVisible } = useModal();
+  const { isEditing } = useEnrollment();
   const [localEnrollment, setLocalEnrollment] = useState<IEnrollment>();
   const [currentClassroom, setCurrentClassroom] = useState<IClassroom>();
   const [responseCourseData, setResponseCourseData] = useState<OptionsResponse[]>([]);
@@ -64,7 +68,6 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
 
   const [selectedCourse, setSelectedCourse] = useState<string>();
   const [selectedClassroom, setSelectedClassroom] = useState<string>();
-  const [selectedShift, setSelectedShift] = useState<string>();
   const [selectedPartner, setSelectedPartner] = useState<string>();
   const [selectedPayment, setSelectedPayment] = useState<string>();
   const [selectedSgeSituation, setSelectedSgeSituation] = useState<string>();
@@ -80,6 +83,12 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
       if (response?.status && response.status >= 200 && response.status <= 299) {
         setCurrentClassroom(response.data);
         setSelectedClassroom(classroom_id);
+
+        setLocalEnrollment({
+          classroom_begin_date: `${response.data.month}/${response.data.year}`,
+          classroom_shift_formatted: response.data.shift.reduce((prev: any, curr: any) => `${prev} e ${curr}`),
+          course_cost: currencyFormatted(response.data.course.cost),
+        } as IEnrollment);
       }
     });
   }, [configModal, handleVisible]);
@@ -140,33 +149,30 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
   }, []);
 
   const createEnrollment = useCallback(async (data: IEnrollment) => {
-    await api.post('/student/dashboard', {
-      ...data,
-      course: selectedCourse,
-      conduct: selectedClassroom,
-      disability: selectedShift,
-      gender: selectedPartner,
-      marital_status: selectedPayment,
-      occupation: selectedSgeSituation,
+    await api.post(`/enrollment/dashboard/${selectedClassroom}`, {
+      partner_id: selectedPartner === 'Nenhum' ? undefined : selectedPartner,
+      student_object: student,
+      status: selectedEnrollmentType,
+      sge_situation: false,
+      payment_method: selectedPayment,
     }).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        configModal('O aluno foi cadastrado com sucesso, agora é possível realizar sua matrícula', 'success');
+        configModal('A matrícula foi realizada com sucesso', 'success');
         handleVisible();
-        nextStage();
+        nextStage(2);
       }
     });
-  }, [nextStage,
+  }, [selectedClassroom,
+    selectedPartner,
+    student,
+    selectedEnrollmentType,
+    selectedPayment,
     configModal,
     handleVisible,
-    selectedClassroom,
-    selectedCourse,
-    selectedShift,
-    selectedPartner,
-    selectedPayment,
-    selectedSgeSituation]);
+    nextStage]);
 
   const updateEnrollment = useCallback(async (data: IEnrollment) => {
     await api.put(`/student/dashboard/${localEnrollment?.id}`, {
@@ -188,15 +194,25 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
-        name: Yup.string()
-          .required('Nome obrigatório'),
+        course_id: Yup.string()
+          .test('has-gender', 'Curso obrigatório', () => !!selectedCourse),
+        classroom: Yup.string()
+          .test('has-gender', 'Turma obrigatória', () => !!selectedClassroom),
+        enrollment_type: Yup.string()
+          .test('has-gender', 'Situação obrigatória', () => !!selectedEnrollmentType),
+        payment_method: Yup.string()
+          .test('has-gender', 'Pagamento obrigatório', () => !!selectedPayment),
+        sge_situation: Yup.string()
+          .test('has-gender', 'Cadastro obrigatório', () => !!selectedSgeSituation),
+        partner: Yup.string()
+          .test('has-gender', 'Parceiro obrigatório', () => !!selectedPartner),
       });
 
       await schema.validate(data, {
         abortEarly: false,
       });
 
-      if (localEnrollment) await updateEnrollment(data);
+      if (isEditing) await updateEnrollment(data);
       else await createEnrollment(data);
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
@@ -207,7 +223,16 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
     } finally {
       setLoading(false);
     }
-  }, [createEnrollment, localEnrollment, updateEnrollment]);
+  }, [
+    isEditing,
+    createEnrollment,
+    selectedClassroom,
+    selectedCourse,
+    selectedEnrollmentType,
+    selectedPartner,
+    selectedPayment,
+    selectedSgeSituation,
+    updateEnrollment]);
 
   useEffect(() => {
     if (enrollment) enrollmentSetup(enrollment);
@@ -240,6 +265,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
             <Button
               maxWidth="150px"
               minHeight="44px"
+              onClick={() => formRef.current?.submitForm()}
             >
               salvar
             </Button>
@@ -248,7 +274,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
         gridColumn="2 / 5"
         width="50%"
       >
-        <FormContent ref={formRef} onSubmit={() => {}} initialData={localEnrollment}>
+        <FormContent ref={formRef} onSubmit={handleSubmit} initialData={localEnrollment}>
           <FormSection gridColumn="1 / 2">
             <SelectLine
               name="course_id"
@@ -320,7 +346,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
               />
 
               <SelectLine
-                name="curso"
+                name="sge_situation"
                 label="Cadastro SGE"
                 options={sgeOptions}
                 value={sgeOptions
