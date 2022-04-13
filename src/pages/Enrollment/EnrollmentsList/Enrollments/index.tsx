@@ -105,7 +105,7 @@ const Enrollments: React.FC = () => {
   })), [responseData]);
 
   const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ');
+    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
 
     return searchWords.concat(filters);
   }, [filters, searchingValue]);
@@ -136,6 +136,11 @@ const Enrollments: React.FC = () => {
 
   useEffect(() => {
     getEnrollmentList();
+  }, [order, sortType]);
+
+  const handleChangeSort = useCallback((newSortType, newSort) => {
+    setSortType(newSortType);
+    setOrder(newSort);
   }, []);
 
   return (
@@ -158,6 +163,8 @@ const Enrollments: React.FC = () => {
       </ListSearchArea>
       <ListTable
         onClickItem={handleClick}
+        changePage={setCurrentPage}
+        onSortChange={handleChangeSort}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}

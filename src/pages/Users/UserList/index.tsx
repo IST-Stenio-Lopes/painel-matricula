@@ -77,7 +77,7 @@ const UserList: React.FC = () => {
   const navigate = useNavigate();
 
   const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ');
+    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
 
     return searchWords.concat(filters);
   }, [filters, searchingValue]);
@@ -91,11 +91,6 @@ const UserList: React.FC = () => {
     registration_number,
     email,
   })), [responseData]);
-
-  const handleChangeSort = useCallback((newSortType, newSort) => {
-    setSortType(newSortType);
-    setOrder(newSort);
-  }, []);
 
   const getUsersList = useCallback(async () => {
     await api.get('/users/dashboard', {
@@ -120,6 +115,11 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     getUsersList();
+  }, [order, sortType]);
+
+  const handleChangeSort = useCallback((newSortType, newSort) => {
+    setSortType(newSortType);
+    setOrder(newSort);
   }, []);
 
   return (

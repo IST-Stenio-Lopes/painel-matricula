@@ -35,6 +35,7 @@ const MenuBar: React.FC = () => {
         'Ao sair da tela os dados serão perdidos, deseja realmente sair sem salvar?',
         'save',
         true,
+        true,
         () => handleBackButton,
       );
 

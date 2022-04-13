@@ -9,10 +9,11 @@ export interface ResponseData<T> {
   max_itens: number;
 }
 
+// baseURL: 'http://senaisolucoes.com.br:2223',
 // baseURL: 'http://192.168.191.188:4444', 'http://192.168.1.191:4444',
 
 const api = axios.create({
-  baseURL: 'http://senaisolucoes.com.br:2223',
+  baseURL: 'http://192.168.1.191:4444',
 });
 
 export default api;

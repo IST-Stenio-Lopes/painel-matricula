@@ -97,7 +97,7 @@ const SearchInput: React.FC<InputProps> = ({
       {filtersApplied && (
         <FiltersContent>
           {filtersApplied.map((filter) => (
-            <FilterBox value={filter} handleDelete={removeFilter} />
+            <FilterBox key={filter[0]} value={filter} handleDelete={removeFilter} />
           ))}
 
           {filtersApplied.length > 0 && (

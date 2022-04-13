@@ -143,6 +143,7 @@ const AttachmentsPanel: React.FC<AttachmentsPanel> = ({
       'Deseja realmente remover o documento selecionado?',
       'message',
       true,
+      true,
       () => (foundAttachment?.type === 'Pessoal' ? deleteStudentAttachment(attachmentId)
         : deleteEnrollmentAttachment(attachmentId)),
     );

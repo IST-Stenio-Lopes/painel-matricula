@@ -5,58 +5,63 @@ import { useNavigate } from 'react-router-dom';
 import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
+import { useModal } from '../../../hooks/modal';
 import api, { ResponseData } from '../../../services/api';
+import { cellPhoneMasked } from '../../../utils/masks';
 import wrapperNames from '../../../utils/wrapper.json';
 
 const listTitles = [
   {
     id: '4',
-    name: 'Nome',
+    name: 'Nome do Estudante',
     hasSorting: true,
     hasFilter: false,
-    growFactor: '20%',
+    growFactor: 'minmax(150px, 20%)',
   },
   {
     id: '1',
     name: 'Assunto',
     hasSorting: true,
     hasFilter: true,
-    growFactor: '10%',
+    growFactor: 'minmax(150px, 10%)',
     filterOptions: [
-      { value: 'Atendente', label: 'Atendente' },
-      { value: 'Coordenador', label: 'Coordenador' },
-      { value: 'Diretor', label: 'Diretor' },
-      { value: 'Tesoureiro', label: 'Tesoureiro' },
-      { value: 'Visitante', label: 'Visitante' },
+      { value: 'Cursos', label: 'Cursos' },
+      { value: 'Matrícula', label: 'Matrícula' },
+      { value: 'Preços', label: 'Preços' },
+      { value: 'Outro Assunto', label: 'Outro Assunto' },
     ],
-  },
-  {
-    id: '2',
-    name: 'Whatsapp',
-    hasSorting: true,
-    hasFilter: false,
-    growFactor: '10%',
   },
   {
     id: '3',
     name: 'Telefone',
-    hasSorting: true,
+    hasSorting: false,
     hasFilter: false,
-    growFactor: '10%',
+    growFactor: 'minmax(150px, 10%)',
   },
   {
     id: '5',
     name: 'Email',
     hasSorting: true,
     hasFilter: false,
-    growFactor: '15%',
+    growFactor: 'minmax(150px, 15%)',
   },
   {
     id: '6',
-    name: 'Data',
+    name: 'Enviado em',
     hasSorting: true,
     hasFilter: false,
-    growFactor: '10%',
+    growFactor: 'minmax(150px, 10%)',
+  },
+  {
+    id: '7',
+    name: 'Status',
+    hasSorting: true,
+    hasFilter: true,
+    growFactor: 'minmax(150px, 10%)',
+    filterOptions: [
+      { value: 'Lida', label: 'Lida' },
+      { value: 'Não Lida', label: 'Não Lida' },
+    ],
   },
 ];
 
@@ -67,6 +72,7 @@ interface MessageResponse {
   cellphone: string,
   whatsapp: string,
   email: string,
+  status: string,
   created_at: string,
 }
 
@@ -77,6 +83,8 @@ const initialValue = {
 };
 
 const MessagesList: React.FC = () => {
+  const { configModal, handleVisible } = useModal();
+
   const [responseData, setResponseData] = useState<ResponseData<MessageResponse>>(
     {} as ResponseData<MessageResponse>,
   );
@@ -91,19 +99,19 @@ const MessagesList: React.FC = () => {
 
   const listItems = useMemo(() => responseData.object_list
  && responseData.object_list.map(({
-   id, student_name, subject, created_at, cellphone, whatsapp, email,
+   id, student_name, subject, created_at, cellphone, whatsapp, email, status,
  }) => ({
    student_name,
    subject,
-   cellphone,
-   whatsapp,
+   cellphone: cellPhoneMasked(whatsapp || cellphone),
    email,
-   created_at,
+   created_at: new Date(created_at).toLocaleDateString('pt-BR'),
+   status,
    object_id: id,
  })), [responseData]);
 
   const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ');
+    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
 
     return searchWords.concat(filters);
   }, [filters, searchingValue]);
@@ -116,14 +124,37 @@ const MessagesList: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Ativo', 'Não Lida'],
+        status: ['Lida', 'Não Lida'],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
+
+  const deleteMessage = useCallback(async (messageId) => {
+    await api.delete(`/message/dashboard/${messageId}`).catch((err) => {
+      configModal(err.response.data.message, 'error');
+      handleVisible();
+    }).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        configModal('A mensagem foi removida com sucesso', 'success');
+        handleVisible();
+        getMessageList();
+      }
+    });
+  }, [configModal, getMessageList, handleVisible]);
+
+  const handleRemove = useCallback((messageId) => {
+    configModal(
+      'Deseja realmente remover a mensagem selecionada?',
+      'message',
+      true,
+      true,
+      () => deleteMessage(messageId),
+    );
+    handleVisible();
+  }, [configModal, deleteMessage, handleVisible]);
 
   const handleSubmitSearch = useCallback(() => {
     getMessageList();
@@ -135,6 +166,11 @@ const MessagesList: React.FC = () => {
 
   useEffect(() => {
     getMessageList();
+  }, [order, sortType]);
+
+  const handleChangeSort = useCallback((newSortType, newSort) => {
+    setSortType(newSortType);
+    setOrder(newSort);
   }, []);
 
   return (
@@ -148,6 +184,9 @@ const MessagesList: React.FC = () => {
       />
       <ListTable
         onClickItem={handleClick}
+        onRemoveItem={handleRemove}
+        changePage={setCurrentPage}
+        onSortChange={handleChangeSort}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}

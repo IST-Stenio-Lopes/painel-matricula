@@ -19,6 +19,7 @@ import { Button } from '../Forms/Buttons/Button';
 interface ModalProps {
   description:string;
   hasQuestion?: boolean;
+  hasCountdown?: boolean;
   handleDismiss: () => void;
   handleYes: () => void;
   iconType?: string;
@@ -26,6 +27,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
   description,
   hasQuestion = false,
+  hasCountdown = false,
   handleDismiss,
   handleYes,
   iconType = 'success',
@@ -79,7 +81,7 @@ const Modal: React.FC<ModalProps> = ({
                   Cancelar
                 </Button>
                 <Button
-                  hasCountdown
+                  hasCountdown={hasCountdown}
                   minHeight="50px"
                   maxWidth="40%"
                   onClick={() => handleYes()}

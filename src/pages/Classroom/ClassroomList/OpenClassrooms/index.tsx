@@ -99,7 +99,7 @@ const OpenClassrooms: React.FC = () => {
   const navigate = useNavigate();
 
   const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ');
+    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
 
     return searchWords.concat(filters);
   }, [filters, searchingValue]);
@@ -112,7 +112,7 @@ const OpenClassrooms: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Aberta', 'Fechada', 'Finalizada'],
+        status: ['Aberta', 'Fechada'],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
@@ -166,6 +166,11 @@ const OpenClassrooms: React.FC = () => {
 
   useEffect(() => {
     getClassroomList();
+  }, [order, sortType]);
+
+  const handleChangeSort = useCallback((newSortType, newSort) => {
+    setSortType(newSortType);
+    setOrder(newSort);
   }, []);
 
   return (
@@ -188,6 +193,8 @@ const OpenClassrooms: React.FC = () => {
       </ListSearchArea>
       <ListTable
         onClickItem={handleClick}
+        changePage={setCurrentPage}
+        onSortChange={handleChangeSort}
         indexToBold={1}
         listTitles={listTitles}
         listItems={listItems}

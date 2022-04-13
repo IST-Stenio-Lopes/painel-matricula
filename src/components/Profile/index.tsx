@@ -47,6 +47,7 @@ const Profile: React.FC<ProfileProps> = ({ hasNotification = true }) => {
       'Você deseja realmente sair da aplicação?',
       'logout',
       true,
+      false,
       () => doSignOut(),
     );
 

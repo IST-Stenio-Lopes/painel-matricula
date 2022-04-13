@@ -108,7 +108,7 @@ const CoursesList: React.FC = () => {
   })), [responseData]);
 
   const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ');
+    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
 
     return searchWords.concat(filters);
   }, [filters, searchingValue]);
@@ -140,7 +140,12 @@ const CoursesList: React.FC = () => {
 
   useEffect(() => {
     getCourseList();
-  }, [keywords]);
+  }, [order, sortType]);
+
+  const handleChangeSort = useCallback((newSortType, newSort) => {
+    setSortType(newSortType);
+    setOrder(newSort);
+  }, []);
 
   return (
     <PageContainer gridTemplateRows="36px minmax(500px, 660px)" paddingTop="32px">
@@ -162,6 +167,8 @@ const CoursesList: React.FC = () => {
       </ListSearchArea>
       <ListTable
         onClickItem={handleClick}
+        changePage={setCurrentPage}
+        onSortChange={handleChangeSort}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}

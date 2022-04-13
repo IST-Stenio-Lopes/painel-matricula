@@ -1,5 +1,6 @@
 {
   "Nome": "name",
+  "Nome do Estudante": "student_name",
   "Email": "email",
   "Nível de Acesso": "role_name",
   "Matrícula": "registration_number",
@@ -11,5 +12,7 @@
   "Estado": "state",
   "Curso": "course",
   "Turno": "shift",
-  "Tipo": "type"
+  "Tipo": "type",
+  "Status": "status",
+  "Enviado em": "created_at"
 }

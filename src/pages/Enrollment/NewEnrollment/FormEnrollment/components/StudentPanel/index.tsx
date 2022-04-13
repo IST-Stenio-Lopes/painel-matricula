@@ -157,6 +157,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextSt
             `O CPF digitado pertence à ${response.data.name} , deseja carrega suas informações?`,
             'message',
             true,
+            false,
             () => { studentSetup(response.data); },
           );
           handleVisible();

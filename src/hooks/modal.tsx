@@ -10,6 +10,7 @@ interface ModalContextData {
     bodyDescription: string,
     iconType?: 'delete' | 'save' | 'logout' | 'message' | 'status' | 'success' | 'error',
     footerHasQuestion?: boolean,
+    footerHasCountdown?: boolean,
     handleConfirmButton?: () => void,
     ) => void;
 }
@@ -19,6 +20,7 @@ const initialValue = {
   msg: 'Você tem certeza que deseja excluir cliente? Sua ação não poderá ser desfeita.',
   iconType: 'error',
   hasQuestion: false,
+  hasCountdown: false,
   confirm: () => {},
 };
 
@@ -30,12 +32,14 @@ const ModalProvider: React.FC = ({ children }) => {
     bodyDescription: string,
     iconType = 'error',
     footerHasQuestion = false,
+    footerHasCountdown = false,
     handleConfirmButton = () => {},
   ) => {
     setData({
       msg: bodyDescription,
       iconType,
       hasQuestion: footerHasQuestion,
+      hasCountdown: footerHasCountdown,
       confirm: handleConfirmButton,
     });
   }, []);
@@ -69,6 +73,7 @@ const ModalProvider: React.FC = ({ children }) => {
         handleYes={handleYes}
         description={data.msg}
         hasQuestion={data.hasQuestion}
+        hasCountdown={data.hasCountdown}
         iconType={data.iconType}
       />
       )}

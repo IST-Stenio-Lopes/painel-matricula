@@ -1,10 +1,8 @@
 import { FormHandles } from '@unform/core';
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { Button } from '../../../../components/Forms/Buttons/Button';
+import { useLocation } from 'react-router-dom';
 import { FormSection } from '../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../components/Forms/InputSection';
@@ -12,6 +10,7 @@ import TextAreaLine from '../../../../components/Forms/TextAreaLine';
 import ContentPanel from '../../../../components/Panels/ContentPanel';
 import { useModal } from '../../../../hooks/modal';
 import api from '../../../../services/api';
+import { cellPhoneMasked } from '../../../../utils/masks';
 
 import {
   Container, FormContent,
@@ -22,46 +21,43 @@ export interface IMessage {
   object_id: string,
   student_name: string,
   subject: string,
+  content: string,
   cellphone: string,
   whatsapp: string,
   email: string,
   created_at: string,
+  status: string,
 }
 
 const FormMessage: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { configModal, handleVisible } = useModal();
   const [currentMessage, setCurrentMessage] = useState<IMessage | undefined>(undefined);
-  const [categorySelected, setCategorySelected] = useState(currentMessage ? currentMessage.subject : '');
   const location: any = useLocation();
 
-  const categoryOptions = useMemo(() => ([
-    { value: 'Atendente', label: 'Atendente' },
-    { value: 'Coordenador', label: 'Coordenador' },
-    { value: 'Diretor', label: 'Diretor' },
-    { value: 'Tesoureiro', label: 'Tesoureiro' },
-    { value: 'Visitante', label: 'Visitante' },
-  ]), []);
+  const messageSetup = useCallback((value: IMessage) => {
+    const tempMessage: IMessage = {
+      ...value,
+      whatsapp: cellPhoneMasked(value.whatsapp),
+      cellphone: cellPhoneMasked(value.cellphone),
+      created_at: new Date(value.created_at).toLocaleDateString('pt-BR'),
+    };
 
-  const handleChangeCategory = useCallback((event) => {
-    setCategorySelected(event.value);
+    setCurrentMessage(tempMessage);
   }, []);
 
   const getCurrentMessage = useCallback(async () => {
-    await api.get(`/faq/dashboard/specific/${location.state?.message.object_id}`).catch((err) => {
+    await api.get(`/message/dashboard/specific/${location.state?.message.object_id}`).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        setCurrentMessage(response.data);
-        setCategorySelected(response.data.category);
+        messageSetup(response.data);
       } else {
         setCurrentMessage(undefined);
       }
     });
-  }, [configModal, handleVisible, location.state?.message]);
+  }, [location.state?.message.object_id, configModal, handleVisible, messageSetup]);
 
   useEffect(() => {
     if (location.state?.message) {
@@ -69,6 +65,7 @@ const FormMessage: React.FC = () => {
     } else setCurrentMessage(undefined);
 
     formRef.current?.setErrors({});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -76,31 +73,31 @@ const FormMessage: React.FC = () => {
       <ContentPanel
         title="Perguntas Frequentes"
         subTitle="Estas informações serão apresentadas no aplicativo"
-        footerContent={<Button maxWidth="150px" minHeight="44px">salvar</Button>}
+        footerContent={null}
         width="50%"
       >
-        <FormContent onSubmit={() => {}}>
+        <FormContent ref={formRef} onSubmit={() => {}} initialData={currentMessage}>
           <FormSection gridColumn="1 / 2">
             <InputLine
-              name="nome"
+              name="student_name"
               label="Nome"
               disable
             />
 
             <InputSection grid_template_column="1fr 1fr">
               <InputLine
-                name="assunto"
+                name="subject"
                 label="Assunto"
                 disable
               />
               <InputLine
-                name="telefone"
+                name="cellphone"
                 label="Telefone"
                 gridRow="2 / 2"
                 disable
               />
               <InputLine
-                name="whats"
+                name="whatsapp"
                 label="Whatsapp"
                 gridRow="3 / 3"
                 disable
@@ -115,14 +112,14 @@ const FormMessage: React.FC = () => {
 
             <InputSection grid_template_column="1fr 1fr">
               <InputLine
-                name="data"
+                name="created_at"
                 label="Data"
                 disable
               />
             </InputSection>
 
             <TextAreaLine
-              name="mensagem"
+              name="content"
               label="Mensagem"
               rows={6}
               disable
