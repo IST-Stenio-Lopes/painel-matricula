@@ -3,6 +3,9 @@ import { theme } from '../../../global/styles/styles';
 
 interface ContainerProps {
   top: string;
+  left?: string;
+  bottom?: string;
+  right?: string;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -11,9 +14,20 @@ export const Container = styled.div<ContainerProps>`
   width: 100%;
   top: 10px;
 
-  ${(props) => css`
-    top: ${props.top};
+  ${({ top }) => css`
+    top: ${top};
   `}
+
+  ${({ left }) => left && css`
+    left: ${left};
+  `}
+  ${({ bottom }) => bottom && css`
+    bottom: ${bottom};
+  `}
+  ${({ right }) => right && css`
+    right: ${right};
+  `}
+
 `;
 
 export const Panel = styled.div`

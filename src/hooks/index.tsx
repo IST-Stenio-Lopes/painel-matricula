@@ -6,16 +6,19 @@ import { ModalProvider } from './modal';
 import { NavProvider } from './nav';
 import { StudentProvider } from './student';
 import { EnrollmentProvider } from './enrollment';
+import { ClassroomProvider } from './classroom';
 
 const AppProvider: React.FC = ({ children }) => (
   <ModalProvider>
     <NavProvider>
       <AuthProvider>
-        <EnrollmentProvider>
-          <StudentProvider>
-            {children}
-          </StudentProvider>
-        </EnrollmentProvider>
+        <ClassroomProvider>
+          <EnrollmentProvider>
+            <StudentProvider>
+              {children}
+            </StudentProvider>
+          </EnrollmentProvider>
+        </ClassroomProvider>
       </AuthProvider>
     </NavProvider>
   </ModalProvider>

@@ -19,6 +19,7 @@ export const Content = styled.div`
   display:flex;
   height: 100vh;
   min-width: 40%;
+  max-width: 40%;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;

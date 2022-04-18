@@ -14,6 +14,8 @@ export const Container = styled.button<ButtonProps>`
   background-color: transparent;
 
   transition: color 0.2s;
+  transition: background-color 0.2s;
+
 
   :hover {
     color:  ${shade(0, theme.colors.primary50)};

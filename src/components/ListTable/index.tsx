@@ -84,9 +84,9 @@ const ListTable: React.FC<ListTableProps> = ({
       grid += `${item.growFactor} `;
     });
 
-    if (hasTrashButton) grid += 'minmax(150px, 1fr)';
+    if (hasTrashButton || (listItems && listItems[0].extra)) grid += 'minmax(150px, 1fr)';
     return grid;
-  }, [listTitles, hasTrashButton]);
+  }, [listTitles, hasTrashButton, listItems]);
 
   const infoPage = useMemo(() => {
     let rightValue = currentPage * itemsPerPages;

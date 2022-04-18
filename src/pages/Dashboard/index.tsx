@@ -69,7 +69,7 @@ interface DataResponse {
   enrollment_free_goal: Data,
 }
 
-interface ClassroomResponse {
+interface IClassroomResponse {
   id: string,
   object_id: string,
   code: string,
@@ -117,7 +117,7 @@ const Dashboard: React.FC = () => {
   const [
     responseClassroomData,
     setResponseClassroomData,
-  ] = useState<ResponseData<ClassroomResponse>>(
+  ] = useState<ResponseData<IClassroomResponse>>(
     initialValue,
   );
 

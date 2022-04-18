@@ -38,6 +38,8 @@
       }
     ],
     "camelcase": "off",
+    "no-shadow": "off", // replaced by ts-eslint rule below
+    "@typescript-eslint/no-shadow": "error",
     "no-use-before-define": "off",
     "no-unused-expressions": "off",
     "@typescript-eslint/no-use-before-define": [

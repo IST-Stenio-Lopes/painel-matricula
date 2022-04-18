@@ -8,8 +8,10 @@ import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../../components/PageContainer';
 import ProgressBar from '../../../../components/ProgressBar';
+import { useClassroom } from '../../../../hooks/classroom';
 import { useModal } from '../../../../hooks/modal';
-import api, { ResponseData } from '../../../../services/api';
+import { IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
+import api, { initialValue, ResponseData } from '../../../../services/api';
 import wrapperNames from '../../../../utils/wrapper.json';
 import StatusButton from '../../components/StatusButton';
 import { categoryOptions, shiftOptions, typeOptions } from '../../data/options';
@@ -64,30 +66,11 @@ const listTitles = [
   },
 ];
 
-interface ClassroomResponse {
-  id: string,
-  object_id: string,
-  code: string,
-  course_name: string,
-  category: string,
-  shift: string[],
-  is_free: string,
-  number_of_vacancies: number,
-  number_of_enrollments: number,
-  status: string
-}
-
-const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
-
 const OpenClassrooms: React.FC = () => {
   const { configModal, handleVisible } = useModal();
-
-  const [responseData, setResponseData] = useState<ResponseData<ClassroomResponse>>(
-    {} as ResponseData<ClassroomResponse>,
+  const { setCurrentClassroom } = useClassroom();
+  const [responseData, setResponseData] = useState<ResponseData<IClassroomResponse>>(
+    {} as ResponseData<IClassroomResponse>,
   );
 
   const [searchingValue, setSearchingValue] = useState('');
@@ -112,17 +95,20 @@ const OpenClassrooms: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Aberta', 'Fechada'],
+        status: [StatusOfClassroom.Aberta, StatusOfClassroom.Fechada],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const handleChangeStatus = useCallback(async (classroomId, status) => {
-    await api.patch(`/classroom/dashboard/${classroomId}`, { status })
+    const url = status === StatusOfClassroom.Iniciada
+      ? `/classroom/dashboard/start/${classroomId}`
+      : `/classroom/dashboard/${classroomId}`;
+
+    await api.patch(url, { status })
       .catch((error) => {
         configModal(error.response.data.message, 'error');
         handleVisible();
@@ -147,7 +133,7 @@ const OpenClassrooms: React.FC = () => {
    shift,
    category,
    is_free: is_free ? 'Gratuito' : 'Pago',
-   vagas: <ProgressBar
+   status: <ProgressBar
      current={number_of_enrollments}
      total={number_of_vacancies}
      label={`${number_of_enrollments}/${number_of_vacancies}`}
@@ -161,8 +147,9 @@ const OpenClassrooms: React.FC = () => {
   }, [getClassroomList]);
 
   const handleClick = useCallback((item) => {
-    navigate('detalhes', { state: { classroom: { ...item, extra: null } } });
-  }, [navigate]);
+    setCurrentClassroom({ ...item, extra: null });
+    navigate('detalhes');
+  }, [navigate, setCurrentClassroom]);
 
   useEffect(() => {
     getClassroomList();
@@ -183,7 +170,7 @@ const OpenClassrooms: React.FC = () => {
         onSubmit={handleSubmitSearch}
       >
         <Button
-          onClick={() => navigate('detalhes')}
+          onClick={() => { setCurrentClassroom(undefined); navigate('detalhes'); }}
           maxWidth="200px"
           maxHeight="100%"
           leftIcon={<HiPlus size={18} />}

@@ -51,11 +51,12 @@ const ItemList: React.FC <ElementProps> = ({
           />
         )
       ))}
-      {hasTrashButton
+      {(hasTrashButton || item.extra)
       && (
       <Content>
         {item.extra && item.extra}
-        <TrashButton onClick={(e: any) => { e.stopPropagation(); handleDelete(); }} />
+        {hasTrashButton
+        && <TrashButton onClick={(e: any) => { e.stopPropagation(); handleDelete(); }} />}
       </Content>
       )}
     </Container>

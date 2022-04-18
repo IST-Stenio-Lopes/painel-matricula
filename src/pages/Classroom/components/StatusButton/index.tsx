@@ -2,15 +2,16 @@ import React, {
   ButtonHTMLAttributes, useCallback, useMemo, useState,
 } from 'react';
 
+import { FiMoreVertical } from 'react-icons/fi';
 import { Container, Content } from './styles';
 
 import { ReactComponent as OpenSvg } from '../../../../assets/icons/classroom/lock-open.svg';
 import { ReactComponent as CloseSvg } from '../../../../assets/icons/classroom/lock-close.svg';
-import { ReactComponent as EndSvg } from '../../../../assets/icons/classroom/lock-end.svg';
+
 import { theme } from '../../../../global/styles/styles';
-import { OptionsPanel } from '../../../../components/Panels/OptionsPanel';
-import { CurrentStatusButton } from '../CurrentStatusButton';
 import Spinner from '../../../../components/Spinner';
+import ActionsPanel from '../ActionsPanel';
+import { StatusOfClassroom } from '../../../../interfaces/IClassroom';
 
 interface StatusButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   classroomId: string;
@@ -35,30 +36,25 @@ const StatusButton: React.FC<StatusButtonProps> = ({
   const actionsButtons = useMemo(() => [
     {
       name: 'Fechada',
-      icon: CloseSvg,
-      iconColor: theme.colors.secondary20,
-      path: 'usuarios',
-      onClick: () => setStatus('Fechada'),
+      status: StatusOfClassroom.Fechada,
+      onClick: () => setStatus(StatusOfClassroom.Fechada),
     },
     {
       name: 'Aberta',
-      icon: OpenSvg,
-      iconColor: theme.colors.green,
-
-      path: 'usuarios/detalhes',
-      onClick: () => setStatus('Aberta'),
+      status: StatusOfClassroom.Aberta,
+      onClick: () => setStatus(StatusOfClassroom.Aberta),
     },
     {
-      name: 'Finalizada',
-      icon: EndSvg,
-      iconColor: theme.colors.secondary70,
-      onClick: () => setStatus('Finalizada'),
+      name: 'Iniciar',
+      status: StatusOfClassroom.Iniciada,
+      onClick: () => setStatus(StatusOfClassroom.Iniciada),
     },
   ], [setStatus]);
 
-  const [selectedStatus, setSelectedStatus] = useState(() => actionsButtons
-    .find((item: any) => item.name === status)?.name);
+  const [selectedStatus, setSelectedStatus] = useState<string>(() => actionsButtons
+    .find((item: any) => item.status === status)?.status || StatusOfClassroom.Fechada);
 
+  // [ Iniciada, Aberta, Fechada, Finalizada, Removido, Cancelada ]
   const renderIcon = useCallback(() => {
     switch (status) {
       case 'Fechada':
@@ -66,7 +62,7 @@ const StatusButton: React.FC<StatusButtonProps> = ({
       case 'Aberta':
         return <OpenSvg color={theme.colors.green} />;
       default:
-        return <EndSvg color={theme.colors.secondary70} />;
+        return <FiMoreVertical color={theme.colors.secondary70} size={20} />;
     }
   }, [status]);
 
@@ -81,24 +77,14 @@ const StatusButton: React.FC<StatusButtonProps> = ({
         {loading ? <Spinner /> : renderIcon()}
       </Container>
       {isOpenOptions && (
-      <OptionsPanel onOutsideClick={() => setIsOpenOptions(false)}>
         <Content>
-
-          {actionsButtons.map(({
-            name, icon, onClick, iconColor,
-          }) => (
-            <CurrentStatusButton
-              key={name}
-              name={name}
-              icon={icon}
-              iconColor={iconColor}
-              handleClick={() => { onClick(); setIsOpenOptions(false); }}
-              selectedStatus={selectedStatus as string}
-              handleChangeStatus={setSelectedStatus}
-            />
-          ))}
+          <ActionsPanel
+            actionsButtons={actionsButtons}
+            setIsOpenOptions={setIsOpenOptions}
+            selectedStatus={selectedStatus as string}
+            setSelectedStatus={setSelectedStatus}
+          />
         </Content>
-      </OptionsPanel>
       )}
     </>
   );

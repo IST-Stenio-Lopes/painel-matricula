@@ -8,18 +8,25 @@ export const Container = styled.button`
   border: 0;
   border-radius: 50%;
   background-color: transparent;
+  margin: 5px;
 
   transition: color 0.2s;
+  transition: background-color 0.2s;
 
   :hover {
+    color:  ${shade(0, theme.colors.primary50)};
+    background-color:  ${shade(0, theme.colors.primary20)};
     svg {
       color:  ${shade(0, theme.colors.primary50)};
     }
   }
 
 `;
-
 export const Content = styled.div`
-  padding: 14px 0;
+`;
+
+export const OptionsContent = styled.div`
+  position: absolute;
+  width: 215px;
 
 `;

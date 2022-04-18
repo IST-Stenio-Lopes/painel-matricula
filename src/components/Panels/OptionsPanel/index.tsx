@@ -4,10 +4,15 @@ import { Container, Panel } from './styles';
 
 interface OptionsPanelProps {
   top?: string;
+  left?: string;
+  bottom?: string;
+  right?: string;
   onOutsideClick?: Function;
 }
 
-const OptionsPanel: React.FC<OptionsPanelProps> = ({ top = '-10px', onOutsideClick = () => {}, children }) => {
+const OptionsPanel: React.FC<OptionsPanelProps> = ({
+  top = '-10px', left, bottom, right, onOutsideClick = () => {}, children,
+}) => {
   const componentRef = useRef(null);
 
   const handleClickOutside = useCallback((e) => {
@@ -35,7 +40,7 @@ const OptionsPanel: React.FC<OptionsPanelProps> = ({ top = '-10px', onOutsideCli
   }, [handleClickOutside]);
 
   return (
-    <Container top={top}>
+    <Container top={top} left={left} bottom={bottom} right={right}>
       <Panel ref={componentRef}>
         {children}
       </Panel>

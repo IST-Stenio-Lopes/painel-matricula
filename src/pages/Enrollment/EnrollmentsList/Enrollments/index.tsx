@@ -100,9 +100,9 @@ const Enrollments: React.FC = () => {
     course_name,
     student_whatsapp,
     student_email,
-    extra: <DownloadButton />,
     object_id: id,
   })), [responseData]);
+  // extra: <DownloadButton />,
 
   const keywords = useMemo(() => {
     const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());

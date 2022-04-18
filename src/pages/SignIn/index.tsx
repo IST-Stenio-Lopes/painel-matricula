@@ -174,7 +174,6 @@ const SignIn: React.FC = () => {
               <InputLine name="password" label="Senha" type="password" />
 
               <ActionContent>
-                <Checkbox name="remember" label="Lembrar dados" />
                 <LinkButton onClick={() => navigate('esqueceu-senha')}>Esqueceu a senha?</LinkButton>
               </ActionContent>
 

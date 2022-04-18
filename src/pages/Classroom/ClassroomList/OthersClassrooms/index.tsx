@@ -9,7 +9,8 @@ import ListSearchArea from '../../../../components/ListTable/components/ListSear
 import PageContainer from '../../../../components/PageContainer';
 import ProgressBar from '../../../../components/ProgressBar';
 import { useModal } from '../../../../hooks/modal';
-import api, { ResponseData } from '../../../../services/api';
+import { IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
+import api, { initialValue, ResponseData } from '../../../../services/api';
 import wrapperNames from '../../../../utils/wrapper.json';
 import StatusButton from '../../components/StatusButton';
 import { categoryOptions, shiftOptions, typeOptions } from '../../data/options';
@@ -56,37 +57,17 @@ const listTitles = [
   },
   {
     id: '6',
-    name: 'Vagas Preenchidas',
+    name: 'Status',
     hasSorting: true,
     hasFilter: false,
     growFactor: 'minmax(150px, 1fr)',
   },
 ];
-
-interface ClassroomResponse {
-  id: string,
-  object_id: string,
-  code: string,
-  course_name: string,
-  category: string,
-  shift: string[],
-  is_free: string,
-  number_of_vacancies: number,
-  number_of_enrollments: number,
-  status: string
-}
-
-const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
-
 const OthersClassrooms: React.FC = () => {
   const { configModal, handleVisible } = useModal();
 
-  const [responseData, setResponseData] = useState<ResponseData<ClassroomResponse>>(
-    {} as ResponseData<ClassroomResponse>,
+  const [responseData, setResponseData] = useState<ResponseData<IClassroomResponse>>(
+    {} as ResponseData<IClassroomResponse>,
   );
 
   const [searchingValue, setSearchingValue] = useState('');
@@ -111,12 +92,14 @@ const OthersClassrooms: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Aberta', 'Fechada', 'Finalizada'],
+        status: [
+          StatusOfClassroom.Cancelada,
+          StatusOfClassroom.Finalizada,
+          StatusOfClassroom.Removido],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
@@ -138,19 +121,14 @@ const OthersClassrooms: React.FC = () => {
   const listItems = useMemo(() => responseData.object_list
  && responseData.object_list.map(({
    id, code, course_name, shift,
-   category, is_free, number_of_enrollments,
-   number_of_vacancies, status,
+   category, is_free, status,
  }) => ({
    code,
    course_name,
    shift,
    category,
    is_free: is_free ? 'Gratuito' : 'Pago',
-   vagas: <ProgressBar
-     current={number_of_enrollments}
-     total={number_of_vacancies}
-     label={`${number_of_enrollments}/${number_of_vacancies}`}
-   />,
+   status,
    extra: <StatusButton classroomId={id} handleClick={handleChangeStatus} status={status} />,
    object_id: id,
  })), [handleChangeStatus, responseData.object_list]);
@@ -201,7 +179,7 @@ const OthersClassrooms: React.FC = () => {
         currentPage={currentPage}
         totalOfItems={responseData.max_itens}
         gridRow="2 / 2"
-        hasTrashButton
+        hasTrashButton={false}
       />
     </Container>
   );

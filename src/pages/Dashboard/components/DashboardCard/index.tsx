@@ -64,6 +64,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         { type === 'percent'
           ? <ProgressBar current={value.value} total={100} color={color} />
           : (
+            value.percentage !== 0 && (
             <>
               { arrowIcon}
               <Percent>
@@ -71,6 +72,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
               </Percent>
               <Description>Desde o último mês</Description>
             </>
+            )
           )}
       </Footer>
     </Container>
