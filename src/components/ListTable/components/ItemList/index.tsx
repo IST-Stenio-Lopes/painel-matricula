@@ -51,7 +51,7 @@ const ItemList: React.FC <ElementProps> = ({
           />
         )
       ))}
-      {(hasTrashButton || item.extra)
+      {(hasTrashButton || !!item.extra)
       && (
       <Content>
         {item.extra && item.extra}

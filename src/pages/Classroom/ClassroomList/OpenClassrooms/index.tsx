@@ -10,7 +10,7 @@ import PageContainer from '../../../../components/PageContainer';
 import ProgressBar from '../../../../components/ProgressBar';
 import { useClassroom } from '../../../../hooks/classroom';
 import { useModal } from '../../../../hooks/modal';
-import { IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
+import { IClassroomDetails, IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
 import api, { initialValue, ResponseData } from '../../../../services/api';
 import wrapperNames from '../../../../utils/wrapper.json';
 import StatusButton from '../../components/StatusButton';
@@ -147,7 +147,7 @@ const OpenClassrooms: React.FC = () => {
   }, [getClassroomList]);
 
   const handleClick = useCallback((item) => {
-    setCurrentClassroom({ ...item, extra: null });
+    setCurrentClassroom({ classroom: { ...item, extra: null } } as IClassroomDetails);
     navigate('detalhes');
   }, [navigate, setCurrentClassroom]);
 

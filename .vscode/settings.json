@@ -2,6 +2,7 @@
   "cSpell.words": [
     "anuncios",
     "descricao",
+    "Excluido",
     "Horiz",
     "Orgão",
     "relatorio",
@@ -11,5 +12,6 @@
     "Visualizacoes",
     "whatsapp",
     "Whatsapp"
-  ]
+  ],
+  "workbench.editor.historyBasedLanguageDetection": false
 }

@@ -84,7 +84,7 @@ const ListTable: React.FC<ListTableProps> = ({
       grid += `${item.growFactor} `;
     });
 
-    if (hasTrashButton || (listItems && listItems[0].extra)) grid += 'minmax(150px, 1fr)';
+    if (hasTrashButton || (listItems && listItems[0]?.extra)) grid += 'minmax(150px, 1fr)';
     return grid;
   }, [listTitles, hasTrashButton, listItems]);
 

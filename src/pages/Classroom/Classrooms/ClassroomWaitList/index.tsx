@@ -50,7 +50,7 @@ const listTitles = [
   },
 ];
 
-const ClassroomDetails: React.FC = () => {
+const ClassroomWaitList: React.FC = () => {
   const { currentClassroom } = useClassroom();
   const [responseData, setResponseData] = useState<ResponseData<EnrollmentResponse>>(
     {} as ResponseData<EnrollmentResponse>,
@@ -93,7 +93,7 @@ const ClassroomDetails: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: [StatusOfEnrollment.Matriculado, StatusOfEnrollment.Reservado],
+        status: [StatusOfEnrollment.Espera],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
@@ -115,8 +115,8 @@ const ClassroomDetails: React.FC = () => {
     <Container>
       <ClassroomInfo classroomDetails={currentClassroom as IClassroomDetails} />
       <ListTable
-        title="Lista de Alunos"
-        subtitle="Informações dos alunos que estão matriculados ou reservados"
+        title="Lista de Espera"
+        subtitle="Informações dos alunos que estão na lista de espera"
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}
         indexToBold={0}
@@ -132,4 +132,4 @@ const ClassroomDetails: React.FC = () => {
   );
 };
 
-export default ClassroomDetails;
+export default ClassroomWaitList;

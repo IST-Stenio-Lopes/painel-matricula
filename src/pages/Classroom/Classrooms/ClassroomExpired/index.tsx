@@ -5,12 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import ListTable from '../../../../components/ListTable';
 import { EnrollmentResponse, StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
 import api, { initialValue, ResponseData } from '../../../../services/api';
-import ClassroomInfo from '../../components/ClassroomInfo';
 import wrapperNames from '../../../../utils/wrapper.json';
 
 import { Container } from './styles';
 import { useClassroom } from '../../../../hooks/classroom';
-import { IClassroomDetails } from '../../../../interfaces/IClassroom';
 
 const listTitles = [
   {
@@ -50,7 +48,7 @@ const listTitles = [
   },
 ];
 
-const ClassroomDetails: React.FC = () => {
+const ClassroomExpired: React.FC = () => {
   const { currentClassroom } = useClassroom();
   const [responseData, setResponseData] = useState<ResponseData<EnrollmentResponse>>(
     {} as ResponseData<EnrollmentResponse>,
@@ -93,7 +91,7 @@ const ClassroomDetails: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: [StatusOfEnrollment.Matriculado, StatusOfEnrollment.Reservado],
+        status: [StatusOfEnrollment.Expirada],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
@@ -113,10 +111,9 @@ const ClassroomDetails: React.FC = () => {
 
   return (
     <Container>
-      <ClassroomInfo classroomDetails={currentClassroom as IClassroomDetails} />
       <ListTable
-        title="Lista de Alunos"
-        subtitle="Informações dos alunos que estão matriculados ou reservados"
+        title="Reservas Expiradas"
+        subtitle="Informações das reservas que foram expiradas"
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}
         indexToBold={0}
@@ -125,11 +122,11 @@ const ClassroomDetails: React.FC = () => {
         itemsPerPages={itemsPerPage}
         currentPage={currentPage}
         totalOfItems={responseData.max_itens}
-        gridColumn="2 / 5"
+        gridColumn="1 / 5"
         hasTrashButton
       />
     </Container>
   );
 };
 
-export default ClassroomDetails;
+export default ClassroomExpired;

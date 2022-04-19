@@ -23,6 +23,15 @@ export interface IClassroomResponse {
   status: string
 }
 
+export interface IClassroomDetails {
+  enrollment_held: number,
+  enrollment_reserved: number,
+  vacancies_available: number,
+  enrollment_waiting: number,
+  enrollment_expired: number,
+  classroom: IClassroom
+}
+
 export interface IClassroom{
   id: string,
   object_id: string,
