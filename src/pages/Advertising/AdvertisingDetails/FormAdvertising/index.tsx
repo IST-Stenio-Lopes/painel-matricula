@@ -1,10 +1,13 @@
 import { FormHandles } from '@unform/core';
 import React, {
+  ChangeEvent,
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { isTypeAliasDeclaration } from 'typescript';
 import * as Yup from 'yup';
 import { Button } from '../../../../components/Forms/Buttons/Button';
+import CheckboxInput from '../../../../components/Forms/Checkbox';
 import { DateInputLine } from '../../../../components/Forms/DateInputLine';
 import { FormSection } from '../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../components/Forms/InputLine';
@@ -13,24 +16,16 @@ import SelectLine from '../../../../components/Forms/SelectLine';
 import TextAreaLine from '../../../../components/Forms/TextAreaLine';
 import ContentPanel from '../../../../components/Panels/ContentPanel';
 import { useModal } from '../../../../hooks/modal';
+import { IAdvertising, typeOptions } from '../../../../interfaces/IAdvertising';
 import api from '../../../../services/api';
 import getValidationErros from '../../../../utils/getValidationErrors';
+import { checkImgType } from '../../../../utils/utils';
 import PreviewContent from './components/PreviewContent';
 
 import {
-  Container, FormContent,
+  ButtonArea,
+  Container, FormContent, LeftContent,
 } from './styles';
-
-interface IAdvertising {
-  object_id: string,
-  course_id: string,
-  title: string,
-  expiration_date: Date,
-  type: string,
-  discount_percentage: number,
-  description: string,
-  number_visualizations: number,
-}
 
 interface OptionsResponse {
   id: string;
@@ -39,21 +34,18 @@ interface OptionsResponse {
 
 const FormAdvertising: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const inputRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { configModal, handleVisible } = useModal();
-  const [currentAdvertising, setCurrentAdvertising] = useState<IAdvertising | undefined>(undefined);
   const [expirationDate, setExpirationDate] = useState<Date>();
 
-  const location: any = useLocation();
-  const [selectedType, setSelectedType] = useState(currentAdvertising ? currentAdvertising.type : '');
+  const [selectedType, setSelectedType] = useState();
+  const [selectedCourse, setSelectedCourse] = useState();
+  const [doesNotExpire, setDoesNotExpire] = useState(false);
 
+  const [file, setFile] = useState<any>();
   const [responseOptions, setResponseOptions] = useState<OptionsResponse[]>([]);
-
-  const typeOptions = useMemo(() => ([
-    { value: 'Anúncio', label: 'Anúncio' },
-    { value: 'Desconto', label: 'Desconto' },
-  ]), []);
 
   const coursesList = useMemo(() => {
     const temp = [{ value: 'Todos', label: 'Todos' },
@@ -65,6 +57,12 @@ const FormAdvertising: React.FC = () => {
 
     return temp;
   }, [responseOptions]);
+
+  const loadFile = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  }, []);
 
   const getCurrentCoursesList = useCallback(async () => {
     await api.get(`/course/dashboard/list/${false}`).catch((err) => {
@@ -78,34 +76,50 @@ const FormAdvertising: React.FC = () => {
   }, [configModal, handleVisible]);
 
   const createAdvertising = useCallback(async (data: IAdvertising) => {
+    if (!file) {
+      configModal('Por favor carregue uma imagem', 'error');
+      handleVisible();
+
+      return;
+    }
+
+    if (!checkImgType(file.name)) {
+      configModal('Apenas imagens .PNG .JPG .JPEG são aceitas', 'error');
+      handleVisible();
+
+      return;
+    }
+
     await api.post('/advertising/dashboard', {
       title: data.title,
-      category: selectedType,
+      type: selectedType,
+      course_id: selectedCourse === 'Todos' ? undefined : selectedCourse,
+      all_courses: selectedCourse === 'Todos',
+      does_not_expire: doesNotExpire || !!data.expiration_date,
+      expiration_date: data.expiration_date,
+      description: data.description,
     }).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
-    }).then((response) => {
+    }).then(async (response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        navigate(-1);
-      }
-    });
-  }, [selectedType, configModal, handleVisible, navigate]);
+        const advertising_id = response.data.id;
 
-  const updateAdvertising = useCallback(async (data: IAdvertising) => {
-    await api.put(`/advertising/dashboard${currentAdvertising?.object_id}`, {
-      title: data.title,
-      category: selectedType,
-    }).catch((err) => {
-      configModal(err.response.data.message, 'error');
-      handleVisible();
-    }).then((response) => {
-      if (response?.status && response.status >= 200 && response.status <= 299) {
-        configModal('Atualizado com sucesso', 'success');
+        const formData = new FormData();
+
+        formData.append('image_file', file);
+
+        await api.patch(`/advertising/dashboard/image/${advertising_id}`, formData).then(() => {
+          configModal('Anúncio cadastrado com sucesso', 'error');
+          handleVisible();
+          navigate(-1);
+        });
+      } else {
+        configModal('Não foi possível cadastrar o anúncio', 'error');
         handleVisible();
-        navigate(-1);
       }
     });
-  }, [selectedType, configModal, currentAdvertising?.object_id, handleVisible, navigate]);
+  }, [file, selectedType, selectedCourse, doesNotExpire, configModal, handleVisible, navigate]);
 
   const handleSubmit = useCallback(async (data) => {
     setLoading(true);
@@ -115,10 +129,12 @@ const FormAdvertising: React.FC = () => {
       const schema = Yup.object().shape({
         title: Yup.string()
           .required('Tópico obrigatório'),
-        category: Yup.string()
-          .test('has-category', 'Categoria obrigatória', () => !!selectedType),
+        type: Yup.string()
+          .test('has-type', 'Tipo obrigatório', () => !!selectedType),
+        course_id: Yup.string()
+          .test('has-course', 'Curso obrigatório', () => !!selectedCourse),
 
-        content: Yup.string()
+        description: Yup.string()
           .required('Texto obrigatório'),
       });
 
@@ -126,8 +142,7 @@ const FormAdvertising: React.FC = () => {
         abortEarly: false,
       });
 
-      if (currentAdvertising) await updateAdvertising(data);
-      else await createAdvertising(data);
+      await createAdvertising(data);
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const erros = getValidationErros(err);
@@ -137,33 +152,7 @@ const FormAdvertising: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedType, createAdvertising, currentAdvertising, updateAdvertising]);
-
-  const getCurrentAdvertising = useCallback(async () => {
-    await api.get(`/advertising/dashboard/specific/${location.state?.advertising.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
-      handleVisible();
-    }).then((response) => {
-      if (response?.status && response.status >= 200 && response.status <= 299) {
-        setCurrentAdvertising(response.data);
-        setSelectedType(response.data.category);
-      } else {
-        setCurrentAdvertising(undefined);
-      }
-    });
-  }, [configModal, handleVisible, location.state?.advertising]);
-
-  useEffect(() => {
-    if (location.state?.advertising) {
-      getCurrentAdvertising();
-    } else setCurrentAdvertising(undefined);
-
-    formRef.current?.setErrors({});
-
-    return () => {
-      setCurrentAdvertising(undefined);
-    };
-  }, [getCurrentAdvertising, location.state?.advertising]);
+  }, [createAdvertising, selectedType, selectedCourse]);
 
   useEffect(() => {
     getCurrentCoursesList();
@@ -171,7 +160,13 @@ const FormAdvertising: React.FC = () => {
 
   return (
     <Container>
-      <PreviewContent />
+      <LeftContent>
+        <PreviewContent img={file} />
+        <ButtonArea>
+          <input style={{ display: 'none' }} ref={inputRef} type="file" id="avatar" accept=".png, .jpg, .jpeg" onChange={loadFile} />
+          <Button styleType="outline" minHeight="40px" onClick={() => inputRef.current?.click()}>carregar imagem</Button>
+        </ButtonArea>
+      </LeftContent>
       <ContentPanel
         title="Informações do Anúncio"
         subTitle="Estas informações serão exibidas no aplicativo para o usuário"
@@ -184,28 +179,35 @@ const FormAdvertising: React.FC = () => {
           >
             salvar
           </Button>
-)}
+        )}
         gridColumn="2 / 5"
         width="50%"
       >
-        <FormContent onSubmit={() => {}}>
+        <FormContent ref={formRef} onSubmit={handleSubmit}>
           <FormSection gridColumn="1 / 2">
             <InputLine
-              name="nome"
+              name="title"
               label="Título"
             />
 
             <InputSection grid_template_column="1fr 1fr">
               <DateInputLine
-                name="assunto"
+                name="expiration_date"
                 label="Expira em"
+                gridRow="2 / 2"
                 newValue={expirationDate}
               />
 
-              <SelectLine
-                name="curso"
-                label="Tipo"
+              <CheckboxInput
+                name="does_not_expire"
+                label="Não expirar"
                 gridRow="2 / 2"
+                onChange={() => setDoesNotExpire(!doesNotExpire)}
+              />
+
+              <SelectLine
+                name="type"
+                label="Tipo"
                 options={typeOptions}
                 value={typeOptions.filter(({ value }) => value === selectedType)}
                 onChange={(event: any) => setSelectedType(event.value)}
@@ -214,23 +216,24 @@ const FormAdvertising: React.FC = () => {
               {selectedType === 'Desconto' && (
                 <InputLine
                   mask="numeric"
-                  name="whats"
+                  name="discount_percentage"
                   label="% do Desconto"
-                  gridRow="2 / 2"
                 />
               )}
 
             </InputSection>
 
             <SelectLine
-              name="curso"
+              name="course_id"
               label="Curso que receberá desconto"
               isSearchable
               options={coursesList}
+              value={coursesList.filter(({ value }) => value === selectedCourse)}
+              onChange={(event: any) => setSelectedCourse(event.value)}
             />
 
             <TextAreaLine
-              name="mensagem"
+              name="description"
               label="Texto"
               rows={6}
             />

@@ -1,5 +1,5 @@
 import React, {
-  InputHTMLAttributes, useCallback, useEffect, useRef, useState,
+  InputHTMLAttributes, useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { MdOutlineSearch, MdOutlineFilterList } from 'react-icons/md';
 
@@ -57,6 +57,9 @@ const SearchInput: React.FC<InputProps> = ({
     setFiltersApplied([]);
   }, []);
 
+  const hasFilters = useMemo(() => listFilters
+  && listFilters.filter((item) => item.hasFilter).length > 0, [listFilters]);
+
   useEffect(() => {
     const keywords = filtersApplied.map(
       (value) => `:${Object.values(value)[0]}`,
@@ -79,11 +82,13 @@ const SearchInput: React.FC<InputProps> = ({
             ref={inputRef}
             {...rest}
           />
-          <button type="button" onClick={() => setIsOpenOptions(!isOpenOptions)}>
-            <MdOutlineFilterList size={20} color={theme.colors.primary50} />
-          </button>
+          { hasFilters && (
+            <button type="button" onClick={() => setIsOpenOptions(!isOpenOptions)}>
+              <MdOutlineFilterList size={20} color={theme.colors.primary50} />
+            </button>
+          )}
         </Content>
-        {isOpenOptions && (
+        { isOpenOptions && (
         <FiltersPanel
           showPanel={setIsOpenOptions}
           listFilters={listFilters}
@@ -95,20 +100,20 @@ const SearchInput: React.FC<InputProps> = ({
       </Container>
 
       {filtersApplied && (
-        <FiltersContent>
-          {filtersApplied.map((filter) => (
-            <FilterBox key={filter[0]} value={filter} handleDelete={removeFilter} />
-          ))}
+      <FiltersContent>
+        {filtersApplied.map((filter) => (
+          <FilterBox key={filter[0]} value={filter} handleDelete={removeFilter} />
+        ))}
 
-          {filtersApplied.length > 0 && (
-            <LinkButton
-              color={theme.colors.secondary100}
-              onClick={removeAllFilters}
-            >
-              Limpar tudo
-            </LinkButton>
-          )}
-        </FiltersContent>
+        {filtersApplied.length > 0 && (
+        <LinkButton
+          color={theme.colors.secondary100}
+          onClick={removeAllFilters}
+        >
+          Limpar tudo
+        </LinkButton>
+        )}
+      </FiltersContent>
       )}
     </SearchContent>
   );

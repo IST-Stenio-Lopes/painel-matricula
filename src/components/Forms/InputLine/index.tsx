@@ -19,6 +19,7 @@ import {
   tel,
   time,
   alphaNumericMask,
+  cnpj,
 } from './masks';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
@@ -31,7 +32,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   disable?: boolean;
   gridRow?: string;
   gridColumn?: string;
-  mask?:'alpha-numeric' | 'cep' | 'tel' | 'cell-phone' | 'cpf' | 'date' | 'numeric' | 'time' | 'currency' | 'cpfOrCnpj' | 'meters' | undefined
+  mask?:'alpha-numeric' | 'cep' | 'tel' | 'cell-phone' | 'cpf'| 'cnpj' | 'date' | 'numeric' | 'time' | 'currency' | 'cpfOrCnpj' | 'meters' | undefined
 }
 
 export const InputLine: React.FC<InputProps> = ({
@@ -85,8 +86,8 @@ export const InputLine: React.FC<InputProps> = ({
       case 'currency':
         currencyMask(e);
         break;
-      case 'cpfOrCnpj':
-        cpfOrCnpj(e);
+      case 'cnpj':
+        cnpj(e);
         break;
       case 'meters':
         metersMask(e);

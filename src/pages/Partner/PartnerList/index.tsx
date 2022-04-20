@@ -1,3 +1,4 @@
+import { String } from 'lodash';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
@@ -8,59 +9,50 @@ import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
 import { useModal } from '../../../hooks/modal';
-import { AdvertisingResponse, StatusOfAdvertising } from '../../../interfaces/IAdvertising';
-import api, { ResponseData } from '../../../services/api';
+import { PartnerResponse } from '../../../interfaces/IPartner';
+import api, { initialValue, ResponseData } from '../../../services/api';
+import { cpnjMasked, telMasked } from '../../../utils/masks';
 import wrapperNames from '../../../utils/wrapper.json';
 
 const listTitles = [
   {
     id: '4',
-    name: 'Título',
+    name: 'Nome',
     hasSorting: true,
-    hasFilter: true,
-    growFactor: '20%',
+    hasFilter: false,
+    growFactor: 'minmax(150px, 20%)',
   },
   {
     id: '1',
-    name: 'Nº de Visualizações',
+    name: 'Telefone',
     hasSorting: true,
-    hasFilter: true,
-    growFactor: '10%',
+    hasFilter: false,
+    growFactor: 'minmax(150px, 10%)',
   },
   {
     id: '2',
-    name: 'Tipo',
+    name: 'Cnpj',
     hasSorting: true,
-    hasFilter: true,
-    growFactor: '10%',
+    hasFilter: false,
+    growFactor: 'minmax(150px, 10%)',
   },
   {
     id: '3',
-    name: 'Expira em',
+    name: 'Email',
     hasSorting: true,
-    hasFilter: true,
-    growFactor: '10%',
+    hasFilter: false,
+    growFactor: 'minmax(150px, 35%)',
   },
-  {
-    id: '5',
-    name: 'Texto',
-    hasSorting: true,
-    hasFilter: true,
-    growFactor: '25%',
-  },
+
 ];
 
-const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
-
-const AdvertisingList: React.FC = () => {
-  const [responseData, setResponseData] = useState<ResponseData<AdvertisingResponse>>(
-    {} as ResponseData<AdvertisingResponse>,
-  );
+const PartnerList: React.FC = () => {
   const { configModal, handleVisible } = useModal();
+
+  const [responseData, setResponseData] = useState<ResponseData<PartnerResponse>>(
+     {} as ResponseData<PartnerResponse>,
+  );
+
   const [searchingValue, setSearchingValue] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,16 +62,15 @@ const AdvertisingList: React.FC = () => {
   const navigate = useNavigate();
 
   const listItems = useMemo(() => responseData.object_list
- && responseData.object_list.map(({
-   id, title, number_visualizations, type, expiration_date, description,
- }) => ({
-   title,
-   number_visualizations,
-   type,
-   expiration_date,
-   description,
-   object_id: id,
- })), [responseData]);
+  && responseData.object_list.map(({
+    id, name, cellphone, cnpj, email,
+  }) => ({
+    name,
+    cellphone: telMasked(cellphone),
+    cnpj: cpnjMasked(cnpj),
+    email,
+    object_id: id,
+  })), [responseData]);
 
   const keywords = useMemo(() => {
     const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
@@ -87,56 +78,64 @@ const AdvertisingList: React.FC = () => {
     return searchWords.concat(filters);
   }, [filters, searchingValue]);
 
-  const getAdvertisingList = useCallback(async () => {
-    await api.get('/advertising/dashboard/list', {
+  const getPartnerList = useCallback(async () => {
+    await api.get('/partner/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: [StatusOfAdvertising.Ativado],
+        status: ['Ativado'],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
-  const deleteAdvertising = useCallback(async (advertisingId) => {
-    await api.delete(`/advertising/dashboard/${advertisingId}`).catch((err) => {
+  const deletePartner = useCallback(async (partnerId) => {
+    await api.delete(`/partner/dashboard/${partnerId}`).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        configModal('O anúncio foi removido com sucesso', 'success');
+        configModal('O parceiro foi removido com sucesso', 'success');
         handleVisible();
-        getAdvertisingList();
+        getPartnerList();
       }
     });
-  }, [configModal, getAdvertisingList, handleVisible]);
+  }, [configModal, getPartnerList, handleVisible]);
 
-  const handleRemove = useCallback((advertisingId) => {
+  const handleRemove = useCallback((partnerId) => {
     configModal(
-      'Deseja realmente remover o anúncio selecionado?',
+      'Deseja realmente remover o parceiro selecionado?',
       'message',
       true,
       true,
-      () => deleteAdvertising(advertisingId),
+      () => deletePartner(partnerId),
     );
     handleVisible();
-  }, [configModal, deleteAdvertising, handleVisible]);
+  }, [configModal, deletePartner, handleVisible]);
 
   const handleSubmitSearch = useCallback(() => {
-    getAdvertisingList();
-  }, [getAdvertisingList]);
+    getPartnerList();
+  }, [getPartnerList]);
 
   const handleClick = useCallback((item) => {
-    navigate('detalhes', { state: { advertising: item } });
+    navigate('detalhes', { state: { partner: item } });
   }, [navigate]);
 
+  const setPageConfig = useCallback(() => {
+    setItemsPerPage(10);
+    setCurrentPage(1);
+    setSortType(null);
+    setOrder(null);
+  }, []);
+
   useEffect(() => {
-    getAdvertisingList();
+    getPartnerList();
+    setPageConfig();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
@@ -154,17 +153,17 @@ const AdvertisingList: React.FC = () => {
         onSubmit={handleSubmitSearch}
       >
         <Button
-          onClick={() => navigate('detalhes')}
           maxWidth="200px"
           maxHeight="100%"
           leftIcon={<HiPlus size={18} />}
+          onClick={() => navigate('detalhes')}
         >
-          NOVO ANÚNCIO
+          Novo Parceiro
         </Button>
       </ListSearchArea>
       <ListTable
-        onRemoveItem={handleRemove}
         onClickItem={handleClick}
+        onRemoveItem={handleRemove}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}
         indexToBold={0}
@@ -180,4 +179,4 @@ const AdvertisingList: React.FC = () => {
   );
 };
 
-export default AdvertisingList;
+export default PartnerList;

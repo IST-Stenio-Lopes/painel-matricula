@@ -10,10 +10,12 @@ import {
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label: string;
+  gridRow?: string;
+  gridColumn?: string;
 }
 
-const RadioInput: React.FC<Props> = ({
-  name, label, ...rest
+const CheckboxInput: React.FC<Props> = ({
+  name, label, gridRow, gridColumn, ...rest
 }) => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const {
@@ -37,7 +39,7 @@ const RadioInput: React.FC<Props> = ({
   }, [defaultValue, fieldName, registerField]);
 
   return (
-    <Container>
+    <Container gridRow={gridRow} gridColumn={gridColumn}>
       <input
         name={fieldName}
         type="checkbox"
@@ -51,4 +53,4 @@ const RadioInput: React.FC<Props> = ({
   );
 };
 
-export default RadioInput;
+export default CheckboxInput;

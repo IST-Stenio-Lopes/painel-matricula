@@ -4,13 +4,19 @@ import {
   Container, Header, Frame, Advertising,
 } from './styles';
 
-const PreviewContent: React.FC = () => (
+interface PreviewProps {
+  img: any;
+}
+const PreviewContent: React.FC<PreviewProps> = ({ img }) => (
   <Container>
     <Header>
       <h2>Pré - Visualização</h2>
     </Header>
     <Frame>
-      <Advertising />
+      <Advertising>
+        {img
+        && <img src={window.URL.createObjectURL(img)} alt="banner" />}
+      </Advertising>
     </Frame>
   </Container>
 );

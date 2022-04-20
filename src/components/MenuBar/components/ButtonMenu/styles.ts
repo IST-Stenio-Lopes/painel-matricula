@@ -85,6 +85,8 @@ export const IconContent = styled.div`
   justify-content: center;
 
   min-width: 60px;
+
+
 `;
 
 export const NotificationCount = styled.div<NotificationProps>`

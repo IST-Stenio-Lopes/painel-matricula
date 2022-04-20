@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import TrashButton from '../../../Forms/Buttons/TrashButton';
 import ColumnElement from '../ColumnElement';
 
@@ -21,6 +21,7 @@ const ItemList: React.FC <ElementProps> = ({
   handleClick = () => {},
   handleDelete = () => {},
 }) => {
+  const [loading, setLoading] = useState(false);
   const itemArray = useMemo(() => {
     const temp: string[] = [];
     Object.entries(item).forEach(([key, value]) => {
@@ -28,6 +29,15 @@ const ItemList: React.FC <ElementProps> = ({
     });
     return temp;
   }, [item]);
+
+  const onDelete = useCallback(async () => {
+    setLoading(true);
+    try {
+      await handleDelete();
+    } finally {
+      setLoading(false);
+    }
+  }, [handleDelete]);
 
   return (
     <Container
@@ -56,7 +66,12 @@ const ItemList: React.FC <ElementProps> = ({
       <Content>
         {item.extra && item.extra}
         {hasTrashButton
-        && <TrashButton onClick={(e: any) => { e.stopPropagation(); handleDelete(); }} />}
+        && (
+        <TrashButton
+          loading={loading}
+          onClick={(e: any) => { e.stopPropagation(); onDelete(); }}
+        />
+        )}
       </Content>
       )}
     </Container>

@@ -1,6 +1,8 @@
 {
   "cSpell.words": [
     "anuncios",
+    "cnpj",
+    "cpnj",
     "descricao",
     "Excluido",
     "Horiz",
@@ -11,7 +13,8 @@
     "usuarios",
     "Visualizacoes",
     "whatsapp",
-    "Whatsapp"
+    "Whatsapp",
+    "zipcode"
   ],
   "workbench.editor.historyBasedLanguageDetection": false
 }

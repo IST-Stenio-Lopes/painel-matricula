@@ -9,6 +9,7 @@ import { ReactComponent as MatriculaSvg } from '../../../../assets/icons/menu/ma
 import { ReactComponent as MensagemSvg } from '../../../../assets/icons/menu/mensagem-icon.svg';
 import { ReactComponent as TurmasSvg } from '../../../../assets/icons/menu/turmas-icon.svg';
 import { ReactComponent as UnidadeSvg } from '../../../../assets/icons/menu/unidade-icon.svg';
+import { ReactComponent as PartnerSvg } from '../../../../assets/icons/menu/partner-icon.svg';
 
 interface DataProps {
   title: string;
@@ -66,5 +67,10 @@ export const SidebarData: DataProps[] = [
     title: 'Financeiro',
     path: '/financeiro',
     icon: FinanceiroSvg,
+  },
+  {
+    title: 'Parceiros',
+    path: '/parceiros',
+    icon: PartnerSvg,
   },
 ];

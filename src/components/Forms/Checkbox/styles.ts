@@ -1,11 +1,24 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { theme } from '../../../global/styles/styles';
 
-export const Container = styled.div`
+interface ContainerProps {
+  gridRow?: string;
+  gridColumn?: string;
+}
+
+export const Container = styled.div<ContainerProps>`
   display: flex;
   align-items: center;
 
   max-height: 50px;
+
+  ${({ gridRow }) => gridRow && css`
+    grid-row: ${gridRow};
+  `}
+
+  ${({ gridColumn }) => gridColumn && css`
+    grid-column: ${gridColumn};
+  `}
 
 
   h2 {

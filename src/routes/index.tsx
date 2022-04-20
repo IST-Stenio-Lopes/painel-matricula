@@ -18,6 +18,7 @@ import ForgotPassword from '../pages/ForgotPassword';
 import AdvertisingRoutes from './advertising.routes';
 import EnrollmentsRoutes from './enrollments.routes';
 import CustomRoute from './Route';
+import PartnerRoutes from './partner.routes';
 
 const Routes: React.FC = () => {
   const location: any = useLocation();
@@ -45,6 +46,7 @@ const Routes: React.FC = () => {
         <Route path="/faq/*" element={<CustomRoute isPrivate component={<FaqRoutes />} />} />
         <Route path="/financeiro" element={<CustomRoute isPrivate component={<FinancialList />} />} />
         <Route path="/usuarios/*" element={<CustomRoute isPrivate component={<UsersRoutes />} />} />
+        <Route path="/parceiros/*" element={<CustomRoute isPrivate component={<PartnerRoutes />} />} />
       </RoutesDOM>
     </>
   );

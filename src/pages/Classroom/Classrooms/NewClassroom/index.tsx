@@ -2,7 +2,7 @@ import { FormHandles } from '@unform/core';
 import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import { FormSection } from '../../../../components/Forms/FormSection';
@@ -10,6 +10,7 @@ import { InputLine } from '../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../components/Forms/InputSection';
 import SelectLine from '../../../../components/Forms/SelectLine';
 import ContentPanel from '../../../../components/Panels/ContentPanel';
+import { useClassroom } from '../../../../hooks/classroom';
 import { useModal } from '../../../../hooks/modal';
 import api from '../../../../services/api';
 import getValidationErros from '../../../../utils/getValidationErrors';
@@ -29,8 +30,8 @@ const NewClassroom: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { currentClassroom: classroomResponse } = useClassroom();
   const [currentClassroom, setCurrentClassroom] = useState<IClassroom | undefined>(undefined);
-  const location: any = useLocation();
 
   const [responseData, setResponseData] = useState<OptionsResponse[]>([]);
 
@@ -74,7 +75,6 @@ const NewClassroom: React.FC = () => {
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        console.log('sucesso');
         navigate(-1);
       }
     });
@@ -90,8 +90,16 @@ const NewClassroom: React.FC = () => {
     selectedType]);
 
   const updateClassroom = useCallback(async (data: IClassroom) => {
-    await api.put(`/classroom/dashboard/${currentClassroom?.object_id}`, {
-
+    await api.put(`/classroom/dashboard/${currentClassroom?.id}`, {
+      course_id: selectedCourse,
+      category: selectedCategory,
+      shift: selectedShift,
+      application_deadline: data.application_deadline,
+      days_of_presence: selectedDay,
+      month: selectedMonth,
+      year: data.year,
+      is_free: selectedType === 'Gratuito',
+      number_of_vacancies: data.number_of_vacancies,
     }).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
@@ -102,7 +110,8 @@ const NewClassroom: React.FC = () => {
         navigate(-1);
       }
     });
-  }, [configModal, currentClassroom?.object_id, handleVisible, navigate]);
+  }, [configModal, currentClassroom?.id, handleVisible, navigate, selectedCategory,
+    selectedCourse, selectedDay, selectedMonth, selectedShift, selectedType]);
 
   const handleSubmit = useCallback(async (data) => {
     setLoading(true);
@@ -170,26 +179,24 @@ const NewClassroom: React.FC = () => {
     selectedType,
     updateClassroom]);
 
-  const getCurrentClassroom = useCallback(async () => {
-    await api.get(`/classroom/dashboard/specific/${location.state?.classroom.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
-      handleVisible();
-    }).then((response) => {
-      if (response?.status && response.status >= 200 && response.status <= 299) {
-        setCurrentClassroom(response.data);
-      } else {
-        setCurrentClassroom(undefined);
-      }
-    });
-  }, [configModal, handleVisible, location.state?.classroom]);
+  const classroomSetup = useCallback((classroom: IClassroom) => {
+    setCurrentClassroom(classroom);
+    setSelectedCourse(classroom.course_id);
+    setSelectedCategory(classroom.category);
+    setSelectedDay(classroom.days_of_presence);
+    setSelectedShift(classroom.shift);
+    setSelectedType(classroom.is_free ? 'Gratuito' : 'Pago');
+    setSelectedStatus(classroom.status);
+    setSelectedMonth(classroom.month);
+  }, []);
 
   useEffect(() => {
-    if (location.state?.classroom) {
-      getCurrentClassroom();
+    if (classroomResponse?.classroom) {
+      classroomSetup(classroomResponse.classroom);
     } else setCurrentClassroom(undefined);
 
     formRef.current?.setErrors({});
-  }, []);
+  }, [classroomResponse?.classroom, classroomSetup]);
 
   useEffect(() => {
     getCurrentCoursesList();
@@ -202,6 +209,7 @@ const NewClassroom: React.FC = () => {
         subTitle="Estas informações serão exibidas no aplicativo para o usuário"
         footerContent={(
           <Button
+            loading={loading}
             onClick={() => formRef.current?.submitForm()}
             maxWidth="150px"
             minHeight="44px"
@@ -211,7 +219,7 @@ const NewClassroom: React.FC = () => {
 )}
         width="50%"
       >
-        <FormContent ref={formRef} onSubmit={handleSubmit}>
+        <FormContent ref={formRef} onSubmit={handleSubmit} initialData={currentClassroom}>
           <FormSection gridColumn="1 / 2">
             <SelectLine
               name="course"

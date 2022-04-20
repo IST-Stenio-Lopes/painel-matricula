@@ -11,7 +11,7 @@ export const Container = styled.div<ContainerPros>`
   width: 100%;
   flex-direction: column;
 
-
+  min-height: 205px;
   height: max-content;
 
   margin-bottom: 16px;

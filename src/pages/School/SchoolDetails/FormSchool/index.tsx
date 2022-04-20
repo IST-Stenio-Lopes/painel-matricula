@@ -13,6 +13,7 @@ import ContentPanel from '../../../../components/Panels/ContentPanel';
 import { useModal } from '../../../../hooks/modal';
 import api from '../../../../services/api';
 import getValidationErros from '../../../../utils/getValidationErrors';
+import { telMasked } from '../../../../utils/masks';
 
 import {
   Container, FormContent,
@@ -58,6 +59,15 @@ const FormSchool: React.FC = () => {
   const [categorySelected, setCategorySelected] = useState(currentSchool ? currentSchool.status : '');
   const location: any = useLocation();
 
+  const configSchool = useCallback((school: ISchool) => {
+    const temp = {
+      ...school,
+      phone: telMasked(school.phone),
+    };
+
+    setCurrentSchool(temp);
+  }, []);
+
   const createSchool = useCallback(async (data: ISchool) => {
     await api.post('/school/dashboard', {
       category: categorySelected,
@@ -93,7 +103,7 @@ const FormSchool: React.FC = () => {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
-        title: Yup.string()
+        name: Yup.string()
           .required('Tópico obrigatório'),
         category: Yup.string()
           .test('has-category', 'Categoria obrigatória', () => !!categorySelected),
@@ -125,13 +135,13 @@ const FormSchool: React.FC = () => {
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        setCurrentSchool(response.data);
-        setCategorySelected(response.data.category);
+        configSchool(response.data);
+        console.dir(response.data);
       } else {
         setCurrentSchool(undefined);
       }
     });
-  }, [configModal, handleVisible, location.state?.school]);
+  }, [configModal, configSchool, handleVisible, location.state?.school.object_id]);
 
   useEffect(() => {
     if (location.state?.school) {
@@ -149,7 +159,7 @@ const FormSchool: React.FC = () => {
         footerContent={<Button maxWidth="150px" minHeight="44px">salvar</Button>}
         width="50%"
       >
-        <FormContent ref={formRef} onSubmit={handleSubmit}>
+        <FormContent ref={formRef} onSubmit={handleSubmit} initialData={currentSchool}>
           <FormSection gridColumn="1 / 2">
             <InputLine
               name="name"
