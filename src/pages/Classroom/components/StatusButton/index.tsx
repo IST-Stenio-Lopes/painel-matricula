@@ -13,14 +13,20 @@ import Spinner from '../../../../components/Spinner';
 import ActionsPanel from '../ActionsPanel';
 import { StatusOfClassroom } from '../../../../interfaces/IClassroom';
 
+export interface ActionButtonProps {
+  name: string;
+  status: string;
+}
+
 interface StatusButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  actionButtons: ActionButtonProps[];
   classroomId: string;
   status?: string;
   handleClick?: Function;
 }
 
 const StatusButton: React.FC<StatusButtonProps> = ({
-  classroomId, handleClick = () => {}, status = 'close', ...rest
+  classroomId, handleClick = () => {}, actionButtons, status = 'close', ...rest
 }) => {
   const [isOpenOptions, setIsOpenOptions] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,26 +39,13 @@ const StatusButton: React.FC<StatusButtonProps> = ({
     setLoading(false);
   }, [classroomId, handleClick]);
 
-  const actionsButtons = useMemo(() => [
-    {
-      name: 'Fechada',
-      status: StatusOfClassroom.Fechada,
-      onClick: () => setStatus(StatusOfClassroom.Fechada),
-    },
-    {
-      name: 'Aberta',
-      status: StatusOfClassroom.Aberta,
-      onClick: () => setStatus(StatusOfClassroom.Aberta),
-    },
-    {
-      name: 'Iniciar',
-      status: StatusOfClassroom.Iniciada,
-      onClick: () => setStatus(StatusOfClassroom.Iniciada),
-    },
-  ], [setStatus]);
+  const actionsButtons = useMemo(
+    () => actionButtons.map((item) => ({ ...item, onClick: () => setStatus(item.status) })),
+    [actionButtons, setStatus],
+  );
 
   const [selectedStatus, setSelectedStatus] = useState<string>(() => actionsButtons
-    .find((item: any) => item.status === status)?.status || StatusOfClassroom.Fechada);
+    .find((item: any) => item.status === status)?.status || '');
 
   // [ Iniciada, Aberta, Fechada, Finalizada, Removido, Cancelada ]
   const renderIcon = useCallback(() => {

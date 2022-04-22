@@ -1,5 +1,5 @@
 import React, {
-  InputHTMLAttributes, ReactNode, useCallback, useEffect, useRef, useState,
+  InputHTMLAttributes, ReactNode, useCallback, useEffect, useRef,
 } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
 
@@ -15,7 +15,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   setTags: (tags: ITag[]) => void;
   containerStyle?: object;
   label: string;
-  onHandleChange?: Function;
   icon?: ReactNode;
   disable?: boolean;
   gridRow?: string;
@@ -40,12 +39,12 @@ export const InputTags: React.FC<InputProps> = ({
   tags,
   setTags,
   containerStyle = {},
-  icon: Icon, label, gridRow, gridColumn, onHandleChange = () => {}, ...rest
+  icon: Icon, label, gridRow, gridColumn, ...rest
 }) => {
   const inputRef = useRef(null);
 
   const {
-    fieldName, defaultValue, error, registerField,
+    fieldName, error, registerField,
   } = useField(name);
 
   const handleDelete = useCallback((i) => {

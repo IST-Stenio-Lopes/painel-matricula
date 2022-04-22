@@ -6,3 +6,9 @@ export const Container = styled.div`
   gap: 24px;
   padding: 32px 32px 90px 32px;
 `;
+
+export const Content = styled.div`
+  display: grid;
+  gap: 24px;
+  grid-template-rows: max-content auto;
+`;

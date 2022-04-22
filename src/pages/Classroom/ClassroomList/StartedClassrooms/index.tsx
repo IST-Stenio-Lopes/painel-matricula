@@ -12,7 +12,7 @@ import { useModal } from '../../../../hooks/modal';
 import { IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
 import api, { initialValue, ResponseData } from '../../../../services/api';
 import wrapperNames from '../../../../utils/wrapper.json';
-import StatusButton from '../../components/StatusButton';
+import StatusButton, { ActionButtonProps } from '../../components/StatusButton';
 import { categoryOptions, shiftOptions, typeOptions } from '../../data/options';
 import { Container } from './styles';
 
@@ -57,7 +57,7 @@ const listTitles = [
   },
   {
     id: '6',
-    name: 'Vagas Preenchidas',
+    name: 'Status',
     hasSorting: true,
     hasFilter: false,
     growFactor: 'minmax(150px, 1fr)',
@@ -116,6 +116,25 @@ const StartedClassrooms: React.FC = () => {
       });
   }, [configModal, handleVisible, getClassroomList]);
 
+  const actionButtons: ActionButtonProps[] = useMemo(() => [
+    {
+      name: 'Finalizar',
+      status: StatusOfClassroom.Finalizada,
+    },
+    {
+      name: 'Aberta',
+      status: StatusOfClassroom.Aberta,
+    },
+    {
+      name: 'Fechada',
+      status: StatusOfClassroom.Fechada,
+    },
+    {
+      name: 'Cancelar',
+      status: StatusOfClassroom.Cancelada,
+    },
+  ], []);
+
   const listItems = useMemo(() => responseData.object_list
  && responseData.object_list.map(({
    id, code, course_name, shift,
@@ -127,14 +146,15 @@ const StartedClassrooms: React.FC = () => {
    shift,
    category,
    is_free: is_free ? 'Gratuito' : 'Pago',
-   vagas: <ProgressBar
-     current={number_of_enrollments}
-     total={number_of_vacancies}
-     label={`${number_of_enrollments}/${number_of_vacancies}`}
+   status,
+   extra: <StatusButton
+     classroomId={id}
+     actionButtons={actionButtons}
+     handleClick={handleChangeStatus}
+     status={status}
    />,
-   extra: <StatusButton classroomId={id} handleClick={handleChangeStatus} status={status} />,
    object_id: id,
- })), [handleChangeStatus, responseData.object_list]);
+ })), [actionButtons, handleChangeStatus, responseData.object_list]);
 
   const handleSubmitSearch = useCallback(() => {
     getClassroomList();

@@ -12,16 +12,8 @@ export const Container = styled.div`
 export const FormContent = styled(Form)`
   display: grid;
   height: 100%;
-  grid-template-columns: minmax(520px, 50%) minmax(520px, 50%);
+  grid-template-columns: minmax(520px, 70%) minmax(520px, 30%);
 
-  h3 {
-    font-weight: normal;
-    font-size: 15px;
-    line-height: 18px;
-    margin-bottom: 8px;
-
-    color: ${theme.colors.secondary20};
-  }
 `;
 
 export const GradeHeader = styled.div`

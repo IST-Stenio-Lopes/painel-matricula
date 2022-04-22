@@ -87,7 +87,7 @@ const FaqList: React.FC = () => {
   }) => ({
     title,
     category,
-    created_at,
+    created_at: new Date(created_at).toLocaleDateString('pt-BR'),
     content,
     object_id: id,
   })), [responseData]);

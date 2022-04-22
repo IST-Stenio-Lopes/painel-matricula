@@ -8,6 +8,7 @@ import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
 import api, { ResponseData } from '../../../services/api';
+import { currencyFormatted } from '../../../utils/currencyUtilities';
 import wrapperNames from '../../../utils/wrapper.json';
 
 const listTitles = [
@@ -68,7 +69,7 @@ interface CourseResponse {
   field: string,
   modality: string,
   duration: string,
-  cost: number,
+  cost: number | string,
   payment_installment: number,
   enrollment_fee: number,
   description: string,
@@ -101,7 +102,7 @@ const CoursesList: React.FC = () => {
   }) => ({
     name,
     field,
-    cost,
+    cost: currencyFormatted(cost as string),
     modality,
     duration,
     object_id: id,

@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import MenuSelect from '../../../../components/MenuSelect';
 import SelectMenuButton from '../../../../components/MenuSelect/components/SelectMenuButton';
 import EmailPanel from './components/EmailPanel';
+import Instructions from './components/Instructions';
 
-import { Container } from './styles';
+import { Container, Content } from './styles';
 
 const buttonsMenu = [
   'Editar Email - Pré Matrícula',
@@ -16,16 +17,19 @@ const SchoolEmails: React.FC = () => {
 
   return (
     <Container>
-      <MenuSelect>
-        {buttonsMenu.map((name) => (
-          <SelectMenuButton
-            key={name}
-            name={name}
-            selectedMenu={selectedMenu}
-            handleSelect={setSelectedMenu}
-          />
-        ))}
-      </MenuSelect>
+      <Content>
+        <MenuSelect>
+          {buttonsMenu.map((name) => (
+            <SelectMenuButton
+              key={name}
+              name={name}
+              selectedMenu={selectedMenu}
+              handleSelect={setSelectedMenu}
+            />
+          ))}
+        </MenuSelect>
+        <Instructions />
+      </Content>
       <EmailPanel />
     </Container>
   );

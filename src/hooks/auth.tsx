@@ -2,6 +2,7 @@ import jwtDecode from 'jwt-decode';
 import React, {
   createContext, useCallback, useState, useContext, useMemo,
 } from 'react';
+import { updateUserRoles } from '../interfaces/IUser';
 import api from '../services/api';
 
 export interface IUser {
@@ -10,6 +11,7 @@ export interface IUser {
   email: string;
   avatar_url: string;
   role_name: string;
+  role: number;
   company_id: string;
   school_id: string;
   school_city: string;
@@ -59,7 +61,9 @@ const AuthProvider: React.FC = ({ children }) => {
 
       api.defaults.headers.common.authorization = `Bearer ${token}`;
 
-      return { token, user: JSON.parse(user), refresh_token };
+      const userObject: IUser = JSON.parse(user);
+      updateUserRoles(userObject.role);
+      return { token, user: userObject, refresh_token };
     }
 
     return {} as AuthState;

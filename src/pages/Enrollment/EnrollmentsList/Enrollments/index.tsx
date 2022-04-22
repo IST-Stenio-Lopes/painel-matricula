@@ -9,6 +9,7 @@ import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
 import { useStudent } from '../../../../hooks/student';
 import api, { ResponseData } from '../../../../services/api';
+import { cpfMasked, telMasked } from '../../../../utils/masks';
 import wrapperNames from '../../../../utils/wrapper.json';
 
 import { Container } from './styles';
@@ -96,9 +97,9 @@ const Enrollments: React.FC = () => {
     id, student_name, student_cpf, course_name, student_whatsapp, student_email,
   }) => ({
     student_name,
-    student_cpf,
+    student_cpf: cpfMasked(student_cpf),
     course_name,
-    student_whatsapp,
+    student_whatsapp: telMasked(student_whatsapp),
     student_email,
     object_id: id,
   })), [responseData]);

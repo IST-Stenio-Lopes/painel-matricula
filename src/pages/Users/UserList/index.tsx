@@ -117,6 +117,10 @@ const UserList: React.FC = () => {
     getUsersList();
   }, [order, sortType]);
 
+  const handleClick = useCallback((item) => {
+    navigate('detalhes', { state: { user: item } });
+  }, [navigate]);
+
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);
     setOrder(newSort);
@@ -143,6 +147,7 @@ const UserList: React.FC = () => {
       <ListTable
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}
+        onClickItem={handleClick}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}

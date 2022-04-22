@@ -12,102 +12,18 @@ import LinkButton from '../../../../../components/Forms/Buttons/LinkButton';
 import { FormSection } from '../../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../../components/Forms/InputSection';
-import SelectLine from '../../../../../components/Forms/SelectLine';
 import ContentPanel from '../../../../../components/Panels/ContentPanel';
 import UserInfo from '../../../../../components/UserInfo';
 import { IUser, useAuth } from '../../../../../hooks/auth';
 import { useModal } from '../../../../../hooks/modal';
 import api from '../../../../../services/api';
 import getValidationErros from '../../../../../utils/getValidationErrors';
-import PermissionSection from '../PermissionSection';
-import { UserRoles } from '../../../../../interfaces/IUser';
 
 import {
   Container, FormContent,
 } from './styles';
 
-const userPermissions = [
-  {
-    title: 'Usuários',
-    allPermissions: { name: 'Usuários', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-  {
-    title: 'Anúncios',
-    allPermissions: { name: 'Anúncios', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-  {
-    title: 'Descontos',
-    allPermissions: { name: 'Descontos', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-  {
-    title: 'Turmas',
-    allPermissions: { name: 'Turmas', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Iniciar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-  {
-    title: 'Cursos',
-    allPermissions: { name: 'Cursos', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-  {
-    title: 'Matrículas',
-    allPermissions: { name: 'Matrículas', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-  {
-    title: 'Parceiros',
-    allPermissions: { name: 'Parceiros', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-  {
-    title: 'Localizações',
-    allPermissions: { name: 'Localizações', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Visualizar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-    ],
-  },
-];
-
-const roleOptions = [
-  {
-    value: '', label: '',
-  },
-];
-
-const FormUser: React.FC = () => {
+const UserProfile: React.FC = () => {
   const location: any = useLocation();
   const formRef = useRef<FormHandles>(null);
   const [showEditPassword, setShowEditPassword] = useState(false);
@@ -221,6 +137,26 @@ const FormUser: React.FC = () => {
     }
   }, [createUser, currentUser, showEditPassword, updateCurrentUser]);
 
+  const renderPasswordForm = useCallback(() => (
+    <>
+      {currentUser
+          && (
+          <InputLine
+            name="current_password"
+            label="Senha atual"
+          />
+          )}
+      <InputLine
+        name="password"
+        label="Senha"
+      />
+      <InputLine
+        name="confirm_password"
+        label="Confirmar Senha"
+      />
+    </>
+  ), [currentUser]);
+
   const handleAvatarChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const data = new FormData();
@@ -258,65 +194,41 @@ const FormUser: React.FC = () => {
           onSubmit={handleSubmit}
         >
           <FormSection gridColumn="1 / 2">
-            <InputLine
-              name="email"
-              label="Email"
-            />
-            <InputLine
-              name="name"
-              label="Nome"
-              onChange={handleChangeName}
-            />
-            <InputLine
-              mask="cpf"
-              name="cpf"
-              label="CPF"
-            />
-            <InputSection grid_template_column="1fr 1fr">
-              <InputLine
-                mask="numeric"
-                name="registration_number"
-                label="Matrícula"
-              />
-
-              <InputLine
-                mask="tel"
-                name="cellphone"
-                label="Telefone"
-              />
-            </InputSection>
-
-            <SelectLine
-              name="role_name"
-              label="Nível de acesso"
-            />
-
-            <InputLine
-              name="password"
-              label="Senha"
-            />
-            <InputLine
-              name="confirm_password"
-              label="Confirmar Senha"
-            />
-          </FormSection>
-          <FormSection gridColumn="2 / 3">
-            <h3>Permissões</h3>
-            {
-              userPermissions.map(({ title, allPermissions, permissions }) => (
-                <PermissionSection
-                  title={title}
-                  allPermissions={allPermissions}
-                  permissions={permissions}
+            {!showEditPassword ? (
+              <InputSection grid_template_column="1fr 1fr">
+                <InputLine
+                  name="email"
+                  label="Email"
+                  gridRow="1 / 1"
+                  gridColumn="1 / 3"
                 />
-              ))
-            }
-          </FormSection>
+                <InputLine
+                  name="name"
+                  label="Nome"
+                  gridColumn="1 / 3"
+                  onChange={handleChangeName}
+                />
+                <InputLine
+                  name="registration_number"
+                  label="Matrícula"
+                  gridRow="3 / 3"
+                />
+              </InputSection>
+            ) : renderPasswordForm()}
 
+            {!currentUser ? renderPasswordForm()
+              : (
+                <LinkButton
+                  onClick={() => setShowEditPassword(!showEditPassword)}
+                >
+                  {showEditPassword ? 'Cancelar' : 'Alterar senha'}
+                </LinkButton>
+              )}
+          </FormSection>
         </FormContent>
       </ContentPanel>
     </Container>
   );
 };
 
-export default FormUser;
+export default UserProfile;

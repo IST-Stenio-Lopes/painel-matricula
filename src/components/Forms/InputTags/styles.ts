@@ -98,6 +98,7 @@ export const Container = styled.div<ContainerPros>`
 
     .ReactTags__tags {
       width: 100%;
+      margin-bottom: 16px;
     }
   }
 

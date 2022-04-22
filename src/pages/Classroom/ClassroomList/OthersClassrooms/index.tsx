@@ -12,7 +12,7 @@ import { useModal } from '../../../../hooks/modal';
 import { IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
 import api, { initialValue, ResponseData } from '../../../../services/api';
 import wrapperNames from '../../../../utils/wrapper.json';
-import StatusButton from '../../components/StatusButton';
+import StatusButton, { ActionButtonProps } from '../../components/StatusButton';
 import { categoryOptions, shiftOptions, typeOptions } from '../../data/options';
 import { Container } from './styles';
 
@@ -118,6 +118,21 @@ const OthersClassrooms: React.FC = () => {
       });
   }, [configModal, handleVisible, getClassroomList]);
 
+  const actionButtons: ActionButtonProps[] = useMemo(() => [
+    {
+      name: 'Fechada',
+      status: StatusOfClassroom.Fechada,
+    },
+    {
+      name: 'Aberta',
+      status: StatusOfClassroom.Aberta,
+    },
+    {
+      name: 'Iniciar',
+      status: StatusOfClassroom.Iniciada,
+    },
+  ], []);
+
   const listItems = useMemo(() => responseData.object_list
  && responseData.object_list.map(({
    id, code, course_name, shift,
@@ -129,9 +144,14 @@ const OthersClassrooms: React.FC = () => {
    category,
    is_free: is_free ? 'Gratuito' : 'Pago',
    status,
-   extra: <StatusButton classroomId={id} handleClick={handleChangeStatus} status={status} />,
+   extra: <StatusButton
+     classroomId={id}
+     actionButtons={actionButtons}
+     handleClick={handleChangeStatus}
+     status={status}
+   />,
    object_id: id,
- })), [handleChangeStatus, responseData.object_list]);
+ })), [actionButtons, handleChangeStatus, responseData.object_list]);
 
   const handleSubmitSearch = useCallback(() => {
     getClassroomList();
