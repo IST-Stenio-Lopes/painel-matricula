@@ -104,7 +104,7 @@ const ClassroomDetails: React.FC = () => {
 
   useEffect(() => {
     getEnrollmentList();
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

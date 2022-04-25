@@ -92,8 +92,8 @@ const MessagesList: React.FC = () => {
   const [searchingValue, setSearchingValue] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState(null);
-  const [order, setOrder] = useState(null);
+  const [sortType, setSortType] = useState(undefined);
+  const [order, setOrder] = useState(undefined);
   const [filters, setFilters] = useState<string[]>([]);
   const navigate = useNavigate();
 
@@ -124,10 +124,11 @@ const MessagesList: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Lida', 'Não Lida'],
+
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
+        console.log(response.data);
         setResponseData(response ? response.data : initialValue);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
@@ -166,7 +167,7 @@ const MessagesList: React.FC = () => {
 
   useEffect(() => {
     getMessageList();
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

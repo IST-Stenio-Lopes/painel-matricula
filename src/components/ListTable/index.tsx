@@ -100,7 +100,8 @@ const ListTable: React.FC<ListTableProps> = ({
   }, [currentPage, itemsPerPages, totalOfItems]);
 
   const handleChange = useCallback((next: boolean) => {
-    let totalOfPages = Math.floor(totalOfItems / itemsPerPages);
+    let totalOfPages = Math.ceil(totalOfItems / itemsPerPages);
+    // + (totalOfItems % itemsPerPages > 0 ? 1 : 0);
     totalOfPages = totalOfPages <= 1 ? 1 : totalOfPages;
 
     let page = currentPage;
@@ -120,7 +121,10 @@ const ListTable: React.FC<ListTableProps> = ({
   ), []);
 
   useEffect(() => {
-    onSortChange(selectedSortingType, selectedSorting);
+    onSortChange(
+      selectedSortingType !== '' ? selectedSortingType : undefined,
+      selectedSorting !== '' ? selectedSorting : undefined,
+    );
   }, [onSortChange, selectedSorting, selectedSortingType]);
 
   return (

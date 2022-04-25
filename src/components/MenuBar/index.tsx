@@ -1,7 +1,8 @@
 import React, {
-  useCallback, useMemo, useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useLocation } from 'react-router-dom';
+import socketIOClient from 'socket.io-client';
 import ButtonMenu from './components/ButtonMenu';
 import { SidebarData } from './components/SideBarData';
 import {
@@ -14,8 +15,18 @@ import { useNav } from '../../hooks/nav';
 
 import Profile from '../Profile';
 import { useModal } from '../../hooks/modal';
+import { useAuth } from '../../hooks/auth';
+import { ISchoolSocketData } from '../../interfaces/ISocket';
+import { useDashboardData } from '../../hooks/dashboardData';
+
+const ENDPOINT = 'http://192.168.1.191:4445/dashboard';
 
 const MenuBar: React.FC = () => {
+  const {
+    setCurrentDashboardData, currentDashboardData, enrollmentsHeld, enrollmentsReserved, messages,
+  } = useDashboardData();
+  const { user } = useAuth();
+
   const location: any = useLocation();
 
   const initialRoute = useMemo(() => `/${location.pathname.split('/')[1]}`, [location]);
@@ -24,6 +35,12 @@ const MenuBar: React.FC = () => {
   const { hasBackButton, handleBackButton, isEditing } = useNav();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(initialRoute);
+
+  const getNotifications: {[key: string]: number} = useMemo(() => ({
+    Matrícula: currentDashboardData
+      ? (currentDashboardData.enrollments_held + currentDashboardData.enrollments_reserved) : 0,
+    Mensagens: currentDashboardData ? currentDashboardData.messages : 0,
+  }), [currentDashboardData]);
 
   const handleSelect = useCallback((value) => {
     setSelectedRoute(value);
@@ -44,6 +61,30 @@ const MenuBar: React.FC = () => {
       handleBackButton();
     }
   }, [isEditing, configModal, handleVisible, handleBackButton]);
+
+  useEffect(() => {
+    const socket = socketIOClient('http://192.168.1.191:4445', {
+      path: '/dashboard',
+      auth: {
+        school_id: user.school_id,
+      },
+    });
+
+    socket.on('notification_data', (data) => {
+      console.dir(data);
+      setCurrentDashboardData(data);
+    });
+
+    socket.on('message_has_been_read', (data) => {
+      setCurrentDashboardData({
+        ...currentDashboardData as ISchoolSocketData,
+        messages: data.quantity,
+      });
+    });
+
+    socket.connect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -66,6 +107,7 @@ const MenuBar: React.FC = () => {
               isOpen={isOpen}
               onClick={handleSelect}
               selectedRoute={selectedRoute}
+              totalNotification={getNotifications[title] || 0}
             />
           ))}
         </BodyArea>

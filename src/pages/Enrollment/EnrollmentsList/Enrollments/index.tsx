@@ -8,7 +8,8 @@ import DownloadButton from '../../../../components/Forms/Buttons/DownloadButton'
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
 import { useStudent } from '../../../../hooks/student';
-import api, { ResponseData } from '../../../../services/api';
+import { StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
+import api, { initialValue, ResponseData } from '../../../../services/api';
 import { cpfMasked, telMasked } from '../../../../utils/masks';
 import wrapperNames from '../../../../utils/wrapper.json';
 
@@ -57,6 +58,13 @@ const listTitles = [
     hasFilter: false,
     growFactor: 'minmax(150px, 15%)',
   },
+  {
+    id: '6',
+    name: 'Estado',
+    hasSorting: true,
+    hasFilter: false,
+    growFactor: 'minmax(150px, 15%)',
+  },
 ];
 
 export interface EnrollmentResponse {
@@ -69,13 +77,8 @@ export interface EnrollmentResponse {
   student_email: string,
   student_expiration: string,
   status: string,
+  secondary_status: string,
 }
-
-export const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
 
 const Enrollments: React.FC = () => {
   const { setCurrentStudent } = useStudent();
@@ -94,13 +97,14 @@ const Enrollments: React.FC = () => {
 
   const listItems = useMemo(() => responseData.object_list
   && responseData.object_list.map(({
-    id, student_name, student_cpf, course_name, student_whatsapp, student_email,
+    id, student_name, student_cpf, course_name, student_whatsapp, student_email, secondary_status,
   }) => ({
     student_name,
     student_cpf: cpfMasked(student_cpf),
     course_name,
     student_whatsapp: telMasked(student_whatsapp),
     student_email,
+    secondary_status,
     object_id: id,
   })), [responseData]);
   // extra: <DownloadButton />,
@@ -119,7 +123,7 @@ const Enrollments: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Matriculado'],
+        status: [StatusOfEnrollment.Matriculado],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
@@ -137,7 +141,7 @@ const Enrollments: React.FC = () => {
 
   useEffect(() => {
     getEnrollmentList();
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

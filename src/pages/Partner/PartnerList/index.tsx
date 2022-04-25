@@ -136,7 +136,7 @@ const PartnerList: React.FC = () => {
     getPartnerList();
     setPageConfig();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

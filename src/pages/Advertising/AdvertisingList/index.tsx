@@ -137,7 +137,7 @@ const AdvertisingList: React.FC = () => {
 
   useEffect(() => {
     getAdvertisingList();
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

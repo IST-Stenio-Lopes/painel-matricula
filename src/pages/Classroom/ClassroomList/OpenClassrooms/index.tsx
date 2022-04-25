@@ -173,7 +173,7 @@ const OpenClassrooms: React.FC = () => {
 
   useEffect(() => {
     getClassroomList();
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

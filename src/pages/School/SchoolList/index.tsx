@@ -161,7 +161,7 @@ const SchoolList: React.FC = () => {
 
   useEffect(() => {
     getSchoolList();
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

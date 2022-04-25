@@ -93,7 +93,7 @@ export const NotificationCount = styled.div<NotificationProps>`
   position: absolute;
   right: 0;
 
-  background: ${theme.colors.secondary00};
+  background: ${theme.colors.primary50};
   box-shadow: 1px 2px 5px rgba(195, 195, 195, 0.5);
 
   margin: 0 30px;
@@ -109,9 +109,9 @@ export const NotificationCount = styled.div<NotificationProps>`
 
   h2 {
     font-weight: 500;
-    font-size: 13px;
+    font-size: 11px;
     line-height: 16px;
-    color: ${theme.colors.primary50}
+    color: ${theme.colors.secondary00}
   }
 
   ${(props) => !props.isOpen && css`

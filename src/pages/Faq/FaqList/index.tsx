@@ -156,7 +156,7 @@ const FaqList: React.FC = () => {
     getFaqList();
     setPageConfig();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

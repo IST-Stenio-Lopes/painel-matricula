@@ -8,7 +8,6 @@ const EnrollmentDetails: React.FC = () => {
   const location: any = useLocation();
 
   useEffect(() => {
-    console.dir(location);
     if (location.state?.enrollment) {
       setCurrentTab('Editar Matrícula');
     }

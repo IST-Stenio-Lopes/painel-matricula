@@ -1,9 +1,16 @@
-import React from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 import { HiPlus } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
+import { useStudent } from '../../../../hooks/student';
+import { EnrollmentResponse, StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
+import api, { initialValue, ResponseData } from '../../../../services/api';
+import { cpfMasked, telMasked } from '../../../../utils/masks';
+import wrapperNames from '../../../../utils/wrapper.json';
 
 import { Container } from './styles';
 
@@ -50,64 +57,96 @@ const listTitles = [
     hasFilter: false,
     growFactor: 'minmax(150px, 15%)',
   },
-];
-
-const listItems = [
   {
-    name: 'Pedro Henrique Barbosa',
-    cpf: '751.259.380-50',
-    curso: 'Jogos Digitais',
-    telefone: '(83) 98254-3692',
-    email: 'pedrohen12@gmail.com',
-  },
-  {
-    name: 'Pedro Henrique Barbosa',
-    cpf: '751.259.380-50',
-    curso: 'Jogos Digitais',
-    telefone: '(83) 98254-3692',
-    email: 'pedrohen12@gmail.com',
-
-  },
-  {
-    name: 'Pedro Henrique Barbosa',
-    cpf: '751.259.380-50',
-    curso: 'Jogos Digitais',
-    telefone: '(83) 98254-3692',
-    email: 'pedrohen12@gmail.com',
-
-  },
-  {
-    name: 'Pedro Henrique Barbosa',
-    cpf: '751.259.380-50',
-    curso: 'Jogos Digitais',
-    telefone: '(83) 98254-3692',
-    email: 'pedrohen12@gmail.com',
-  },
-  {
-    name: 'Pedro Henrique Barbosa',
-    cpf: '751.259.380-50',
-    curso: 'Jogos Digitais',
-    telefone: '(83) 98254-3692',
-    email: 'pedrohen12@gmail.com',
-  },
-  {
-    name: 'Pedro Henrique Barbosa',
-    cpf: '751.259.380-50',
-    curso: 'Jogos Digitais',
-    telefone: '(83) 98254-3692',
-    email: 'pedrohen12@gmail.com',
-
+    id: '6',
+    name: 'Status',
+    hasSorting: true,
+    hasFilter: false,
+    growFactor: 'minmax(150px, 15%)',
   },
 ];
 
 const Others: React.FC = () => {
+  const { setCurrentStudent } = useStudent();
+
+  const [responseData, setResponseData] = useState<ResponseData<EnrollmentResponse>>(
+    {} as ResponseData<EnrollmentResponse>,
+  );
+
+  const [searchingValue, setSearchingValue] = useState('');
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortType, setSortType] = useState(null);
+  const [order, setOrder] = useState(null);
+  const [filters, setFilters] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  const listItems = useMemo(() => responseData.object_list
+  && responseData.object_list.map(({
+    id, student_name, student_cpf, course_name, student_whatsapp, student_email, status,
+  }) => ({
+    student_name,
+    student_cpf: cpfMasked(student_cpf),
+    course_name,
+    student_whatsapp: telMasked(student_whatsapp),
+    student_email,
+    status,
+    object_id: id,
+  })), [responseData]);
+  // extra: <DownloadButton />,
+
+  const keywords = useMemo(() => {
+    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
+
+    return searchWords.concat(filters);
+  }, [filters, searchingValue]);
+
+  const getEnrollmentList = useCallback(async () => {
+    await api.get('/enrollment/dashboard/list', {
+      params: {
+        itens_per_page: itemsPerPage,
+        page: currentPage - 1,
+        sort: sortType && wrapperNames[sortType],
+        sort_type: order,
+        keywords,
+        status: Object.values(StatusOfEnrollment)
+          .filter((value) => value !== StatusOfEnrollment.Matriculado
+        && value !== StatusOfEnrollment.Reservado),
+      },
+    }).catch((err) => console.dir(err.response.data))
+      .then((response: any) => {
+        setResponseData(response ? response.data : initialValue);
+      });
+  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+
+  const handleSubmitSearch = useCallback(() => {
+    getEnrollmentList();
+  }, [getEnrollmentList]);
+
+  const handleClick = useCallback((item) => {
+    navigate('detalhes', { state: { enrollment: { ...item, extra: null } } });
+  }, [navigate]);
+
+  useEffect(() => {
+    getEnrollmentList();
+  }, [order, sortType, currentPage]);
+
+  const handleChangeSort = useCallback((newSortType, newSort) => {
+    setSortType(newSortType);
+    setOrder(newSort);
+  }, []);
 
   return (
     <Container>
-      <ListSearchArea listFilters={listTitles}>
+      <ListSearchArea
+        listFilters={listTitles}
+        setKeywords={setFilters}
+        searchValue={searchingValue}
+        handleChange={setSearchingValue}
+        onSubmit={handleSubmitSearch}
+      >
         <Button
-          onClick={() => navigate('detalhes')}
+          onClick={() => { setCurrentStudent(undefined); navigate('detalhes'); }}
           maxWidth="200px"
           maxHeight="100%"
           leftIcon={<HiPlus size={18} />}
@@ -116,12 +155,15 @@ const Others: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        onClickItem={handleClick}
+        changePage={setCurrentPage}
+        onSortChange={handleChangeSort}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}
-        itemsPerPages={10}
-        currentPage={1}
-        totalOfItems={100}
+        itemsPerPages={itemsPerPage}
+        currentPage={currentPage}
+        totalOfItems={responseData.max_itens}
         gridRow="2 / 2"
         hasTrashButton
       />

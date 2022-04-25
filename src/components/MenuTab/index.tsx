@@ -6,10 +6,13 @@ import { Container, Header, Content } from './styles';
 interface MenuTabProps {
   tabNames: string[];
   tabScreens: ReactNode[];
+  tabNotifications?: number[];
   disableButtons?: boolean;
 }
 
-const MenuTab: React.FC<MenuTabProps> = ({ tabNames, tabScreens, disableButtons = false }) => {
+const MenuTab: React.FC<MenuTabProps> = ({
+  tabNames, tabNotifications, tabScreens, disableButtons = false,
+}) => {
   const [selectedScreen, setSelectedScreen] = useState<string>(tabNames[0]);
 
   useEffect(() => {
@@ -26,6 +29,7 @@ const MenuTab: React.FC<MenuTabProps> = ({ tabNames, tabScreens, disableButtons 
             tabName={name}
             selected={selectedScreen}
             handleSelected={() => setSelectedScreen(name)}
+            totalNotification={tabNotifications && tabNotifications[index]}
           />
         ))}
       </Header>

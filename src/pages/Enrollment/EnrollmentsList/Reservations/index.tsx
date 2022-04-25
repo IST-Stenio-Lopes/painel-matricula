@@ -6,11 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
-import api, { ResponseData } from '../../../../services/api';
-import { EnrollmentResponse, initialValue } from '../Enrollments';
+import api, { initialValue, ResponseData } from '../../../../services/api';
+import { EnrollmentResponse } from '../Enrollments';
 import wrapperNames from '../../../../utils/wrapper.json';
 
 import { Container } from './styles';
+import { StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
 
 const listTitles = [
   {
@@ -96,7 +97,7 @@ const Reservations: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: 'Pré-Matriculado',
+        status: [StatusOfEnrollment.Reservado],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {

@@ -1,5 +1,5 @@
 import React, {
-  SVGProps, useCallback, useMemo,
+  SVGProps, useCallback, useEffect, useMemo,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../../../../global/styles/styles';
@@ -54,7 +54,7 @@ const ButtonMenu: React.FC<ButtonMenuProps> = ({
       </TransitionGroup>
       {totalNotification > 0 && (
       <NotificationCount isOpen={isOpen}>
-        <h2>{totalNotification}</h2>
+        <h2>{totalNotification >= 99 ? '99+' : totalNotification}</h2>
       </NotificationCount>
       )}
     </Container>

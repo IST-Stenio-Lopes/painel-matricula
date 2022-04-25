@@ -7,10 +7,12 @@ import PageContainer from '../../components/PageContainer';
 import { MessagePanel } from '../../components/Panels/MessagePanel';
 import ProgressBar from '../../components/ProgressBar';
 import { theme } from '../../global/styles/styles';
-import api, { ResponseData } from '../../services/api';
+import api, { initialValue, ResponseData } from '../../services/api';
 import DashboardCard from './components/DashboardCard';
 import wrapperNames from '../../utils/wrapper.json';
 import { getTimeDiff } from './utils/utilities';
+import { StatusOfClassroom } from '../../interfaces/IClassroom';
+import { StatusOfMessage } from '../../interfaces/IMessage';
 
 const listTitles = [
   {
@@ -92,12 +94,6 @@ interface MessageResponse {
   created_at: string,
 }
 
-const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
-
 const initialDataValue = {
   enrollment_thorough_school: { value: 0, percentage: 0 },
   enrollment_thorough_app: { value: 0, percentage: 0 },
@@ -174,12 +170,11 @@ const Dashboard: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Aberta', 'Fechada'],
+        status: [StatusOfClassroom.Aberta, StatusOfClassroom.Fechada],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseClassroomData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
@@ -191,12 +186,11 @@ const Dashboard: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Ativo', 'Não Lida'],
+        status: [StatusOfMessage.NaoLida],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseMessageData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
@@ -205,7 +199,6 @@ const Dashboard: React.FC = () => {
       .catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialDataValue);
-        console.dir(response.data);
       });
   }, []);
 
@@ -214,7 +207,7 @@ const Dashboard: React.FC = () => {
   }, [navigate]);
 
   const handleClickMessage = useCallback((item) => {
-    navigate('detalhes', { state: { message: item } });
+    navigate('/mensagens/detalhes', { state: { message: item } });
   }, [navigate]);
 
   useEffect(() => {
@@ -271,7 +264,7 @@ const Dashboard: React.FC = () => {
         gridColumn="1 / 4"
       />
 
-      <MessagePanel gridRow="2 / 3" gridColumn="4 / 4" data={messagesList || []} />
+      <MessagePanel gridRow="2 / 3" gridColumn="4 / 4" data={messagesList || []} onClickItem={handleClickMessage} />
     </PageContainer>
   );
 };

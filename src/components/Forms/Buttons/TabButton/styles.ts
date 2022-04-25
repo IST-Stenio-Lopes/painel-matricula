@@ -32,6 +32,7 @@ export const Indicator = styled.div`
 `;
 
 export const Container = styled.div<ButtonProps>`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -58,4 +59,31 @@ export const Container = styled.div<ButtonProps>`
       color: ${theme.colors.secondary100};
     }
   `}
+`;
+
+export const NotificationCount = styled.div`
+  position: absolute;
+  right: -20px;
+  top: 5px;
+
+  background: ${theme.colors.primary50};
+  box-shadow: 1px 2px 5px rgba(195, 195, 195, 0.5);
+
+  margin: 0 30px;
+
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  display:flex;
+  align-items: center;
+  justify-content: center;
+
+  h2 {
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 16px;
+    color: ${theme.colors.secondary00}
+  }
 `;

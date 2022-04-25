@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import { FormHandles } from '@unform/core';
 import is from 'date-fns/esm/locale/is/index.js';
 import React, {
@@ -31,72 +32,72 @@ const userPermissions = [
     title: 'Usuários',
     allPermissions: { name: 'Usuários', role: UserRoles.Gerir_Usuarios },
     permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
+      { name: 'Criar', role: UserRoles.Criar_Usuarios },
+      { name: 'Editar', role: UserRoles.Editar_Usuarios },
+      { name: 'Remover', role: UserRoles.Remover_Usuarios },
     ],
   },
   {
     title: 'Anúncios',
-    allPermissions: { name: 'Anúncios', role: UserRoles.Gerir_Usuarios },
+    allPermissions: { name: 'Anúncios', role: UserRoles.Gerir_Propagandas },
     permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
+      { name: 'Criar', role: UserRoles.Criar_Anuncios },
+      { name: 'Editar', role: UserRoles.Editar_Anuncios },
+      { name: 'Remover', role: UserRoles.Remover_Anuncios },
     ],
   },
   {
     title: 'Descontos',
-    allPermissions: { name: 'Descontos', role: UserRoles.Gerir_Usuarios },
+    allPermissions: { name: 'Descontos', role: UserRoles.Gerir_Propagandas },
     permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
+      { name: 'Criar', role: UserRoles.Criar_Descontos },
+      { name: 'Editar', role: UserRoles.Editar_Descontos },
+      { name: 'Remover', role: UserRoles.Remover_Descontos },
     ],
   },
   {
     title: 'Turmas',
     allPermissions: { name: 'Turmas', role: UserRoles.Gerir_Usuarios },
     permissions: [
-      { name: 'Iniciar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
+      { name: 'Iniciar', role: UserRoles.Iniciar_Turmas },
+      { name: 'Criar', role: UserRoles.Criar_Turmas },
+      { name: 'Editar', role: UserRoles.Editar_Turmas },
+      { name: 'Remover', role: UserRoles.Remover_Turmas },
     ],
   },
   {
     title: 'Cursos',
-    allPermissions: { name: 'Cursos', role: UserRoles.Gerir_Usuarios },
+    allPermissions: { name: 'Cursos', role: UserRoles.Gerir_Cursos },
     permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
+      { name: 'Criar', role: UserRoles.Criar_Cursos },
+      { name: 'Editar', role: UserRoles.Editar_Cursos },
+      { name: 'Remover', role: UserRoles.Remover_Descontos },
     ],
   },
   {
     title: 'Matrículas',
-    allPermissions: { name: 'Matrículas', role: UserRoles.Gerir_Usuarios },
+    allPermissions: { name: 'Matrículas', role: UserRoles.Gerir_Matriculas },
     permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
+      { name: 'Criar', role: UserRoles.Criar_Matriculas },
+      { name: 'Editar', role: UserRoles.Editar_Matriculas },
+      { name: 'Remover', role: UserRoles.Remover_Matriculas },
     ],
   },
   {
     title: 'Parceiros',
-    allPermissions: { name: 'Parceiros', role: UserRoles.Gerir_Usuarios },
+    allPermissions: { name: 'Parceiros', role: UserRoles.Gerir_Parceiros },
     permissions: [
-      { name: 'Criar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Remover', role: UserRoles.Gerir_Usuarios },
+      { name: 'Criar', role: UserRoles.Criar_Parceiros },
+      { name: 'Editar', role: UserRoles.Editar_Parceiros },
+      { name: 'Remover', role: UserRoles.Remover_Parceiros },
     ],
   },
   {
     title: 'Localizações',
-    allPermissions: { name: 'Localizações', role: UserRoles.Gerir_Usuarios },
+    allPermissions: { name: 'Localizações', role: UserRoles.Editar_Localizacao | UserRoles.Listar_Localizacoes },
     permissions: [
-      { name: 'Visualizar', role: UserRoles.Gerir_Usuarios },
-      { name: 'Editar', role: UserRoles.Gerir_Usuarios },
+      { name: 'Visualizar', role: UserRoles.Listar_Localizacoes },
+      { name: 'Editar', role: UserRoles.Editar_Localizacao },
     ],
   },
 ];

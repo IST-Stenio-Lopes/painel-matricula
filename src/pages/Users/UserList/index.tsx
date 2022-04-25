@@ -115,7 +115,7 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     getUsersList();
-  }, [order, sortType]);
+  }, [order, sortType, currentPage]);
 
   const handleClick = useCallback((item) => {
     navigate('detalhes', { state: { user: item } });

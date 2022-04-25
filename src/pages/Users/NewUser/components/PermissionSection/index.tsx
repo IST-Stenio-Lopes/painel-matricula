@@ -23,29 +23,33 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
   permissions,
 }) => {
   const [all, setAll] = useState(false);
-  const [otherPermissions, setOtherPermission] = useState<boolean[]>(() => (
-    permissions.map(() => false)
-  ));
+  const [otherPermissions, setOtherPermissions] = useState<boolean[]>(
+    () => permissions.map(() => false),
+  );
+  const [permissionValue, setPermissionValue] = useState(0);
 
-  const otherValue = useCallback((index: number) => {
-    if (all) return all;
-    return otherPermissions[index];
-  }, [all, otherPermissions]);
+  const changeAll = useCallback((value) => {
+    const temp = permissions.map(() => value);
+
+    setAll(value);
+    setOtherPermissions([...temp]);
+    setPermissionValue(value ? permissionValue + allPermissions.role
+      : permissionValue - allPermissions.role);
+  }, [allPermissions.role, permissionValue, permissions]);
 
   const changePermission = useCallback((value, index) => {
-    console.log(value);
-    if (!value) setAll(false);
-
-    const temp = otherPermissions;
+    const temp = [...otherPermissions];
     temp[index] = value;
 
-    setOtherPermission(temp);
-  }, [otherPermissions]);
+    setAll(temp.every((p) => p));
+    setOtherPermissions([...temp]);
+    setPermissionValue(value ? permissionValue + permissions[index].role
+      : permissionValue - permissions[index].role);
+  }, [otherPermissions, permissionValue, permissions]);
 
   useEffect(() => {
-    console.log(all);
-    console.log(otherPermissions);
-  }, [all, otherPermissions]);
+    console.log(permissionValue);
+  }, [permissionValue]);
 
   return (
     <Container>
@@ -54,15 +58,16 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
           label={allPermissions.name}
           name={allPermissions.name}
           checked={all}
-          onChange={() => setAll(!all)}
+          onChange={() => changeAll(!all)}
         />
       </Header>
       <Content>
         {permissions.map((item, index) => (
           <CheckboxInput
+            key={item.name}
             label={item.name}
             name={item.name}
-            checked={otherValue(index)}
+            checked={otherPermissions[index]}
             onChange={() => changePermission(!otherPermissions[index], index)}
           />
         ))}
