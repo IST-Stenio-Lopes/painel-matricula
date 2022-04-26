@@ -18,6 +18,7 @@ import { useModal } from '../../hooks/modal';
 import { useAuth } from '../../hooks/auth';
 import { ISchoolSocketData } from '../../interfaces/ISocket';
 import { useDashboardData } from '../../hooks/dashboardData';
+import { baseURL } from '../../services/api';
 
 const ENDPOINT = 'http://192.168.1.191:4445/dashboard';
 
@@ -63,7 +64,7 @@ const MenuBar: React.FC = () => {
   }, [isEditing, configModal, handleVisible, handleBackButton]);
 
   useEffect(() => {
-    const socket = socketIOClient('http://192.168.1.191:4445', {
+    const socket = socketIOClient(`${baseURL}:2225`, {
       path: '/dashboard',
       auth: {
         school_id: user.school_id,

@@ -7,7 +7,9 @@ import { Button } from '../../../components/Forms/Buttons/Button';
 import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
-import api, { ResponseData } from '../../../services/api';
+import { useRoles } from '../../../hooks/roles';
+import { roleOptions } from '../../../interfaces/IUser';
+import api, { initialValue, ResponseData } from '../../../services/api';
 import wrapperNames from '../../../utils/wrapper.json';
 
 const listTitles = [
@@ -24,13 +26,7 @@ const listTitles = [
     hasSorting: true,
     hasFilter: true,
     growFactor: 'minmax(150px, 20%)',
-    filterOptions: [
-      { value: 'Atendente', label: 'Atendente' },
-      { value: 'Coordenador', label: 'Coordenador' },
-      { value: 'Diretor', label: 'Diretor' },
-      { value: 'Tesoureiro', label: 'Tesoureiro' },
-      { value: 'Visitante', label: 'Visitante' },
-    ],
+    filterOptions: roleOptions,
   },
   {
     id: '2',
@@ -58,13 +54,9 @@ interface UserResponse {
   registration_number:string;
 }
 
-const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
-
 const UserList: React.FC = () => {
+  const { updateUserRoles } = useRoles();
+
   const [responseData, setResponseData] = useState<ResponseData<UserResponse>>(
     {} as ResponseData<UserResponse>,
   );
@@ -84,12 +76,13 @@ const UserList: React.FC = () => {
 
   const listItems = useMemo(() => responseData.object_list
   && responseData.object_list.map(({
-    name, email, role_name, registration_number,
+    id, name, email, role_name, registration_number,
   }) => ({
     name,
     role_name,
     registration_number,
     email,
+    object_id: id,
   })), [responseData]);
 
   const getUsersList = useCallback(async () => {
@@ -105,7 +98,6 @@ const UserList: React.FC = () => {
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
@@ -118,6 +110,7 @@ const UserList: React.FC = () => {
   }, [order, sortType, currentPage]);
 
   const handleClick = useCallback((item) => {
+    updateUserRoles(item.role);
     navigate('detalhes', { state: { user: item } });
   }, [navigate]);
 

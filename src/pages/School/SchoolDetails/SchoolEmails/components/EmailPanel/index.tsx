@@ -1,6 +1,6 @@
 import { FormHandles } from '@unform/core';
 import React, {
-  useCallback, useMemo, useRef, useState,
+  useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { Button } from '../../../../../../components/Forms/Buttons/Button';
 import { FormSection } from '../../../../../../components/Forms/FormSection';
@@ -14,6 +14,7 @@ import { Container, FormContent } from './styles';
 
 const EmailPanel: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const [urlDoc, setUrlDoc] = useState();
   const [studentName, setStudentName] = useState<string>();
 
   const initialValue = useMemo(() => ({
@@ -61,7 +62,17 @@ const EmailPanel: React.FC = () => {
   const [documents, setDocuments] = useState<ITag[]>(initialValue.documents);
   const [legalDocuments, setLegalDocuments] = useState<ITag[]>(initialValue.legal_documents);
 
+  const getHTMLDoc = useCallback(async () => {
+    await api.get('http://192.168.1.191:2223/school/dashboard/email/template?user_id=120ae463-b7d1-4c79-b304-e39f8d44917e&school_id=682fcad2-2c33-4788-aafa-7751a3915f30&student_id=abfa6e84-545a-4a0d-a049-7976d789650d&course_id=da83fc94-fede-47b3-b738-cd5fe930d0ad&classroom_id=ca49c004-3f7f-4f3b-a982-c010841f2af0').then((response) => {
+      setUrlDoc(response.data);
+    });
+  }, []);
+
   const url = useMemo(() => `http://192.168.1.191:2223/school/dashboard/email/template?student_name=${studentName}&user_id=120ae463-b7d1-4c79-b304-e39f8d44917e&school_id=682fcad2-2c33-4788-aafa-7751a3915f30&student_id=abfa6e84-545a-4a0d-a049-7976d789650d&course_id=da83fc94-fede-47b3-b738-cd5fe930d0ad&classroom_id=ca49c004-3f7f-4f3b-a982-c010841f2af0`, [studentName]);
+
+  useEffect(() => {
+    getHTMLDoc();
+  }, [getHTMLDoc]);
   return (
     <Container>
       <ContentPanel
@@ -109,7 +120,7 @@ const EmailPanel: React.FC = () => {
           </FormSection>
           <FormSection gridColumn="2 / 3">
             <h3>Preview</h3>
-            <iframe title="Preview" src={url} />
+            <iframe title="Preview" srcDoc={urlDoc} />
           </FormSection>
         </FormContent>
       </ContentPanel>

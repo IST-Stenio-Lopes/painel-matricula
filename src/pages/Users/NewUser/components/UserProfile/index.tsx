@@ -1,9 +1,8 @@
 import { FormHandles } from '@unform/core';
-import is from 'date-fns/esm/locale/is/index.js';
 import React, {
   ChangeEvent,
   useCallback,
-  useEffect, useMemo, useRef, useState,
+  useEffect, useRef, useState,
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -14,8 +13,9 @@ import { InputLine } from '../../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../../components/Forms/InputSection';
 import ContentPanel from '../../../../../components/Panels/ContentPanel';
 import UserInfo from '../../../../../components/UserInfo';
-import { IUser, useAuth } from '../../../../../hooks/auth';
+import { useAuth } from '../../../../../hooks/auth';
 import { useModal } from '../../../../../hooks/modal';
+import { IUser } from '../../../../../interfaces/IUser';
 import api from '../../../../../services/api';
 import getValidationErros from '../../../../../utils/getValidationErrors';
 

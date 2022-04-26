@@ -2,22 +2,9 @@ import jwtDecode from 'jwt-decode';
 import React, {
   createContext, useCallback, useState, useContext, useMemo,
 } from 'react';
-import { updateUserRoles } from '../interfaces/IUser';
+import { IUser } from '../interfaces/IUser';
 import api from '../services/api';
-
-export interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  avatar_url: string;
-  role_name: string;
-  role: number;
-  company_id: string;
-  school_id: string;
-  school_city: string;
-  school_estate: string;
-  school_initials: string;
-}
+import { useRoles } from './roles';
 
 interface AuthState {
   token: string;
@@ -45,6 +32,8 @@ interface DecodedProps {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
+  const { updateUserRoles } = useRoles();
+
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@Matricula:token');
     const user = localStorage.getItem('@Matricula:user');
@@ -94,7 +83,6 @@ const AuthProvider: React.FC = ({ children }) => {
     localStorage.removeItem('@Matricula:refresh_token');
 
     setData({} as AuthState);
-    console.log('aqui');
   }, []);
 
   const updateUser = useCallback(

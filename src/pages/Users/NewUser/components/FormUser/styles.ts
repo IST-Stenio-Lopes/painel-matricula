@@ -33,7 +33,7 @@ export const GradeHeader = styled.div`
 
   h2 {
     display: flex;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 13px;
     line-height: 16px;
 

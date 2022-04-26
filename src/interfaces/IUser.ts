@@ -1,6 +1,23 @@
+/* eslint-disable max-len */
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-bitwise */
 import { BitField } from 'easy-bits';
+
+export interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url: string;
+  role_name: string;
+  role: number;
+  cpf: string;
+  cell_phone: string;
+  company_id: string;
+  school_id: string;
+  school_city: string;
+  school_estate: string;
+  school_initials: string;
+}
 
 export enum UserRoles {
   ACESSO_INVALIDO = 0,
@@ -16,8 +33,7 @@ export enum UserRoles {
   Editar_Descontos = 1 << 7,
   Remover_Anuncios = 1 << 8,
   Remover_Descontos = 1 << 9,
-  Gerir_Propagandas = Criar_Anuncios | Criar_Descontos | Editar_Anuncios
-  | Editar_Descontos | Remover_Anuncios | Remover_Descontos,
+  Gerir_Propagandas = Criar_Anuncios | Criar_Descontos | Editar_Anuncios | Editar_Descontos | Remover_Anuncios | Remover_Descontos,
 
   Criar_Turmas = 1 << 10,
   Editar_Turmas = 1 << 11,
@@ -46,18 +62,23 @@ export enum UserRoles {
   // Acessos Fixos
   Visitante = 1 << 27,
 
-  Coordenador = 1 << 28 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas
-  | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Coordenador = 1 << 28 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
 
-  Tesoureiro = 1 << 29 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas
-  | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Tesoureiro = 1 << 29 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
 
-  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas
-  | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
 
-  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas
-  | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
 }
+const atendente = UserRoles.Criar_Cursos | UserRoles.Criar_Turmas | UserRoles.Criar_Anuncios | UserRoles.Criar_Matriculas;
+
+export const roleOptions = [
+  { value: atendente, label: 'Atendente' },
+  { value: UserRoles.Coordenador, label: 'Coordenador' },
+  { value: UserRoles.Diretor, label: 'Diretor' },
+  { value: UserRoles.Tesoureiro, label: 'Tesoureiro' },
+  { value: UserRoles.Visitante, label: 'Visitante' },
+];
 
 const role_BitField = new BitField<UserRoles>();
 

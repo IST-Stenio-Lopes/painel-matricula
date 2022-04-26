@@ -1,8 +1,8 @@
 import React, {
-  ChangeEvent, useEffect, useMemo, useRef,
+  ChangeEvent, useMemo, useRef,
 } from 'react';
 import { theme } from '../../global/styles/styles';
-import { IUser } from '../../hooks/auth';
+import { IUser } from '../../interfaces/IUser';
 import { IStudent } from '../../pages/Enrollment/NewEnrollment/FormEnrollment/data/types';
 import Avatar from '../Avatar';
 import { Button } from '../Forms/Buttons/Button';

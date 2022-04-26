@@ -15,12 +15,13 @@ export const initialValue = {
   object_list: [],
 };
 
-// const baseURL = 'http://senaisolucoes.com.br:2223';
-const baseURL = 'http://192.168.1.191:2223';
-// const baseURL = 'http://192.168.191.188:2223';
+const port = '2223';
+// export const baseURL = 'http://senaisolucoes.com.br';
+export const baseURL = 'http://192.168.1.191';
+// export const baseURL = 'http://192.168.191.188';
 
 const api = axios.create({
-  baseURL,
+  baseURL: `${baseURL}:${port}`,
 });
 
 export default api;

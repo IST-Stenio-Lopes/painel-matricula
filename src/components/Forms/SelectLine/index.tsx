@@ -13,8 +13,8 @@ import {
 } from './styles';
 
 export interface SelectOptions {
-  value: string;
-  label: string;
+  value: string | number;
+  label: string | number;
   color?: string;
   isFixed?: boolean;
   isDisabled?: boolean;

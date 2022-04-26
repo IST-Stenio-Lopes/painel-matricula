@@ -1,31 +1,32 @@
 /* eslint-disable no-bitwise */
 import { FormHandles } from '@unform/core';
-import is from 'date-fns/esm/locale/is/index.js';
 import React, {
   ChangeEvent,
   useCallback,
-  useEffect, useMemo, useRef, useState,
+  useEffect, useRef, useState,
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Button } from '../../../../../components/Forms/Buttons/Button';
-import LinkButton from '../../../../../components/Forms/Buttons/LinkButton';
 import { FormSection } from '../../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../../components/Forms/InputSection';
 import SelectLine from '../../../../../components/Forms/SelectLine';
 import ContentPanel from '../../../../../components/Panels/ContentPanel';
 import UserInfo from '../../../../../components/UserInfo';
-import { IUser, useAuth } from '../../../../../hooks/auth';
+import { useAuth } from '../../../../../hooks/auth';
 import { useModal } from '../../../../../hooks/modal';
 import api from '../../../../../services/api';
 import getValidationErros from '../../../../../utils/getValidationErrors';
 import PermissionSection from '../PermissionSection';
-import { UserRoles } from '../../../../../interfaces/IUser';
+import {
+  IUser, roleOptions, UserRoles,
+} from '../../../../../interfaces/IUser';
 
 import {
   Container, FormContent,
 } from './styles';
+import { cpfMasked, telMasked } from '../../../../../utils/masks';
 
 const userPermissions = [
   {
@@ -102,15 +103,10 @@ const userPermissions = [
   },
 ];
 
-const roleOptions = [
-  {
-    value: '', label: '',
-  },
-];
-
 const FormUser: React.FC = () => {
   const location: any = useLocation();
   const formRef = useRef<FormHandles>(null);
+  const [selectedRole, setSelectedRole] = useState<number>();
   const [showEditPassword, setShowEditPassword] = useState(false);
   const { configModal, handleVisible } = useModal();
 
@@ -118,20 +114,22 @@ const FormUser: React.FC = () => {
 
   const { user, updateUser } = useAuth();
 
+  const configUser = useCallback((value: IUser) => {
+    const temp = {
+      ...value,
+      cpf: cpfMasked(value.cpf),
+      cell_phone: telMasked(value.cell_phone),
+    } as IUser;
+    setCurrentUser(temp);
+    setSelectedRole(roleOptions.find((role) => role.label === temp.role_name)?.value);
+  }, []);
+
   const handleChangeName = useCallback((e) => {
     const temp = { ...currentUser as IUser };
 
     temp.name = e.target.value;
     setCurrentUser(temp);
   }, [currentUser]);
-
-  useEffect(() => {
-    if (location.state?.newUser) setCurrentUser(undefined);
-    else if (location.state?.user) setCurrentUser(location.state.user);
-    else setCurrentUser(user);
-
-    formRef.current?.setErrors({});
-  }, [location.state, user]);
 
   const createUser = useCallback(async (data) => {}, []);
 
@@ -236,6 +234,29 @@ const FormUser: React.FC = () => {
     }
   }, [currentUser?.id, currentUser?.school_id, updateUser]);
 
+  const getCurrentUser = useCallback(async () => {
+    await api.get(`/users/dashboard/specific/id/${location.state?.user.object_id}`).catch((err) => {
+      configModal(err.response.data.message, 'error');
+      handleVisible();
+    }).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        console.dir(response.data);
+        configUser(response.data);
+      } else {
+        setCurrentUser(undefined);
+      }
+    });
+  }, [configModal, configUser, handleVisible, location.state?.user.object_id]);
+
+  useEffect(() => {
+    if (location.state?.newUser) {
+      setCurrentUser(undefined);
+    } else if (location.state?.user) getCurrentUser();
+    else configUser(user);
+
+    formRef.current?.setErrors({});
+  }, [configUser, getCurrentUser, location.state, user]);
+
   return (
     <Container>
       <UserInfo user={currentUser} handleChangePhoto={handleAvatarChange} />
@@ -282,7 +303,7 @@ const FormUser: React.FC = () => {
 
               <InputLine
                 mask="tel"
-                name="cellphone"
+                name="cell_phone"
                 label="Telefone"
               />
             </InputSection>
@@ -290,25 +311,22 @@ const FormUser: React.FC = () => {
             <SelectLine
               name="role_name"
               label="Nível de acesso"
+              options={roleOptions}
+              value={roleOptions.filter((item) => item.value === selectedRole)}
+              onChange={(newValue) => setSelectedRole(newValue as number)}
             />
 
-            <InputLine
-              name="password"
-              label="Senha"
-            />
-            <InputLine
-              name="confirm_password"
-              label="Confirmar Senha"
-            />
           </FormSection>
           <FormSection gridColumn="2 / 3">
-            <h3>Permissões</h3>
+            <h3>PERMISSÕES DO USUÁRIO</h3>
             {
               userPermissions.map(({ title, allPermissions, permissions }) => (
                 <PermissionSection
+                  key={title}
                   title={title}
                   allPermissions={allPermissions}
                   permissions={permissions}
+                  userRole={currentUser?.role || 0}
                 />
               ))
             }

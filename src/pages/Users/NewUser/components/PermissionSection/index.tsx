@@ -1,8 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import CheckboxInput from '../../../../../components/Forms/Checkbox';
+import { useRoles } from '../../../../../hooks/roles';
 
 import { Container, Header, Content } from './styles';
 
@@ -15,18 +16,22 @@ interface PermissionSectionProps {
   title: string;
   allPermissions: IPermission;
   permissions: IPermission[];
+  userRole: number;
 }
 
 const PermissionSection: React.FC<PermissionSectionProps> = ({
   title,
   allPermissions,
   permissions,
+  userRole,
 }) => {
+  const { getRole, updateUserRoles } = useRoles();
+
   const [all, setAll] = useState(false);
   const [otherPermissions, setOtherPermissions] = useState<boolean[]>(
     () => permissions.map(() => false),
   );
-  const [permissionValue, setPermissionValue] = useState(0);
+  const [permissionValue, setPermissionValue] = useState(userRole);
 
   const changeAll = useCallback((value) => {
     const temp = permissions.map(() => value);
@@ -48,8 +53,20 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
   }, [otherPermissions, permissionValue, permissions]);
 
   useEffect(() => {
-    console.log(permissionValue);
-  }, [permissionValue]);
+    updateUserRoles(userRole);
+    // console.log(title);
+    permissions.map((permission, index) => {
+      changePermission(
+        getRole(permission.role),
+        index,
+      );
+      // console.log(permission.role, getRole(permission.role));
+      return true;
+    });
+    changeAll(getRole(allPermissions.role));
+
+    // console.log(allPermissions.role, getRole(allPermissions.role));
+  }, [allPermissions, getRole, permissions, title, userRole]);
 
   return (
     <Container>
