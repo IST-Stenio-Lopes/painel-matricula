@@ -3,10 +3,11 @@ import { FormHandles } from '@unform/core';
 import React, {
   ChangeEvent,
   useCallback,
-  useEffect, useRef, useState,
+  useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
+import { MdOutlineSearch } from 'react-icons/md';
 import { Button } from '../../../../../components/Forms/Buttons/Button';
 import { FormSection } from '../../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../../components/Forms/InputLine';
@@ -20,96 +21,27 @@ import api from '../../../../../services/api';
 import getValidationErros from '../../../../../utils/getValidationErrors';
 import PermissionSection from '../PermissionSection';
 import {
-  IUser, roleOptions, UserRoles,
+  IUser, roleOptions, userPermissions,
 } from '../../../../../interfaces/IUser';
 
 import {
   Container, FormContent,
 } from './styles';
-import { cpfMasked, telMasked } from '../../../../../utils/masks';
-
-const userPermissions = [
-  {
-    title: 'Usuários',
-    allPermissions: { name: 'Usuários', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Criar_Usuarios },
-      { name: 'Editar', role: UserRoles.Editar_Usuarios },
-      { name: 'Remover', role: UserRoles.Remover_Usuarios },
-    ],
-  },
-  {
-    title: 'Anúncios',
-    allPermissions: { name: 'Anúncios', role: UserRoles.Gerir_Propagandas },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Criar_Anuncios },
-      { name: 'Editar', role: UserRoles.Editar_Anuncios },
-      { name: 'Remover', role: UserRoles.Remover_Anuncios },
-    ],
-  },
-  {
-    title: 'Descontos',
-    allPermissions: { name: 'Descontos', role: UserRoles.Gerir_Propagandas },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Criar_Descontos },
-      { name: 'Editar', role: UserRoles.Editar_Descontos },
-      { name: 'Remover', role: UserRoles.Remover_Descontos },
-    ],
-  },
-  {
-    title: 'Turmas',
-    allPermissions: { name: 'Turmas', role: UserRoles.Gerir_Usuarios },
-    permissions: [
-      { name: 'Iniciar', role: UserRoles.Iniciar_Turmas },
-      { name: 'Criar', role: UserRoles.Criar_Turmas },
-      { name: 'Editar', role: UserRoles.Editar_Turmas },
-      { name: 'Remover', role: UserRoles.Remover_Turmas },
-    ],
-  },
-  {
-    title: 'Cursos',
-    allPermissions: { name: 'Cursos', role: UserRoles.Gerir_Cursos },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Criar_Cursos },
-      { name: 'Editar', role: UserRoles.Editar_Cursos },
-      { name: 'Remover', role: UserRoles.Remover_Descontos },
-    ],
-  },
-  {
-    title: 'Matrículas',
-    allPermissions: { name: 'Matrículas', role: UserRoles.Gerir_Matriculas },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Criar_Matriculas },
-      { name: 'Editar', role: UserRoles.Editar_Matriculas },
-      { name: 'Remover', role: UserRoles.Remover_Matriculas },
-    ],
-  },
-  {
-    title: 'Parceiros',
-    allPermissions: { name: 'Parceiros', role: UserRoles.Gerir_Parceiros },
-    permissions: [
-      { name: 'Criar', role: UserRoles.Criar_Parceiros },
-      { name: 'Editar', role: UserRoles.Editar_Parceiros },
-      { name: 'Remover', role: UserRoles.Remover_Parceiros },
-    ],
-  },
-  {
-    title: 'Localizações',
-    allPermissions: { name: 'Localizações', role: UserRoles.Editar_Localizacao | UserRoles.Listar_Localizacoes },
-    permissions: [
-      { name: 'Visualizar', role: UserRoles.Listar_Localizacoes },
-      { name: 'Editar', role: UserRoles.Editar_Localizacao },
-    ],
-  },
-];
+import { telMasked } from '../../../../../utils/masks';
 
 const FormUser: React.FC = () => {
-  const location: any = useLocation();
-  const formRef = useRef<FormHandles>(null);
-  const [selectedRole, setSelectedRole] = useState<number>();
-  const [showEditPassword, setShowEditPassword] = useState(false);
   const { configModal, handleVisible } = useModal();
+  const location: any = useLocation();
+  const [loadingSearchStudent, setLoadingSearchStudent] = useState(false);
+  const [email, setCpf] = useState<string>();
 
+  const formRef = useRef<FormHandles>(null);
+  const [file, setFile] = useState<any>();
+  const [schoolsList, setSchoolsList] = useState([]);
+  const [selectedSchool, setSelectedSchool] = useState<string>();
+  const [selectedRole, setSelectedRole] = useState<number>();
+  const [permissionValue, setPermissionValue] = useState<number>(0);
+  const [showEditPassword, setShowEditPassword] = useState(false);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
 
   const { user, updateUser } = useAuth();
@@ -117,11 +49,12 @@ const FormUser: React.FC = () => {
   const configUser = useCallback((value: IUser) => {
     const temp = {
       ...value,
-      cpf: cpfMasked(value.cpf),
+      email: value.email,
       cell_phone: telMasked(value.cell_phone),
     } as IUser;
     setCurrentUser(temp);
     setSelectedRole(roleOptions.find((role) => role.label === temp.role_name)?.value);
+    setPermissionValue(roleOptions.find((role) => role.label === temp.role_name)?.value || 0);
   }, []);
 
   const handleChangeName = useCallback((e) => {
@@ -147,91 +80,97 @@ const FormUser: React.FC = () => {
   }, [configModal, currentUser?.id, handleVisible]);
 
   const handleSubmit = useCallback(async (data) => {
-    try {
-      formRef.current?.setErrors({});
+    console.log('submit', selectedRole, permissionValue);
 
-      const schema = Yup.object().shape({
-        name: Yup.lazy(() => {
-          if (currentUser) {
-            return Yup.string()
-              .required('Nome obrigatório');
-          }
+    // try {
+    //   formRef.current?.setErrors({});
 
-          return Yup.mixed().notRequired();
-        }),
-        registration_number: Yup.lazy(() => {
-          if (currentUser) {
-            return Yup.string()
-              .required('Matrícula obrigatória');
-          }
+    //   const schema = Yup.object().shape({
+    //     name: Yup.lazy(() => {
+    //       if (currentUser) {
+    //         return Yup.string()
+    //           .required('Nome obrigatório');
+    //       }
 
-          return Yup.mixed().notRequired();
-        }),
+    //       return Yup.mixed().notRequired();
+    //     }),
+    //     registration_number: Yup.lazy(() => {
+    //       if (currentUser) {
+    //         return Yup.string()
+    //           .required('Matrícula obrigatória');
+    //       }
 
-        email: Yup.lazy(() => {
-          if (currentUser) {
-            return Yup.string()
-              .required('E-mail obrigatório')
-              .email('Digite um e-mail válido');
-          }
+    //       return Yup.mixed().notRequired();
+    //     }),
 
-          return Yup.mixed().notRequired();
-        }),
+    //     email: Yup.lazy(() => {
+    //       if (currentUser) {
+    //         return Yup.string()
+    //           .required('E-mail obrigatório')
+    //           .email('Digite um e-mail válido');
+    //       }
 
-        current_password: Yup.lazy(() => {
-          if (showEditPassword) {
-            return Yup.string()
-              .required('Senha atual obrigatória');
-          }
+    //       return Yup.mixed().notRequired();
+    //     }),
 
-          return Yup.mixed().notRequired();
-        }),
+    //     current_password: Yup.lazy(() => {
+    //       if (showEditPassword) {
+    //         return Yup.string()
+    //           .required('Senha atual obrigatória');
+    //       }
 
-        password: Yup.lazy(() => {
-          if (!currentUser) {
-            return Yup.string()
-              .required('Senha obrigatória');
-          }
+    //       return Yup.mixed().notRequired();
+    //     }),
 
-          return Yup.mixed().notRequired();
-        }),
-        password_confirmation: Yup.lazy(() => {
-          if (!currentUser) {
-            return Yup.string()
-              .oneOf([Yup.ref('password'), null], 'Senhas devem ser iguais.');
-          }
+    //     password: Yup.lazy(() => {
+    //       if (!currentUser) {
+    //         return Yup.string()
+    //           .required('Senha obrigatória');
+    //       }
 
-          return Yup.mixed().notRequired();
-        }),
-      });
+    //       return Yup.mixed().notRequired();
+    //     }),
+    //     password_confirmation: Yup.lazy(() => {
+    //       if (!currentUser) {
+    //         return Yup.string()
+    //           .oneOf([Yup.ref('password'), null], 'Senhas devem ser iguais.');
+    //       }
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+    //       return Yup.mixed().notRequired();
+    //     }),
+    //   });
 
-      if (currentUser) await updateCurrentUser(data);
-      else await createUser(data);
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const erros = getValidationErros(err);
+    //   await schema.validate(data, {
+    //     abortEarly: false,
+    //   });
 
-        formRef.current?.setErrors(erros);
-      }
-    }
-  }, [createUser, currentUser, showEditPassword, updateCurrentUser]);
+    //   if (currentUser) await updateCurrentUser(data);
+    //   else await createUser(data);
+    // } catch (err) {
+    //   if (err instanceof Yup.ValidationError) {
+    //     const erros = getValidationErros(err);
+
+    //     formRef.current?.setErrors(erros);
+    //   }
+    // }
+  }, [createUser, currentUser, showEditPassword, updateCurrentUser, selectedRole, permissionValue]);
 
   const handleAvatarChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const data = new FormData();
-
-      data.append('avatar', e.target.files[0]);
-
-      await api.patch('/users/dashboard/profile/avatar', data).then(async () => {
-        await api.get(`/users/dashboard/profile/${currentUser?.id}`).then((res) => {
-          updateUser({ ...res.data, school_id: currentUser?.school_id });
-        });
-      });
+      setFile(e.target.files[0]);
     }
+
+    // if (e.target.files) {
+    //   const data = new FormData();
+
+    //   data.append('avatar', e.target.files[0]);
+
+    //   await api.patch('/users/dashboard/profile/avatar', data).then(async () => {
+    //     await api.get(`/users/dashboard/profile/${currentUser?.id}`).then((res) => {
+    //       updateUser({ ...res.data, school_id: currentUser?.school_id });
+    //     });
+    //   });
+    // }
   }, [currentUser?.id, currentUser?.school_id, updateUser]);
 
   const getCurrentUser = useCallback(async () => {
@@ -240,7 +179,6 @@ const FormUser: React.FC = () => {
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        console.dir(response.data);
         configUser(response.data);
       } else {
         setCurrentUser(undefined);
@@ -248,18 +186,70 @@ const FormUser: React.FC = () => {
     });
   }, [configModal, configUser, handleVisible, location.state?.user.object_id]);
 
+  const getSchoolsList = useCallback(async () => {
+    await api.get('/users/dashboard/school/list').catch((err) => console.dir(err)).then((response: any) => {
+      setSchoolsList(response.data.map((item: any) => (
+        {
+          value: item.school_id,
+          label: item.name,
+        })));
+    });
+  }, []);
+
+  const searchUser = useCallback(async (data) => {
+    setLoadingSearchStudent(true);
+    try {
+      formRef.current?.setErrors({});
+
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .email()
+          .required('Email obrigatório'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      await api.get(`/users/dashboard/specific/email/${email}`).catch((err) => {
+        configModal(err.response.data.message, 'error');
+        handleVisible();
+      }).then((response) => {
+        if (response?.status && response.status >= 200 && response.status <= 299) {
+          configModal(
+            `O CPF digitado pertence à ${response.data.name} , deseja carrega suas informações?`,
+            'message',
+            true,
+            false,
+            () => { configUser(response.data); },
+          );
+          handleVisible();
+        }
+      });
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const erros = getValidationErros(err);
+
+        formRef.current?.setErrors(erros);
+      }
+    } finally {
+      setLoadingSearchStudent(false);
+    }
+  }, [configModal, email, handleVisible, configUser]);
+
   useEffect(() => {
+    getSchoolsList();
+
     if (location.state?.newUser) {
       setCurrentUser(undefined);
     } else if (location.state?.user) getCurrentUser();
-    else configUser(user);
 
     formRef.current?.setErrors({});
-  }, [configUser, getCurrentUser, location.state, user]);
+  }, [configUser, getCurrentUser, location.state, user, getSchoolsList]);
 
   return (
     <Container>
-      <UserInfo user={currentUser} handleChangePhoto={handleAvatarChange} />
+      <UserInfo user={currentUser} handleChangePhoto={handleAvatarChange} img={file} />
       <ContentPanel
         gridColumn="2 / 4"
         title="Informações Pessoais"
@@ -280,10 +270,26 @@ const FormUser: React.FC = () => {
           onSubmit={handleSubmit}
         >
           <FormSection gridColumn="1 / 2">
-            <InputLine
-              name="email"
-              label="Email"
-            />
+            <InputSection grid_template_column="1fr auto">
+              <InputLine
+                name="email"
+                label="Email"
+              />
+
+              <Button
+                loading={loadingSearchStudent}
+                styleType="outline"
+                gridColumn="2 / 3"
+                gridRow="4 / 4"
+                width="58px"
+                maxHeight="34px"
+                iconWithMargin={false}
+                onClick={() => searchUser(formRef.current?.getData())}
+              >
+                <MdOutlineSearch size={24} />
+              </Button>
+            </InputSection>
+
             <InputLine
               name="name"
               label="Nome"
@@ -291,7 +297,7 @@ const FormUser: React.FC = () => {
             />
             <InputLine
               mask="cpf"
-              name="cpf"
+              name="email"
               label="CPF"
             />
             <InputSection grid_template_column="1fr 1fr">
@@ -313,7 +319,18 @@ const FormUser: React.FC = () => {
               label="Nível de acesso"
               options={roleOptions}
               value={roleOptions.filter((item) => item.value === selectedRole)}
-              onChange={(newValue) => setSelectedRole(newValue as number)}
+              onChange={(newValue: any) => {
+                setPermissionValue(newValue.value as number);
+                setSelectedRole(newValue.value as number);
+              }}
+            />
+
+            <SelectLine
+              name="schools"
+              label="Escola SENAI"
+              options={schoolsList}
+              value={schoolsList.filter((item: any) => item.value === selectedSchool)}
+              onChange={(newValue: any) => setSelectedSchool(newValue.value as string)}
             />
 
           </FormSection>
@@ -326,7 +343,9 @@ const FormUser: React.FC = () => {
                   title={title}
                   allPermissions={allPermissions}
                   permissions={permissions}
-                  userRole={currentUser?.role || 0}
+                  userRole={selectedRole}
+                  permissionValue={permissionValue}
+                  setPermissionValue={setPermissionValue}
                 />
               ))
             }

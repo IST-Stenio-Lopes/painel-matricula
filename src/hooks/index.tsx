@@ -7,6 +7,7 @@ import { NavProvider } from './nav';
 import { StudentProvider } from './student';
 import { EnrollmentProvider } from './enrollment';
 import { ClassroomProvider } from './classroom';
+import { SchoolProvider } from './school';
 import { DashboardDataProvider } from './dashboardData';
 import { RolesProvider } from './roles';
 
@@ -16,13 +17,15 @@ const AppProvider: React.FC = ({ children }) => (
       <ModalProvider>
         <NavProvider>
           <AuthProvider>
-            <ClassroomProvider>
-              <EnrollmentProvider>
-                <StudentProvider>
-                  {children}
-                </StudentProvider>
-              </EnrollmentProvider>
-            </ClassroomProvider>
+            <SchoolProvider>
+              <ClassroomProvider>
+                <EnrollmentProvider>
+                  <StudentProvider>
+                    {children}
+                  </StudentProvider>
+                </EnrollmentProvider>
+              </ClassroomProvider>
+            </SchoolProvider>
           </AuthProvider>
         </NavProvider>
       </ModalProvider>

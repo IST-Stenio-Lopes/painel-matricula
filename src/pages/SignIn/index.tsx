@@ -22,7 +22,6 @@ import { InputLine } from '../../components/Forms/InputLine';
 import { Button } from '../../components/Forms/Buttons/Button';
 import { useAuth } from '../../hooks/auth';
 import getValidationErros from '../../utils/getValidationErrors';
-import Checkbox from '../../components/Forms/Checkbox';
 import LinkButton from '../../components/Forms/Buttons/LinkButton';
 import SelectLine from '../../components/Forms/SelectLine';
 import { theme } from '../../global/styles/styles';

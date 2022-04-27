@@ -1,7 +1,6 @@
 import React, {
   ChangeEvent, useMemo, useRef,
 } from 'react';
-import { theme } from '../../global/styles/styles';
 import { IUser } from '../../interfaces/IUser';
 import { IStudent } from '../../pages/Enrollment/NewEnrollment/FormEnrollment/data/types';
 import Avatar from '../Avatar';
@@ -14,10 +13,13 @@ import {
 interface UserInfoProps {
   user?: IUser;
   student?: IStudent;
+  img?: any;
   handleChangePhoto?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const UserInfo: React.FC<UserInfoProps> = ({ user, student, handleChangePhoto = () => {} }) => {
+const UserInfo: React.FC<UserInfoProps> = ({
+  user, student, img, handleChangePhoto = () => {},
+}) => {
   const inputRef = useRef<any>(null);
   const name = useMemo(() => {
     if (user) {
@@ -29,10 +31,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ user, student, handleChangePhoto = 
 
   const avatarUrl = useMemo(() => {
     if (user) {
-      return user?.avatar_url || '';
+      return user?.avatar_url;
     }
 
-    return student?.avatar || 'Nome';
+    return student?.avatar;
   }, [student, user]);
 
   const role = useMemo(() => {
@@ -50,12 +52,11 @@ const UserInfo: React.FC<UserInfoProps> = ({ user, student, handleChangePhoto = 
           <Title>{name}</Title>
           <Subtitle>{role}</Subtitle>
         </TextArea>
-        <Avatar size="120px" avatar_url={avatarUrl} alt_name={name} />
+        <Avatar size="120px" imgFile={img} avatar_url={avatarUrl} alt_name={name} />
       </Content>
       <ButtonArea>
-        <input style={{ display: 'none' }} ref={inputRef} type="file" id="avatar" accept="image/png image/jpg" onChange={handleChangePhoto} />
+        <input style={{ display: 'none' }} ref={inputRef} type="file" id="avatar" accept=".png, .jpg, .jpeg" onChange={handleChangePhoto} />
         <Button hasOutline={false} styleType="outline" minHeight="40px" onClick={() => inputRef.current?.click()}>Adicionar Foto</Button>
-        <Button color={theme.colors.secondary20} hasOutline={false} styleType="outline" minHeight="40px">Remover Foto</Button>
       </ButtonArea>
     </Container>
   );

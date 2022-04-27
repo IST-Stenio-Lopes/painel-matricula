@@ -16,22 +16,25 @@ interface PermissionSectionProps {
   title: string;
   allPermissions: IPermission;
   permissions: IPermission[];
-  userRole: number;
+  userRole: number | undefined;
+  permissionValue: number;
+  setPermissionValue: (value: number) => void;
 }
 
 const PermissionSection: React.FC<PermissionSectionProps> = ({
   title,
   allPermissions,
   permissions,
-  userRole,
+  userRole = 0,
+  permissionValue,
+  setPermissionValue,
 }) => {
-  const { getRole, updateUserRoles } = useRoles();
+  const { updateUserRoles, getAnyRole } = useRoles();
 
   const [all, setAll] = useState(false);
   const [otherPermissions, setOtherPermissions] = useState<boolean[]>(
     () => permissions.map(() => false),
   );
-  const [permissionValue, setPermissionValue] = useState(userRole);
 
   const changeAll = useCallback((value) => {
     const temp = permissions.map(() => value);
@@ -54,19 +57,12 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
 
   useEffect(() => {
     updateUserRoles(userRole);
-    // console.log(title);
-    permissions.map((permission, index) => {
-      changePermission(
-        getRole(permission.role),
-        index,
-      );
-      // console.log(permission.role, getRole(permission.role));
-      return true;
-    });
-    changeAll(getRole(allPermissions.role));
 
-    // console.log(allPermissions.role, getRole(allPermissions.role));
-  }, [allPermissions, getRole, permissions, title, userRole]);
+    const temp = permissions.map((permission) => getAnyRole(permission.role));
+
+    setOtherPermissions(temp);
+    setAll(temp.every((p) => p));
+  }, [allPermissions, permissions, title, userRole]);
 
   return (
     <Container>

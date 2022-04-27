@@ -20,7 +20,7 @@ export interface ISchool {
   city: string,
   estate: string,
   phone: string,
-  whatsapp_enabled: boolean,
+  whatsapp_enabled: true,
   whatsapp_number: string,
   email: string,
   business_hours: string,
@@ -33,11 +33,22 @@ export interface ISchool {
   pre_registration_email: string,
   application_email: string,
   lean_office_email: string,
-  free_enrollment_block: boolean,
+  free_enrollment_block: true,
   free_enrollment_block_time: string,
   status: string,
   updated_at: string,
   created_at: string
+}
+
+export interface ISchoolListResponse {
+  id: string,
+  name: string,
+  initials: string,
+  estate: string,
+  city: string,
+  email: string,
+  phone: string,
+  status: string,
 }
 
 export const typeOptions = [

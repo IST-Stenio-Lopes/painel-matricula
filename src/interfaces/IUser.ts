@@ -20,8 +20,6 @@ export interface IUser {
 }
 
 export enum UserRoles {
-  ACESSO_INVALIDO = 0,
-
   Criar_Usuarios = 1 << 1,
   Editar_Usuarios = 1 << 2,
   Remover_Usuarios = 1 << 3,
@@ -53,6 +51,7 @@ export enum UserRoles {
 
   Listar_Localizacoes = 1 << 20,
   Editar_Localizacao = 1 << 21,
+  Gerir_Localizacoes = Listar_Localizacoes | Editar_Localizacao,
 
   Criar_Parceiros = 1 << 22,
   Editar_Parceiros = 1 << 23,
@@ -60,24 +59,101 @@ export enum UserRoles {
   Gerir_Parceiros = Criar_Parceiros | Editar_Parceiros | Remover_Parceiros,
 
   // Acessos Fixos
-  Visitante = 1 << 27,
+  Visitante = 0,
 
-  Coordenador = 1 << 28 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Atendente = Gerir_Cursos | Gerir_Matriculas | Gerir_Turmas,
 
-  Tesoureiro = 1 << 29 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Coordenador = 1 << 28 | Gerir_Usuarios | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas,
 
-  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Tesoureiro = 1 << 29 | Gerir_Propagandas | Gerir_Parceiros,
 
-  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros,
+  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes,
+
+  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes,
 }
-const atendente = UserRoles.Criar_Cursos | UserRoles.Criar_Turmas | UserRoles.Criar_Anuncios | UserRoles.Criar_Matriculas;
 
 export const roleOptions = [
-  { value: atendente, label: 'Atendente' },
-  { value: UserRoles.Coordenador, label: 'Coordenador' },
-  { value: UserRoles.Diretor, label: 'Diretor' },
-  { value: UserRoles.Tesoureiro, label: 'Tesoureiro' },
   { value: UserRoles.Visitante, label: 'Visitante' },
+  { value: UserRoles.Atendente, label: 'Atendente' },
+  { value: UserRoles.Coordenador, label: 'Coordenador' },
+  { value: UserRoles.Tesoureiro, label: 'Tesoureiro' },
+  { value: UserRoles.Diretor, label: 'Diretor' },
+  { value: UserRoles.Desenvolvedor, label: 'Desenvolvedor' },
+];
+
+export const userPermissions = [
+  {
+    title: 'Usuários',
+    allPermissions: { name: 'Usuários', role: UserRoles.Gerir_Usuarios },
+    permissions: [
+      { name: 'Criar', role: UserRoles.Criar_Usuarios },
+      { name: 'Editar', role: UserRoles.Editar_Usuarios },
+      { name: 'Remover', role: UserRoles.Remover_Usuarios },
+    ],
+  },
+  {
+    title: 'Anúncios',
+    allPermissions: { name: 'Anúncios', role: UserRoles.Criar_Anuncios + UserRoles.Editar_Anuncios + UserRoles.Remover_Anuncios },
+    permissions: [
+      { name: 'Criar', role: UserRoles.Criar_Anuncios },
+      { name: 'Editar', role: UserRoles.Editar_Anuncios },
+      { name: 'Remover', role: UserRoles.Remover_Anuncios },
+    ],
+  },
+  {
+    title: 'Descontos',
+    allPermissions: { name: 'Descontos', role: UserRoles.Criar_Descontos + UserRoles.Editar_Descontos + UserRoles.Remover_Descontos },
+    permissions: [
+      { name: 'Criar', role: UserRoles.Criar_Descontos },
+      { name: 'Editar', role: UserRoles.Editar_Descontos },
+      { name: 'Remover', role: UserRoles.Remover_Descontos },
+    ],
+  },
+  {
+    title: 'Turmas',
+    allPermissions: { name: 'Turmas', role: UserRoles.Gerir_Turmas },
+    permissions: [
+      { name: 'Iniciar', role: UserRoles.Iniciar_Turmas },
+      { name: 'Criar', role: UserRoles.Criar_Turmas },
+      { name: 'Editar', role: UserRoles.Editar_Turmas },
+      { name: 'Remover', role: UserRoles.Remover_Turmas },
+    ],
+  },
+  {
+    title: 'Cursos',
+    allPermissions: { name: 'Cursos', role: UserRoles.Gerir_Cursos },
+    permissions: [
+      { name: 'Criar', role: UserRoles.Criar_Cursos },
+      { name: 'Editar', role: UserRoles.Editar_Cursos },
+      { name: 'Remover', role: UserRoles.Remover_Cursos },
+    ],
+  },
+  {
+    title: 'Matrículas',
+    allPermissions: { name: 'Matrículas', role: UserRoles.Gerir_Matriculas },
+    permissions: [
+      { name: 'Criar', role: UserRoles.Criar_Matriculas },
+      { name: 'Editar', role: UserRoles.Editar_Matriculas },
+      { name: 'Remover', role: UserRoles.Remover_Matriculas },
+    ],
+  },
+  {
+    title: 'Parceiros',
+    allPermissions: { name: 'Parceiros', role: UserRoles.Gerir_Parceiros },
+    permissions: [
+      { name: 'Criar', role: UserRoles.Criar_Parceiros },
+      { name: 'Editar', role: UserRoles.Editar_Parceiros },
+      { name: 'Remover', role: UserRoles.Remover_Parceiros },
+    ],
+  },
+  {
+    title: 'Localizações',
+    allPermissions: { name: 'Localizações', role: UserRoles.Editar_Localizacao | UserRoles.Listar_Localizacoes },
+    permissions: [
+      { name: 'Visualizar', role: UserRoles.Listar_Localizacoes },
+      { name: 'Editar', role: UserRoles.Editar_Localizacao },
+    ],
+  },
 ];
 
 const role_BitField = new BitField<UserRoles>();

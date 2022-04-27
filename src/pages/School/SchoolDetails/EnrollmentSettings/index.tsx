@@ -1,18 +1,18 @@
 import { FormHandles } from '@unform/core';
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Button } from '../../../../components/Forms/Buttons/Button';
+import CheckboxInput from '../../../../components/Forms/Checkbox';
 import { FormSection } from '../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../components/Forms/InputSection';
+import SelectLine from '../../../../components/Forms/SelectLine';
 import TextAreaLine from '../../../../components/Forms/TextAreaLine';
 import ContentPanel from '../../../../components/Panels/ContentPanel';
 import { useModal } from '../../../../hooks/modal';
-import { useSchool } from '../../../../hooks/school';
-import { ISchool } from '../../../../interfaces/ISchool';
 import api from '../../../../services/api';
 import getValidationErros from '../../../../utils/getValidationErrors';
 import { telMasked } from '../../../../utils/masks';
@@ -21,10 +21,46 @@ import {
   Container, FormContent,
 } from './styles';
 
-const FormSchool: React.FC = () => {
-  const formRef = useRef<FormHandles>(null);
-  const { currentSchool: school } = useSchool();
+export interface ISchool {
+  id: string,
+  object_id: string,
+  name: string,
+  initials: string,
+  street: string,
+  number: string,
+  neighborhood: string,
+  zipcode: string,
+  city: string,
+  estate: string,
+  phone: string,
+  whatsapp_enabled: true,
+  whatsapp_number: string,
+  email: string,
+  business_hours: string,
+  gps_location: string,
+  payment_pv: string,
+  payment_token: string,
+  business_model: string,
+  application_deadline: string,
+  application_payment_tax: string,
+  pre_registration_email: string,
+  application_email: string,
+  lean_office_email: string,
+  free_enrollment_block: true,
+  free_enrollment_block_time: string,
+  status: string,
+  updated_at: string,
+  created_at: string
+}
 
+const options = [
+  { value: 'dia/dias', label: 'dia/dias' },
+  { value: 'semana/semanas', label: 'semana/semanas' },
+  { value: 'mês/meses', label: 'mês/meses' },
+  { value: 'ano/anos', label: 'ano/anos' },
+];
+const EnrollmentSettings: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { configModal, handleVisible } = useModal();
@@ -32,10 +68,10 @@ const FormSchool: React.FC = () => {
   const [categorySelected, setCategorySelected] = useState(currentSchool ? currentSchool.status : '');
   const location: any = useLocation();
 
-  const configSchool = useCallback((data: ISchool) => {
+  const configSchool = useCallback((school: ISchool) => {
     const temp = {
-      ...data,
-      phone: telMasked(data.phone),
+      ...school,
+      phone: telMasked(school.phone),
     };
 
     setCurrentSchool(temp);
@@ -102,9 +138,23 @@ const FormSchool: React.FC = () => {
     }
   }, [categorySelected, createSchool, currentSchool, updateSchool]);
 
+  const getCurrentSchool = useCallback(async () => {
+    await api.get(`/school/dashboard/specific/${location.state?.school.object_id}`).catch((err) => {
+      configModal(err.response.data.message, 'error');
+      handleVisible();
+    }).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        configSchool(response.data);
+        console.dir(response.data);
+      } else {
+        setCurrentSchool(undefined);
+      }
+    });
+  }, [configModal, configSchool, handleVisible, location.state?.school.object_id]);
+
   useEffect(() => {
-    if (school) {
-      configSchool(school);
+    if (location.state?.school) {
+      getCurrentSchool();
     } else setCurrentSchool(undefined);
 
     formRef.current?.setErrors({});
@@ -113,107 +163,55 @@ const FormSchool: React.FC = () => {
   return (
     <Container>
       <ContentPanel
-        title="Informações da Unidade"
-        subTitle="Estas informações serão exibidas no aplicativo para o usuário"
+        title="Configuração de Matrículas"
+        subTitle="As informações abaixo afetam as matrículas gratuitas e pré-matrículas"
         footerContent={<Button maxWidth="150px" minHeight="44px">salvar</Button>}
         width="50%"
       >
         <FormContent ref={formRef} onSubmit={handleSubmit} initialData={currentSchool}>
           <FormSection gridColumn="1 / 2">
-            <InputLine
-              name="name"
-              label="Nome"
-            />
-
             <InputSection grid_template_column="1fr 1fr">
               <InputLine
-                name="initials"
-                label="Sigla"
+                name="free_enrollment_block_time"
+                label="Prazo pré-matrícula"
               />
-              <InputLine
-                name="email"
-                label="Email"
-                gridRow="2 / 2"
-                gridColumn="1 / 3"
-              />
-              <InputLine
-                name="phone"
-                label="Telefone"
-                gridRow="3 / 3"
-              />
-
-              <InputLine
-                name="zipcode"
-                label="CEP"
-                gridRow="4 / 4"
-              />
-
-              <Button
-                styleType="outline"
-                gridColumn="2 / 3"
-                gridRow="4 / 4"
-                width="58px"
-                maxHeight="34px"
-              >
-                Ok
-              </Button>
             </InputSection>
 
-            <InputLine
-              name="street"
-              label="Endereço"
-            />
-
+            {/* <CheckboxInput
+              name="free_enrollment_block"
+              label="Ativar"
+            /> */}
             <InputSection grid_template_column="1fr 1fr">
-              <InputLine
-                name="neighborhood"
-                label="Bairro"
-              />
 
               <InputLine
                 mask="numeric"
-                name="number"
-                label="Número"
+                name="free_enrollment_block_time"
+                label="Tempo de carência para matrícula"
               />
 
-              <InputLine
-                name="city"
-                label="Cidade"
-              />
-
-              <InputLine
-                name="estate"
-                label="Estado"
+              <SelectLine
+                name="time"
+                label="Período"
+                options={options}
               />
             </InputSection>
+
+            <h3>
+              Ao ativar a função de tempo de carência, o estudante que tenha
+              ingressado em um curso gratuito ficará impossibilitado
+              de matricular-se em cursos gratuitos até o fim do prazo estipulado
+              <br />
+              <br />
+              OBS: Mesmo com o tempo de carência ativado, é possível forçar a
+              criação de uma matrícula em um curso gratuito.
+            </h3>
 
           </FormSection>
-          <FormSection gridColumn="2 / 3">
-            <InputSection grid_template_column="1fr 1fr">
 
-              <InputLine
-                mask="numeric"
-                name="free_enrollment_goal"
-                label="Meta de vagas gratuitas"
-              />
-
-              <InputLine
-                mask="numeric"
-                name="payed_enrollment_goal"
-                label="Meta de vagas pagas"
-              />
-            </InputSection>
-            <TextAreaLine
-              name="business_hours"
-              label="Horário de Atendimento"
-              rows={6}
-            />
-
-          </FormSection>
         </FormContent>
       </ContentPanel>
     </Container>
   );
 };
 
-export default FormSchool;
+export default EnrollmentSettings;

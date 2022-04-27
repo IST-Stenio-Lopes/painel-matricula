@@ -7,7 +7,8 @@ import { Button } from '../../../components/Forms/Buttons/Button';
 import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
-import api, { ResponseData } from '../../../services/api';
+import { ISchoolListResponse } from '../../../interfaces/ISchool';
+import api, { initialValue, ResponseData } from '../../../services/api';
 import { telMasked } from '../../../utils/masks';
 import wrapperNames from '../../../utils/wrapper.json';
 
@@ -84,26 +85,9 @@ const listTitles = [
   },
 ];
 
-interface SchoolResponse {
-  id: string,
-  name: string,
-  initials: string,
-  estate: string,
-  city: string,
-  email: string,
-  phone: string,
-  status: string,
-}
-
-const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
-
 const SchoolList: React.FC = () => {
-  const [responseData, setResponseData] = useState<ResponseData<SchoolResponse>>(
-    {} as ResponseData<SchoolResponse>,
+  const [responseData, setResponseData] = useState<ResponseData<ISchoolListResponse>>(
+    {} as ResponseData<ISchoolListResponse>,
   );
 
   const [searchingValue, setSearchingValue] = useState('');
@@ -142,12 +126,10 @@ const SchoolList: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: ['Aberta', 'Fechada', 'Desativada'],
       },
     }).catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
       });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 

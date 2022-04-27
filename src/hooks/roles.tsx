@@ -7,8 +7,8 @@ import { UserRoles } from '../interfaces/IUser';
 
 interface RolesContextData {
   updateUserRoles: (role: number) => void;
-  getRole: (expected_Access: UserRoles) => void;
-  getAnyRole: (expected_Access: UserRoles) => void;
+  getRole: (expected_Access: UserRoles) => boolean;
+  getAnyRole: (expected_Access: UserRoles) => boolean;
 }
 
 const RolesContext = createContext<RolesContextData>({} as RolesContextData);

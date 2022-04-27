@@ -15,6 +15,8 @@ export const FormContent = styled(Form)`
   grid-template-columns: minmax(520px, 50%) minmax(520px, 50%);
 
   h3 {
+    max-width: fit-content;
+    text-align: justify;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 15px;
