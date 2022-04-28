@@ -22,14 +22,13 @@ export interface SelectOptions {
 
 interface SelectLineProps extends SelectProps {
   label: string;
-  initialValue?: string;
   gridRow?: string;
   gridColumn?: string;
   isSearchable?: boolean;
 }
 
 const SelectLine: React.FC<SelectLineProps> = ({
-  name, label, options = [], gridRow, gridColumn, initialValue, isSearchable = false, ...rest
+  name, label, options = [], gridRow, gridColumn, isSearchable = false, ...rest
 }) => {
   const selectRef = useRef(null);
 

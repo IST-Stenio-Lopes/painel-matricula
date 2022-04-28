@@ -103,6 +103,7 @@ const SignIn: React.FC = () => {
 
       const response = await api.post('/dashboard/lobby', { email, password });
 
+      console.dir(response.data);
       const { token, schools } = response.data;
 
       api.defaults.headers.common.authorization = `Bearer ${token}`;

@@ -12,10 +12,10 @@ interface ContainerPros {
 
 export const SelectContainer = styled(ReactSelect)`
   display: flex;
-  flex: 1;
+
   flex-direction: column;
   justify-content: flex-start;
-  max-height: 36px;
+  min-height: 36px;
   align-content: center;
   border-bottom: 2px solid ${theme.colors.secondary10};
   font-family: ${theme.fonts.titleText};
@@ -31,7 +31,7 @@ export const SelectContainer = styled(ReactSelect)`
 
   .react-select__control {
     background-color: transparent;
-    max-height: 36px;
+    min-height: 36px;
 
     border: none;
     border-radius: 0;
@@ -98,9 +98,7 @@ export const SelectContainer = styled(ReactSelect)`
 
 export const Container = styled.div<ContainerPros>`
   display: flex;
-  flex: 1;
   min-height: 85px;
-  max-height: 85px;
   flex-direction: column;
 
   width: 100%;

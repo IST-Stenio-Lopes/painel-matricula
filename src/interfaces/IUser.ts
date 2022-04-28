@@ -58,6 +58,11 @@ export enum UserRoles {
   Remover_Parceiros = 1 << 24,
   Gerir_Parceiros = Criar_Parceiros | Editar_Parceiros | Remover_Parceiros,
 
+  Criar_Financas = 1 << 25,
+  Editar_Financas = 1 << 26,
+  Remover_Financas = 1 << 27,
+  Gerir_Financas = Criar_Financas | Editar_Financas | Remover_Financas,
+
   // Acessos Fixos
   Visitante = 0,
 
