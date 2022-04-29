@@ -11,7 +11,6 @@ import {
   cellPhone,
   cep,
   cpf,
-  cpfOrCnpj,
   currencyMask,
   date,
   metersMask,

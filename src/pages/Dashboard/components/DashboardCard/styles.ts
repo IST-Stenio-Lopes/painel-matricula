@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { theme } from '../../../../global/styles/styles';
 
 interface PercentProps {
-  color: 'green' | 'red'
+  color: 'green' | 'red' | 'gray'
 }
 
 export const Container = styled.div`
@@ -55,13 +55,21 @@ export const Footer = styled.div<PercentProps>`
   align-items: center;
   height: 40%;
 
-  ${(props) => (props.color === 'green'
-    ? css`
+  ${({ color }) => {
+    if (color === 'green') {
+      return css`
       color: ${theme.colors.green};
-    `
-    : css`
+    `;
+    }
+    if (color === 'red') {
+      return css`
       color: ${theme.colors.red};
-  `)}
+  `;
+    }
+    return css`
+      color: ${theme.colors.secondary70};
+  `;
+  }}
 `;
 
 export const Description = styled.h2`

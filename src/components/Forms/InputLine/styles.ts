@@ -18,7 +18,7 @@ export const Container = styled.div<ContainerPros>`
   flex-direction: column;
 
   > div {
-    height: 36px;
+    min-height: 36px;
     width: 100%;
 
     border-bottom: 2px solid ${theme.colors.secondary10};

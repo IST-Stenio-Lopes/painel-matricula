@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { ReactComponent as MobileSvg } from '../../../../assets/icons/dashboard/mobile-icon.svg';
 import { ReactComponent as WebSvg } from '../../../../assets/icons/dashboard/web-icon.svg';
@@ -49,6 +49,12 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
     ));
   }, [value]);
 
+  const setColor = useCallback(() => {
+    if (value.percentage > 0) return 'green';
+    if (value.percentage < 0) return 'red';
+    return 'gray';
+  }, [value.percentage]);
+
   return (
     <Container>
       <Content>
@@ -60,19 +66,17 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
           {currentIcon}
         </IconArea>
       </Content>
-      <Footer color={value.percentage >= 0 ? 'green' : 'red'}>
+      <Footer color={setColor()}>
         { type === 'percent'
           ? <ProgressBar current={value.value} total={100} color={color} />
           : (
-            value.percentage !== 0 && (
             <>
-              { arrowIcon}
+              {value.percentage !== 0 && arrowIcon}
               <Percent>
                 {`${value.percentage}%`}
               </Percent>
               <Description>Desde o último mês</Description>
             </>
-            )
           )}
       </Footer>
     </Container>

@@ -13,7 +13,7 @@ import { Button } from '../../../../../components/Forms/Buttons/Button';
 import { FormSection } from '../../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../../components/Forms/InputSection';
-import SelectLine from '../../../../../components/Forms/SelectLine';
+import SelectLine, { SelectOptions } from '../../../../../components/Forms/SelectLine';
 import ContentPanel from '../../../../../components/Panels/ContentPanel';
 import UserInfo from '../../../../../components/UserInfo';
 import { useAuth } from '../../../../../hooks/auth';
@@ -22,7 +22,7 @@ import api from '../../../../../services/api';
 import getValidationErros from '../../../../../utils/getValidationErrors';
 import PermissionSection from '../PermissionSection';
 import {
-  IUser, roleOptions, userPermissions, UserRoles,
+  IUser, userPermissions, UserRoles, roleOptions,
 } from '../../../../../interfaces/IUser';
 
 import {
@@ -45,10 +45,10 @@ const FormUser: React.FC = () => {
   const [selectedSchool, setSelectedSchool] = useState<string[]>([]);
   const [selectedRole, setSelectedRole] = useState<number>();
   const [permissionValue, setPermissionValue] = useState<number>(0);
-  const [showEditPassword, setShowEditPassword] = useState(false);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
+  const [currentRoleOptions, setCurrentRoleOptions] = useState<SelectOptions[]>([]);
 
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
 
   const schoolsList = useMemo(() => responseSchoolsList.map((item: any) => (
     {
@@ -63,9 +63,13 @@ const FormUser: React.FC = () => {
       cell_phone: telMasked(value.cell_phone),
     } as IUser;
     setCurrentUser(temp);
-    setSelectedRole(roleOptions.find((role) => role.label === temp.role_name)?.value);
-    setPermissionValue(roleOptions.find((role) => role.label === temp.role_name)?.value || 0);
-  }, []);
+    setSelectedRole(currentRoleOptions.find(
+      (role) => role.label === temp.role_name,
+    )?.value as number);
+    setPermissionValue(currentRoleOptions.find(
+      (role) => role.label === temp.role_name,
+    )?.value as number || 0);
+  }, [currentRoleOptions]);
 
   const handleChangeName = useCallback((e) => {
     const temp = { ...currentUser as IUser };
@@ -80,7 +84,7 @@ const FormUser: React.FC = () => {
       cpf, cell_phone,
     } = data;
 
-    const role_name = roleOptions.find(({ value }) => value === selectedRole)?.label;
+    const role_name = currentRoleOptions.find(({ value }) => value === selectedRole)?.label;
 
     const schools = responseSchoolsList.filter((
       { school_id },
@@ -94,17 +98,6 @@ const FormUser: React.FC = () => {
         }
       ));
 
-    console.dir({
-      schools,
-      name,
-      registration_number,
-      cpf: removeMask(cpf),
-      cell_phone: removeMask(cell_phone),
-      role_name,
-      role: permissionValue,
-      email,
-    });
-
     await api.post('/users/dashboard', {
       schools,
       name,
@@ -114,8 +107,26 @@ const FormUser: React.FC = () => {
       role_name,
       role: permissionValue,
       email,
-    }).then((response) => console.dir(response));
-  }, [email, permissionValue, responseSchoolsList, selectedRole, selectedSchool]);
+    }).then(async (response) => {
+      if (response.status >= 200 && response.status < 229) {
+        if (file) {
+          const formData = new FormData();
+
+          formData.append('avatar', file);
+
+          await api.patch('/users/dashboard/profile/avatar', formData);
+        }
+      }
+    });
+  }, [
+    currentRoleOptions,
+    responseSchoolsList,
+    permissionValue,
+    email,
+    selectedRole,
+    selectedSchool,
+    file,
+  ]);
 
   const updateCurrentUser = useCallback(async (data) => {
     await api.put(`/users/dashboard/${currentUser?.id}`, {
@@ -188,25 +199,13 @@ const FormUser: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedRole, currentUser, updateCurrentUser, createUser, selectedSchool, showSchoolList]);
+  }, [selectedRole, createUser, selectedSchool, showSchoolList]);
 
   const handleAvatarChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
     }
-
-    // if (e.target.files) {
-    //   const data = new FormData();
-
-    //   data.append('avatar', e.target.files[0]);
-
-    //   await api.patch('/users/dashboard/profile/avatar', data).then(async () => {
-    //     await api.get(`/users/dashboard/profile/${currentUser?.id}`).then((res) => {
-    //       updateUser({ ...res.data, school_id: currentUser?.school_id });
-    //     });
-    //   });
-    // }
-  }, [currentUser?.id, currentUser?.school_id, updateUser]);
+  }, []);
 
   const getCurrentUser = useCallback(async () => {
     await api.get(`/users/dashboard/specific/id/${location.state?.user.object_id}`).catch((err) => {
@@ -284,6 +283,16 @@ const FormUser: React.FC = () => {
   useEffect(() => {
     updateUserRoles(user.role);
     setShowSchoolList(getRole(UserRoles.Desenvolvedor));
+
+    const tempOptions = [...roleOptions];
+
+    const index = tempOptions.findIndex((option) => option.label === user.role_name);
+
+    if (index < tempOptions.length - 1) {
+      tempOptions.splice(index);
+    }
+
+    setCurrentRoleOptions(tempOptions);
   }, [getRole, updateUserRoles, user]);
 
   return (
@@ -360,8 +369,8 @@ const FormUser: React.FC = () => {
             <SelectLine
               name="role_name"
               label="Nível de acesso"
-              options={roleOptions}
-              value={roleOptions.filter((item) => item.value === selectedRole)}
+              options={currentRoleOptions}
+              value={currentRoleOptions.filter((item) => item.value === selectedRole)}
               onChange={(newValue: any) => {
                 setPermissionValue(newValue.value as number);
                 setSelectedRole(newValue.value as number);

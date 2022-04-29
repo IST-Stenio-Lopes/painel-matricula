@@ -70,11 +70,11 @@ export enum UserRoles {
 
   Coordenador = 1 << 28 | Gerir_Usuarios | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas,
 
-  Tesoureiro = 1 << 29 | Gerir_Propagandas | Gerir_Parceiros,
+  Tesoureiro = 1 << 29 | Gerir_Propagandas | Gerir_Parceiros | Gerir_Financas,
 
-  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes,
+  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes | Gerir_Financas,
 
-  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes,
+  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes | Gerir_Financas,
 }
 
 export const roleOptions = [
@@ -149,6 +149,15 @@ export const userPermissions = [
       { name: 'Criar', role: UserRoles.Criar_Parceiros },
       { name: 'Editar', role: UserRoles.Editar_Parceiros },
       { name: 'Remover', role: UserRoles.Remover_Parceiros },
+    ],
+  },
+  {
+    title: 'Finanças',
+    allPermissions: { name: 'Finanças', role: UserRoles.Gerir_Financas },
+    permissions: [
+      { name: 'Criar', role: UserRoles.Criar_Financas },
+      { name: 'Editar', role: UserRoles.Editar_Financas },
+      { name: 'Remover', role: UserRoles.Remover_Financas },
     ],
   },
   {
