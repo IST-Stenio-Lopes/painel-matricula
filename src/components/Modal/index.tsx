@@ -22,6 +22,7 @@ interface ModalProps {
   hasCountdown?: boolean;
   handleDismiss: () => void;
   handleYes: () => void;
+  handleNo: () => void;
   iconType?: string;
 }
 const Modal: React.FC<ModalProps> = ({
@@ -30,6 +31,7 @@ const Modal: React.FC<ModalProps> = ({
   hasCountdown = false,
   handleDismiss,
   handleYes,
+  handleNo,
   iconType = 'success',
 }) => {
   const renderImg = useMemo(() => {
@@ -76,7 +78,7 @@ const Modal: React.FC<ModalProps> = ({
                   styleType="outline"
                   minHeight="50px"
                   maxWidth="40%"
-                  onClick={() => handleDismiss()}
+                  onClick={() => handleNo()}
                 >
                   Cancelar
                 </Button>

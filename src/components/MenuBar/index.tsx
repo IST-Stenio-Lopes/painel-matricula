@@ -3,6 +3,8 @@ import React, {
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import socketIOClient from 'socket.io-client';
+import jwtDecode from 'jwt-decode';
+import moment from 'moment';
 import ButtonMenu from './components/ButtonMenu';
 import { SidebarData } from './components/SideBarData';
 import {
@@ -15,10 +17,11 @@ import { useNav } from '../../hooks/nav';
 
 import Profile from '../Profile';
 import { useModal } from '../../hooks/modal';
-import { useAuth } from '../../hooks/auth';
+import { DecodedProps, useAuth } from '../../hooks/auth';
 import { ISchoolSocketData } from '../../interfaces/ISocket';
 import { useDashboardData } from '../../hooks/dashboardData';
-import { baseURL } from '../../services/api';
+import api, { baseURL } from '../../services/api';
+import { getTimeOut } from '../../pages/Dashboard/utils/utilities';
 
 const ENDPOINT = 'http://192.168.1.191:4445/dashboard';
 
@@ -26,7 +29,9 @@ const MenuBar: React.FC = () => {
   const {
     setCurrentDashboardData, currentDashboardData, enrollmentsHeld, enrollmentsReserved, messages,
   } = useDashboardData();
-  const { user } = useAuth();
+  const {
+    user, signOut, data: authData, updateData,
+  } = useAuth();
 
   const location: any = useLocation();
 
@@ -63,29 +68,91 @@ const MenuBar: React.FC = () => {
     }
   }, [isEditing, configModal, handleVisible, handleBackButton]);
 
-  useEffect(() => {
-    const socket = socketIOClient(`${baseURL}:2225`, {
-      path: '/dashboard',
-      auth: {
-        school_id: user.school_id,
-      },
-    });
-
-    socket.on('notification_data', (data) => {
-      console.dir(data);
-      setCurrentDashboardData(data);
-    });
-
-    socket.on('message_has_been_read', (data) => {
-      setCurrentDashboardData({
-        ...currentDashboardData as ISchoolSocketData,
-        messages: data.quantity,
+  const stayLogged = useCallback(async () => {
+    await api.post('/dashboard/refresh-token', {
+      token: authData.refresh_token,
+    }).catch((err) => {
+      configModal(
+        'Sessão expirada, faça Log In novamente',
+        'error',
+      );
+      handleVisible();
+      signOut();
+    }).then((response: any) => {
+      updateData({
+        ...authData,
+        token: response.data.token,
+        refresh_token: response.data.refresh_token,
       });
     });
+  }, [authData, configModal, handleVisible, signOut, updateData]);
 
-    socket.connect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const isValidToken = useCallback((value: string) => {
+    const decoded: DecodedProps = jwtDecode(value);
+
+    const expirationTime = (decoded.exp * 1000);
+
+    return (Date.now() < expirationTime);
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      const socket = socketIOClient(`${baseURL}:2225`, {
+        path: '/dashboard',
+        auth: {
+          school_id: user.school_id,
+        },
+      });
+
+      socket.on('notification_data', (data) => {
+        setCurrentDashboardData(data);
+      });
+
+      socket.on('message_has_been_read', (data) => {
+        setCurrentDashboardData({
+          ...currentDashboardData as ISchoolSocketData,
+          messages: data.quantity,
+        });
+      });
+
+      socket.connect();
+
+      return (() => { socket.close(); });
+    }
+    return () => {};
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (authData.token) {
+      const { token } = authData;
+      const decoded: DecodedProps = jwtDecode(token);
+
+      const expirationTime = (decoded.exp * 1000);
+
+      const timeOut = getTimeOut(expirationTime);
+
+      if (token && isValidToken(token)) {
+        timer = setTimeout(() => {
+          configModal(
+            'Sua sessão irá expirar, deseja permanecer logado?',
+            'logout',
+            true,
+            false,
+            () => stayLogged(),
+            () => signOut(),
+          );
+
+          handleVisible();
+        }, timeOut);
+      }
+    }
+
+    return () => { if (timer) clearTimeout(timer); };
+  }, [isValidToken, authData, stayLogged, signOut, configModal]);
 
   return (
     <>

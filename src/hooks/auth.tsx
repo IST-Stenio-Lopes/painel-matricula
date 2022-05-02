@@ -1,9 +1,11 @@
 import jwtDecode from 'jwt-decode';
 import React, {
-  createContext, useCallback, useState, useContext, useMemo,
+  createContext, useCallback, useState, useContext, useMemo, useEffect,
 } from 'react';
 import { IUser } from '../interfaces/IUser';
+import { getTimeDiff } from '../pages/Dashboard/utils/utilities';
 import api from '../services/api';
+import { useModal } from './modal';
 import { useRoles } from './roles';
 
 interface AuthState {
@@ -18,13 +20,15 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
+  data: AuthState;
   user: IUser;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: IUser): void;
+  updateData(data: AuthState): void;
 }
 
-interface DecodedProps {
+export interface DecodedProps {
   [key: string] : string | Number;
   exp: number;
 }
@@ -34,17 +38,21 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 const AuthProvider: React.FC = ({ children }) => {
   const { updateUserRoles } = useRoles();
 
+  const isValidToken = useCallback((value: string) => {
+    const decoded: DecodedProps = jwtDecode(value);
+
+    const expirationTime = (decoded.exp * 1000);
+
+    return (Date.now() < expirationTime);
+  }, []);
+
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@Matricula:token');
     const user = localStorage.getItem('@Matricula:user');
     const refresh_token = localStorage.getItem('@Matricula:refresh_token');
 
     if (token && user && refresh_token) {
-      const decoded: DecodedProps = jwtDecode(token);
-
-      const expirationTime = (decoded.exp * 1000);
-
-      if (Date.now() >= expirationTime) {
+      if (!isValidToken(token)) {
         return {} as AuthState;
       }
 
@@ -57,6 +65,12 @@ const AuthProvider: React.FC = ({ children }) => {
 
     return {} as AuthState;
   });
+
+  const updateData = useCallback((value: AuthState) => {
+    setData(value);
+
+    api.defaults.headers.common.authorization = `Bearer ${value.token}`;
+  }, []);
 
   const signIn = useCallback(async ({ request_token, school_id }) => {
     const response = await api.post('/dashboard/sessions', { request_token, school_id });
@@ -99,8 +113,9 @@ const AuthProvider: React.FC = ({ children }) => {
   );
 
   const value = useMemo(() => ({
-    user: data.user, signIn, signOut, updateUser,
-  }), [data, signIn, signOut, updateUser]);
+    data, user: data.user, signIn, signOut, updateUser, updateData,
+  }), [data, signIn, signOut, updateUser, updateData]);
+
   return (
     <AuthContext.Provider value={value}>
       {children}

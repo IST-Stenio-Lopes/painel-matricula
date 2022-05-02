@@ -12,6 +12,7 @@ interface ModalContextData {
     footerHasQuestion?: boolean,
     footerHasCountdown?: boolean,
     handleConfirmButton?: () => void,
+    handleCancelButton?: () => void,
     ) => void;
 }
 const ModalContext = createContext<ModalContextData>({} as ModalContextData);
@@ -22,6 +23,7 @@ const initialValue = {
   hasQuestion: false,
   hasCountdown: false,
   confirm: () => {},
+  cancel: () => {},
 };
 
 const ModalProvider: React.FC = ({ children }) => {
@@ -34,6 +36,7 @@ const ModalProvider: React.FC = ({ children }) => {
     footerHasQuestion = false,
     footerHasCountdown = false,
     handleConfirmButton = () => {},
+    handleCancelButton = () => {},
   ) => {
     setData({
       msg: bodyDescription,
@@ -41,6 +44,7 @@ const ModalProvider: React.FC = ({ children }) => {
       hasQuestion: footerHasQuestion,
       hasCountdown: footerHasCountdown,
       confirm: handleConfirmButton,
+      cancel: handleCancelButton,
     });
   }, []);
 
@@ -57,6 +61,11 @@ const ModalProvider: React.FC = ({ children }) => {
     data.confirm();
   }, [setVisible, data]);
 
+  const handleNo = useCallback(() => {
+    setVisible(false);
+    data.cancel();
+  }, [setVisible, data]);
+
   const dataValue = useMemo(() => ({
     handleVisible,
     handleDismiss,
@@ -71,6 +80,7 @@ const ModalProvider: React.FC = ({ children }) => {
       <Modal
         handleDismiss={handleDismiss}
         handleYes={handleYes}
+        handleNo={handleNo}
         description={data.msg}
         hasQuestion={data.hasQuestion}
         hasCountdown={data.hasCountdown}
