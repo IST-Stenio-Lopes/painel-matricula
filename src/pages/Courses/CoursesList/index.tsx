@@ -7,6 +7,7 @@ import { Button } from '../../../components/Forms/Buttons/Button';
 import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
+import { StatusOfCourse } from '../../../interfaces/ICourse';
 import api, { ResponseData } from '../../../services/api';
 import { currencyFormatted } from '../../../utils/currencyUtilities';
 import wrapperNames from '../../../utils/wrapper.json';
@@ -122,13 +123,11 @@ const CoursesList: React.FC = () => {
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
         keywords,
-        status: 'Ativado',
+        status: [StatusOfCourse.Ativado],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const handleSubmitSearch = useCallback(() => {
@@ -141,6 +140,7 @@ const CoursesList: React.FC = () => {
 
   useEffect(() => {
     getCourseList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
@@ -170,6 +170,7 @@ const CoursesList: React.FC = () => {
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}
+        changeItemsCount={setItemsPerPage}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}

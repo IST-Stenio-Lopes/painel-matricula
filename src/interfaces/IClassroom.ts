@@ -1,5 +1,5 @@
-import { ICourse } from '../pages/Courses/NewCourse/components/FormCourse';
 import { IPartner } from '../pages/Enrollment/NewEnrollment/FormEnrollment/data/types';
+import { ICourse } from './ICourse';
 
 export enum StatusOfClassroom {
   Iniciada = 'Iniciada',

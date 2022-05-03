@@ -12,6 +12,8 @@ import SelectLine from '../../../../components/Forms/SelectLine';
 import ContentPanel from '../../../../components/Panels/ContentPanel';
 import { useClassroom } from '../../../../hooks/classroom';
 import { useModal } from '../../../../hooks/modal';
+import { useNav } from '../../../../hooks/nav';
+import { StatusOfClassroom } from '../../../../interfaces/IClassroom';
 import api from '../../../../services/api';
 import getValidationErros from '../../../../utils/getValidationErrors';
 import {
@@ -26,15 +28,14 @@ interface OptionsResponse {
 }
 
 const NewClassroom: React.FC = () => {
-  const { configModal, handleVisible } = useModal();
-  const formRef = useRef<FormHandles>(null);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const formRef = useRef<FormHandles>(null);
+  const { setEditing } = useNav();
+  const { configModal, handleVisible } = useModal();
   const { currentClassroom: classroomResponse } = useClassroom();
+  const [loading, setLoading] = useState(false);
   const [currentClassroom, setCurrentClassroom] = useState<IClassroom | undefined>(undefined);
-
   const [responseData, setResponseData] = useState<OptionsResponse[]>([]);
-
   const [selectedCourse, setSelectedCourse] = useState<string>();
   const [selectedCategory, setSelectedCategory] = useState<string>();
   const [selectedShift, setSelectedShift] = useState<string[]>();
@@ -70,6 +71,7 @@ const NewClassroom: React.FC = () => {
       year: data.year,
       is_free: selectedType === 'Gratuito',
       number_of_vacancies: data.number_of_vacancies,
+      status: selectedStatus === 'Aberta' ? StatusOfClassroom.Aberta : StatusOfClassroom.Fechada,
     }).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
@@ -82,6 +84,7 @@ const NewClassroom: React.FC = () => {
     configModal,
     handleVisible,
     navigate,
+    selectedStatus,
     selectedCourse,
     selectedCategory,
     selectedDay,
@@ -154,18 +157,15 @@ const NewClassroom: React.FC = () => {
         abortEarly: false,
       });
 
-      console.log('1');
-      if (currentClassroom) { console.log('2'); await updateClassroom(data); } else { console.log('3'); await createClassroom(data); }
+      if (currentClassroom) { await updateClassroom(data); } else { await createClassroom(data); }
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const erros = getValidationErros(err);
 
         formRef.current?.setErrors(erros);
       }
-      console.dir(err);
     } finally {
       setLoading(false);
-      console.dir('terminou');
     }
   }, [
     createClassroom,
@@ -219,7 +219,12 @@ const NewClassroom: React.FC = () => {
 )}
         width="50%"
       >
-        <FormContent ref={formRef} onSubmit={handleSubmit} initialData={currentClassroom}>
+        <FormContent
+          ref={formRef}
+          onSubmit={handleSubmit}
+          initialData={currentClassroom}
+          onChange={() => setEditing(true)}
+        >
           <FormSection gridColumn="1 / 2">
             <SelectLine
               name="course"

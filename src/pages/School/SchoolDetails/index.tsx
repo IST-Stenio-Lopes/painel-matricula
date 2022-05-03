@@ -3,9 +3,7 @@ import { useLocation } from 'react-router-dom';
 import MenuTab from '../../../components/MenuTab';
 import { useSchool } from '../../../hooks/school';
 import api from '../../../services/api';
-import EnrollmentSettings from './EnrollmentSettings';
 import FormSchool from './FormSchool';
-import SchoolEmails from './SchoolEmails';
 
 const SchoolDetails: React.FC = () => {
   const { setCurrentSchool } = useSchool();
@@ -27,15 +25,13 @@ const SchoolDetails: React.FC = () => {
       getCurrentSchool(location.state?.school.object_id);
       setCurrentTab('Editar Unidade');
     }
-  }, []);
+  }, [getCurrentSchool, location.state?.school]);
 
   return (
     <MenuTab
-      tabNames={[currentTab, 'Configuração de Matrícula', 'Emails Automáticos']}
+      tabNames={[currentTab]}
       tabScreens={[
         <FormSchool />,
-        <EnrollmentSettings />,
-        <SchoolEmails />,
       ]}
     />
   );

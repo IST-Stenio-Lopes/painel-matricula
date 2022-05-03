@@ -308,6 +308,7 @@ const FormUser: React.FC = () => {
         subTitle="Preencha as informações e os dados de acesso"
         footerContent={(
           <Button
+            loading={loading}
             onClick={() => formRef.current?.submitForm()}
             maxWidth="150px"
             minHeight="44px"

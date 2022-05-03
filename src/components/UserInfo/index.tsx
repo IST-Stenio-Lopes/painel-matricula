@@ -11,6 +11,7 @@ import {
 } from './styles';
 
 interface UserInfoProps {
+  name?: string;
   user?: IUser;
   student?: IStudent;
   img?: any;
@@ -18,17 +19,9 @@ interface UserInfoProps {
 }
 
 const UserInfo: React.FC<UserInfoProps> = ({
-  user, student, img, handleChangePhoto = () => {},
+  name = 'Nome', user, student, img, handleChangePhoto = () => {},
 }) => {
   const inputRef = useRef<any>(null);
-  const name = useMemo(() => {
-    if (user) {
-      return user?.name || 'Nome';
-    }
-
-    return student?.name || 'Nome';
-  }, [student, user]);
-
   const avatarUrl = useMemo(() => {
     if (user) {
       return user?.avatar_url;

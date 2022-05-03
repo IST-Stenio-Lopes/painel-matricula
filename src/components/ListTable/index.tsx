@@ -54,7 +54,7 @@ interface ListTableProps {
   onRemoveItem?: Function;
   onSortChange?: Function;
   changePage?: Function;
-
+  changeItemsCount?: Function;
 }
 
 const ListTable: React.FC<ListTableProps> = ({
@@ -73,6 +73,7 @@ const ListTable: React.FC<ListTableProps> = ({
   onClickItem = () => {},
   onSortChange = () => {},
   changePage = () => {},
+  changeItemsCount = () => {},
 }) => {
   const [selectedSortingType, setSelectedSortingType] = useState('');
   const [selectedSorting, setSelectedSorting] = useState('');

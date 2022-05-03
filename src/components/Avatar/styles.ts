@@ -50,9 +50,9 @@ export const Container = styled.div<AvatarProps>`
   align-items: center;
   justify-content: center;
 
-  ${(props) => css`
-      width: ${props.size};
-      height: ${props.size};
+  ${({ size }) => css`
+      width: ${size};
+      height: ${size};
   `}
 
   img {
@@ -64,15 +64,15 @@ export const Container = styled.div<AvatarProps>`
   }
 
   ${EditButton} {
-    ${(props) => props.edit && css`
-      width: ${props.size}px;
-      height: ${props.size}px;
+    ${({ size, edit }) => edit && css`
+      width: ${size}px;
+      height: ${size}px;
     `}
   }
 
   :hover {
     ${EditButton} {
-      ${(props) => props.edit && css`
+      ${({ edit }) => edit && css`
         visibility: visible;
 
         cursor: pointer;

@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 import { HiPlus } from 'react-icons/hi';
 import { FormHandles } from '@unform/core';
@@ -22,39 +22,24 @@ import { useModal } from '../../../../../hooks/modal';
 import api from '../../../../../services/api';
 import getValidationErros from '../../../../../utils/getValidationErrors';
 import { InputTags, ITag } from '../../../../../components/Forms/InputTags';
-
-export interface ICourse {
-  id: string,
-  object_id: string,
-  name: string,
-  field: string,
-  modality: string,
-  duration: string,
-  cost: number,
-  payment_installment: number,
-  enrollment_fee: number,
-  description: string,
-  prerequisites: string,
-  status: string,
-  tags: ITag[],
-  grade: any[]
-}
-
-interface IGrade {
-  id: string;
-  title: string | undefined;
-  credits: string | undefined;
-}
+import {
+  fieldOptions, ICourse, IGrade, modalityOptions, paymentInstallmentOptions,
+} from '../../../../../interfaces/ICourse';
+import { useNav } from '../../../../../hooks/nav';
+import { removeMask } from '../../../../../utils/masks';
+import { currencyFormatted } from '../../../../../utils/currencyUtilities';
 
 const FormCourse: React.FC = () => {
+  const navigate = useNavigate();
+  const location: any = useLocation();
   const formRef = useRef<FormHandles>(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { configModal, handleVisible } = useModal();
   const [currentCourse, setCurrentCourse] = useState<ICourse | undefined>(undefined);
   const [modalitySelected, setModalitySelected] = useState(currentCourse ? currentCourse.modality : '');
   const [fieldSelected, setFieldSelected] = useState(currentCourse ? currentCourse.field : '');
-  const location: any = useLocation();
+  const [paymentInstallmentSelected, setPaymentInstallmentSelected] = useState(currentCourse ? currentCourse.payment_installment : '');
+  const { configModal, handleVisible } = useModal();
+  const { setEditing } = useNav();
 
   const [grades, setGrades] = useState<IGrade[]>([
     {
@@ -84,22 +69,6 @@ const FormCourse: React.FC = () => {
 
     setGrades(tempGrades);
   }, [grades]);
-
-  const fieldOptions = useMemo(() => ([
-    { value: 'Atendente', label: 'Atendente' },
-    { value: 'Coordenador', label: 'Coordenador' },
-    { value: 'Diretor', label: 'Diretor' },
-    { value: 'Tesoureiro', label: 'Tesoureiro' },
-    { value: 'Visitante', label: 'Visitante' },
-  ]), []);
-
-  const modalityOptions = useMemo(() => ([
-    { value: 'Atendente', label: 'Atendente' },
-    { value: 'Coordenador', label: 'Coordenador' },
-    { value: 'Diretor', label: 'Diretor' },
-    { value: 'Tesoureiro', label: 'Tesoureiro' },
-    { value: 'Visitante', label: 'Visitante' },
-  ]), []);
 
   const handleChangeField = useCallback((event) => {
     setFieldSelected(event.value);
@@ -153,9 +122,9 @@ const FormCourse: React.FC = () => {
       modality: modalitySelected,
       tags,
       duration: data.duration,
-      cost: data.cost,
+      cost: removeMask(data.cost.toString()),
       payment_installment: data.payment_installment,
-      enrollment_fee: data.enrollment_fee,
+      enrollment_fee: removeMask(data.enrollment_fee.toString()),
       description: data.description,
       prerequisites: data.prerequisites,
       grade: gradesToSend,
@@ -164,7 +133,8 @@ const FormCourse: React.FC = () => {
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        console.log('sucesso');
+        configModal('Curso criado com sucesso', 'success');
+        handleVisible();
         navigate(-1);
       }
     });
@@ -182,9 +152,9 @@ const FormCourse: React.FC = () => {
       modality: modalitySelected,
       tags,
       duration: data.duration,
-      cost: data.cost,
+      cost: removeMask(data.cost.toString()),
       payment_installment: data.payment_installment,
-      enrollment_fee: data.enrollment_fee,
+      enrollment_fee: removeMask(data.enrollment_fee.toString()),
       description: data.description,
       prerequisites: data.prerequisites,
       grade: gradesToSend,
@@ -232,12 +202,12 @@ const FormCourse: React.FC = () => {
         duration: Yup.string()
           .required('Duração obrigatório'),
 
-        cost: Yup.number()
+        cost: Yup.mixed()
           .typeError('Valor deve ser maior que 0')
-          .test('has-cost', 'Valor obrigatório', (value) => value as number > 0),
-        payment_installment: Yup.number()
+          .test('has-cost', 'Valor obrigatório', (value) => +removeMask(value) > 0),
+        payment_installment: Yup.mixed()
           .typeError('Valor deve ser maior que 0')
-          .test('has-payment', 'Parcela obrigatória', (value) => value as number > 0),
+          .test('has-payment', 'Parcela obrigatória', (value) => value > 0),
 
         description: Yup.string()
           .required('Descrição obrigatória'),
@@ -263,6 +233,25 @@ const FormCourse: React.FC = () => {
     }
   }, [grades, currentCourse, updateCourse, createCourse, fieldSelected]);
 
+  const configCourse = useCallback((value: ICourse) => {
+    const temp:ICourse = {
+      ...value,
+      cost: currencyFormatted(value.cost as string),
+      enrollment_fee: currencyFormatted(value.enrollment_fee as string),
+    };
+
+    setCurrentCourse(temp);
+    setTags(temp.tags);
+    setFieldSelected(temp.field);
+    setModalitySelected(temp.modality);
+    setPaymentInstallmentSelected(temp.payment_installment);
+    setGrades(temp.grade.map((grade: any, index: number) => (
+      {
+        id: `${index}`,
+        ...grade,
+      })));
+  }, []);
+
   const getCurrentCourse = useCallback(async () => {
     await api.get(`/course/dashboard/specific/${location.state?.course.object_id}`).catch((err) => {
       configModal(err.response.data.message, 'error');
@@ -270,20 +259,13 @@ const FormCourse: React.FC = () => {
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
         const courseResponse: ICourse = response.data;
-        setCurrentCourse(courseResponse);
-        setTags(courseResponse.tags);
-        setFieldSelected(courseResponse.field);
-        setModalitySelected(courseResponse.modality);
-        setGrades(courseResponse.grade.map((grade: any, index: number) => (
-          {
-            id: `${index}`,
-            ...grade,
-          })));
+
+        configCourse(courseResponse);
       } else {
         setCurrentCourse(undefined);
       }
     });
-  }, [configModal, handleVisible, location.state?.course]);
+  }, [configModal, handleVisible, location.state?.course, configCourse]);
 
   useEffect(() => {
     if (location.state?.course) {
@@ -291,6 +273,7 @@ const FormCourse: React.FC = () => {
     } else setCurrentCourse(undefined);
 
     formRef.current?.setErrors({});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -309,7 +292,12 @@ const FormCourse: React.FC = () => {
           </Button>
 )}
       >
-        <FormContent ref={formRef} onSubmit={handleSubmit} initialData={currentCourse || {}}>
+        <FormContent
+          ref={formRef}
+          onSubmit={handleSubmit}
+          initialData={currentCourse || {}}
+          onChange={() => setEditing(true)}
+        >
           <FormSection gridColumn="1 / 2">
             <InputLine
               name="name"
@@ -321,6 +309,7 @@ const FormCourse: React.FC = () => {
                 onChange={handleChangeField}
                 name="field"
                 label="Área"
+                isSearchable
                 value={fieldOptions.filter(({ value }) => value === fieldSelected)}
                 options={fieldOptions}
                 gridRow="1 / 1"
@@ -350,18 +339,24 @@ const FormCourse: React.FC = () => {
               />
 
               <InputLine
+                mask="currency"
                 name="cost"
                 label="Valor do Curso"
                 gridRow="2 / 2"
               />
 
-              <InputLine
+              <SelectLine
                 name="payment_installment"
-                label="Parcelas"
+                label="Parcelar em até:"
                 gridRow="2 / 2"
+                options={paymentInstallmentOptions}
+                value={paymentInstallmentOptions
+                  .filter(({ value }) => value === paymentInstallmentSelected)}
+                onChange={(event: any) => setPaymentInstallmentSelected(event.value)}
               />
 
               <InputLine
+                mask="currency"
                 name="enrollment_fee"
                 label="Taxa de Matrícula"
                 gridRow="3 / 3"

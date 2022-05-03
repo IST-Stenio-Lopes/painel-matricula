@@ -37,12 +37,17 @@ interface StudentPanelProps {
   student: IStudent | undefined;
   getStudent: (cpf: string) => void;
   nextStage: (value: number) => void;
+  handleChangeName: (value: string) => void;
+  avatar?: any;
 }
 
 // 321.548.330-04
-const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextStage }) => {
+const StudentPanel: React.FC<StudentPanelProps> = ({
+  student, getStudent, nextStage, handleChangeName, avatar,
+}) => {
   const formRef = useRef<FormHandles>(null);
   const { configModal, handleVisible } = useModal();
+
   const [localStudent, setLocalStudent] = useState<IStudent>();
   const [zipCode, setZipCode] = useState<string>();
   const [cpf, setCpf] = useState<string>();
@@ -153,6 +158,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextSt
         handleVisible();
       }).then((response) => {
         if (response?.status && response.status >= 200 && response.status <= 299) {
+          console.dir(response.data);
           configModal(
             `O CPF digitado pertence à ${response.data.name} , deseja carrega suas informações?`,
             'message',
@@ -193,8 +199,16 @@ const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextSt
     }).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
-    }).then((response) => {
+    }).then(async (response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
+        if (avatar) {
+          const formData = new FormData();
+
+          formData.append('avatar_file', avatar);
+
+          await api.patch(`/student/dashboard/avatar/${response.data.id}`, formData);
+        }
+
         configModal('O aluno foi cadastrado com sucesso, agora é possível realizar sua matrícula', 'success');
         handleVisible();
         getStudent(cpf as string);
@@ -202,6 +216,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextSt
       }
     });
   }, [
+    avatar,
     getStudent,
     nextStage,
     configModal,
@@ -361,6 +376,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({ student, getStudent, nextSt
             <InputLine
               name="name"
               label="Nome"
+              onChange={(e) => handleChangeName(e.target.value)}
             />
 
             <InputSection grid_template_column="1fr 1fr">

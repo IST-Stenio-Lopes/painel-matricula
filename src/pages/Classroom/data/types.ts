@@ -1,4 +1,4 @@
-import { ICourse } from '../../Courses/NewCourse/components/FormCourse';
+import { ICourse } from '../../../interfaces/ICourse';
 import { IPartner } from '../../Enrollment/NewEnrollment/FormEnrollment/data/types';
 
 export interface IClassroom{

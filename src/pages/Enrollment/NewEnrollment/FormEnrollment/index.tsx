@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent, useCallback, useEffect, useState,
+} from 'react';
 import { MdAttachFile } from 'react-icons/md';
 import { useLocation } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
@@ -24,26 +26,33 @@ const buttonsMenu = [
 ];
 
 const FormEnrollment: React.FC = () => {
-  const [showAttachmentModal, setShowAttachmentModal] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState(buttonsMenu[0]);
+  const location: any = useLocation();
   const { setCurrentStudent, currentStudent, setIsEditing } = useStudent();
+  const { configModal, handleVisible } = useModal();
   const {
     setCurrentEnrollment,
     currentEnrollment,
     setIsEditing: setIsEditingEnrollment,
   } = useEnrollment();
-
+  const [file, setFile] = useState<any>();
+  const [studentName, setStudentName] = useState('Nome');
+  const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState(buttonsMenu[0]);
   const [stage, setStage] = useState(0);
-  const { configModal, handleVisible } = useModal();
-  const location: any = useLocation();
+
+  const handleAvatarChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  }, []);
 
   const handleNewEnrollment = useCallback(() => {
     setCurrentEnrollment({} as IEnrollment);
-  }, []);
+  }, [setCurrentEnrollment]);
 
   const handleCancelEnrollment = useCallback(() => {
     setCurrentEnrollment(undefined);
-  }, []);
+  }, [setCurrentEnrollment]);
 
   const nextStage = useCallback((value: number) => {
     if (stage >= 2) return;
@@ -58,6 +67,7 @@ const FormEnrollment: React.FC = () => {
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
+        console.dir(response.data);
         setCurrentStudent(response.data);
         nextStage(1);
       }
@@ -69,6 +79,8 @@ const FormEnrollment: React.FC = () => {
       case 'Dados do Aluno':
         return (
           <StudentPanel
+            avatar={file}
+            handleChangeName={setStudentName}
             student={currentStudent}
             nextStage={nextStage}
             getStudent={getStudent}
@@ -94,14 +106,8 @@ const FormEnrollment: React.FC = () => {
           />
         );
     }
-  }, [
-    selectedMenu,
-    currentStudent,
-    nextStage,
-    getStudent,
-    currentEnrollment,
-    setCurrentEnrollment,
-    showAttachmentModal,
+  }, [selectedMenu, file, currentStudent, nextStage, getStudent,
+    currentEnrollment, setCurrentEnrollment, showAttachmentModal,
     handleCancelEnrollment]);
 
   const getCurrentEnrollment = useCallback(async () => {
@@ -162,7 +168,12 @@ const FormEnrollment: React.FC = () => {
             />
           ))}
         </MenuSelect>
-        <UserInfo student={currentStudent} />
+        <UserInfo
+          img={file}
+          name={studentName}
+          student={currentStudent}
+          handleChangePhoto={handleAvatarChange}
+        />
 
         {selectedMenu === 'Anexos' && (
         <Button

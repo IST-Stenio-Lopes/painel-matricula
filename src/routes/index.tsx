@@ -7,6 +7,7 @@ import MenuBar from '../components/MenuBar';
 import SignIn from '../pages/SignIn';
 import Dashboard from '../pages/Dashboard';
 import SchoolRoutes from './school.routes';
+import SettingsRoutes from './settings.routes';
 import FinancialList from '../pages/Financial/FinancialList';
 import CoursesRoutes from './courses.routes';
 import ClassroomRoutes from './classroom.routes';
@@ -47,6 +48,7 @@ const Routes: React.FC = () => {
         <Route path="/financeiro" element={<CustomRoute isPrivate component={<FinancialList />} />} />
         <Route path="/usuarios/*" element={<CustomRoute isPrivate component={<UsersRoutes />} />} />
         <Route path="/parceiros/*" element={<CustomRoute isPrivate component={<PartnerRoutes />} />} />
+        <Route path="/configuracoes/*" element={<CustomRoute isPrivate component={<SettingsRoutes />} />} />
       </RoutesDOM>
     </>
   );

@@ -35,7 +35,7 @@ const NavProvider: React.FC = ({ children }) => {
   const handleBackButton = useCallback(() => {
     history(-1);
     // hideBackButton();
-  }, [history, hideBackButton]);
+  }, [history]);
 
   service.register({
     onResponse(response: AxiosResponse) {

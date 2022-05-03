@@ -11,7 +11,7 @@ const EnrollmentDetails: React.FC = () => {
     if (location.state?.enrollment) {
       setCurrentTab('Editar Matrícula');
     }
-  }, []);
+  }, [location.state?.enrollment]);
 
   return (
     <MenuTab

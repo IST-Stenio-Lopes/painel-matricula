@@ -4,7 +4,6 @@ import React, {
 import { useLocation } from 'react-router-dom';
 import socketIOClient from 'socket.io-client';
 import jwtDecode from 'jwt-decode';
-import moment from 'moment';
 import ButtonMenu from './components/ButtonMenu';
 import { SidebarData } from './components/SideBarData';
 import {
@@ -23,11 +22,9 @@ import { useDashboardData } from '../../hooks/dashboardData';
 import api, { baseURL } from '../../services/api';
 import { getTimeOut } from '../../pages/Dashboard/utils/utilities';
 
-const ENDPOINT = 'http://192.168.1.191:4445/dashboard';
-
 const MenuBar: React.FC = () => {
   const {
-    setCurrentDashboardData, currentDashboardData, enrollmentsHeld, enrollmentsReserved, messages,
+    setCurrentDashboardData, currentDashboardData,
   } = useDashboardData();
   const {
     user, signOut, data: authData, updateData,
@@ -59,7 +56,7 @@ const MenuBar: React.FC = () => {
         'save',
         true,
         true,
-        () => handleBackButton,
+        () => handleBackButton(),
       );
 
       handleVisible();
@@ -71,7 +68,7 @@ const MenuBar: React.FC = () => {
   const stayLogged = useCallback(async () => {
     await api.post('/dashboard/refresh-token', {
       token: authData.refresh_token,
-    }).catch((err) => {
+    }).catch(() => {
       configModal(
         'Sessão expirada, faça Log In novamente',
         'error',
@@ -152,6 +149,7 @@ const MenuBar: React.FC = () => {
     }
 
     return () => { if (timer) clearTimeout(timer); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isValidToken, authData, stayLogged, signOut, configModal]);
 
   return (
