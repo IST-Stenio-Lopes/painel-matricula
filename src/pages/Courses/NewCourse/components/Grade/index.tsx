@@ -24,6 +24,7 @@ const Grade: React.FC<GradeProps> = ({
       onChange={(e) => handleTitleChange(e.target.value, `${index}`)}
     />
     <InputLine
+      mask="numeric"
       onChange={(e) => handleCreditsChange(e.target.value, `${index}`)}
       name={`hour${index}`}
       label=""

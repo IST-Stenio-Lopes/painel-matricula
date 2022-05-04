@@ -251,14 +251,23 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
     }).catch((err) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
-    }).then((response) => {
+    }).then(async (response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
+        if (avatar) {
+          const formData = new FormData();
+
+          formData.append('avatar_file', avatar);
+
+          await api.patch(`/student/dashboard/avatar/${localStudent?.id}`, formData);
+        }
+
         configModal('Atualizado com sucesso', 'success');
         handleVisible();
         getStudent(cpf as string);
       }
     });
   }, [
+    avatar,
     localStudent?.id,
     selectedCulture,
     selectedConduct,

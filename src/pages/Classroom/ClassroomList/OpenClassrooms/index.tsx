@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
-import PageContainer from '../../../../components/PageContainer';
 import ProgressBar from '../../../../components/ProgressBar';
 import { useClassroom } from '../../../../hooks/classroom';
 import { useModal } from '../../../../hooks/modal';
@@ -97,10 +96,9 @@ const OpenClassrooms: React.FC = () => {
         keywords,
         status: [StatusOfClassroom.Aberta, StatusOfClassroom.Fechada],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const handleChangeStatus = useCallback(async (classroomId, status) => {
@@ -173,12 +171,37 @@ const OpenClassrooms: React.FC = () => {
 
   useEffect(() => {
     getClassroomList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);
     setOrder(newSort);
   }, []);
+
+  const deleteClassroom = useCallback(async (classroomId) => {
+    await api.delete(`/classroom/dashboard/${classroomId}`).catch((err) => {
+      configModal(err.response.data.message, 'error');
+      handleVisible();
+    }).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        configModal('A turma foi removida com sucesso', 'success');
+        handleVisible();
+        getClassroomList();
+      }
+    });
+  }, [configModal, getClassroomList, handleVisible]);
+
+  const handleRemove = useCallback((classroomId) => {
+    configModal(
+      'Deseja realmente remover a turma selecionada?',
+      'message',
+      true,
+      true,
+      () => deleteClassroom(classroomId),
+    );
+    handleVisible();
+  }, [configModal, deleteClassroom, handleVisible]);
 
   return (
     <Container>
@@ -199,9 +222,11 @@ const OpenClassrooms: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        onRemoveItem={handleRemove}
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}
+        changeItemsCount={setItemsPerPage}
         indexToBold={1}
         listTitles={listTitles}
         listItems={listItems}

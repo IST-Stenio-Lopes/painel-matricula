@@ -83,11 +83,10 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
       if (response?.status && response.status >= 200 && response.status <= 299) {
         setCurrentClassroom(response.data);
         setSelectedClassroom(classroom_id);
-
         setLocalEnrollment({
-          classroom_begin_date: `${response.data.month}/${response.data.year}`,
-          classroom_shift_formatted: response.data.shift.reduce((prev: any, curr: any) => `${prev} e ${curr}`),
-          course_cost: currencyFormatted(response.data.course.cost),
+          classroom_begin_date: `${response.data.classroom.month}/${response.data.year}`,
+          classroom_shift_formatted: response.data.classroom.shift.reduce((prev: any, curr: any) => `${prev} e ${curr}`),
+          course_cost: currencyFormatted(response.data.classroom.course.cost),
         } as IEnrollment);
       }
     });
@@ -136,7 +135,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
     const temp: IEnrollment = {
       ...enrollmentData,
       classroom_begin_date: `${enrollmentData?.classroom_month}/${enrollmentData?.classroom_year}`,
-      classroom_shift_formatted: enrollmentData?.classroom_shift.reduce((prev, curr) => `${prev} e ${curr}`),
+      classroom_shift_formatted: enrollmentData?.classroom_shift?.reduce((prev, curr) => `${prev} e ${curr}`),
       course_cost: currencyFormatted(enrollmentData.course_cost),
     };
 

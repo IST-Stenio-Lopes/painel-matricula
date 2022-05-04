@@ -7,6 +7,7 @@ import { Button } from '../../../components/Forms/Buttons/Button';
 import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
+import { useModal } from '../../../hooks/modal';
 import { StatusOfCourse } from '../../../interfaces/ICourse';
 import api, { ResponseData } from '../../../services/api';
 import { currencyFormatted } from '../../../utils/currencyUtilities';
@@ -88,6 +89,7 @@ const CoursesList: React.FC = () => {
   const [responseData, setResponseData] = useState<ResponseData<CourseResponse>>(
     {} as ResponseData<CourseResponse>,
   );
+  const { configModal, handleVisible } = useModal();
 
   const [searchingValue, setSearchingValue] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -148,6 +150,30 @@ const CoursesList: React.FC = () => {
     setOrder(newSort);
   }, []);
 
+  const deleteCourse = useCallback(async (courseId) => {
+    await api.delete(`/course/dashboard/${courseId}`).catch((err) => {
+      configModal(err.response.data.message, 'error');
+      handleVisible();
+    }).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        configModal('O Curso foi removido com sucesso', 'success');
+        handleVisible();
+        getCourseList();
+      }
+    });
+  }, [configModal, getCourseList, handleVisible]);
+
+  const handleRemove = useCallback((courseId) => {
+    configModal(
+      'Deseja realmente remover o curso selecionado?',
+      'message',
+      true,
+      true,
+      () => deleteCourse(courseId),
+    );
+    handleVisible();
+  }, [configModal, deleteCourse, handleVisible]);
+
   return (
     <PageContainer gridTemplateRows="36px minmax(500px, 660px)" paddingTop="32px">
       <ListSearchArea
@@ -167,6 +193,7 @@ const CoursesList: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        onRemoveItem={handleRemove}
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}

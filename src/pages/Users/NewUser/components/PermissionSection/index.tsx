@@ -43,7 +43,7 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
     setOtherPermissions([...temp]);
     setPermissionValue(value ? permissionValue + allPermissions.role
       : permissionValue - allPermissions.role);
-  }, [allPermissions.role, permissionValue, permissions]);
+  }, [allPermissions.role, permissionValue, permissions, setPermissionValue]);
 
   const changePermission = useCallback((value, index) => {
     const temp = [...otherPermissions];
@@ -53,7 +53,7 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
     setOtherPermissions([...temp]);
     setPermissionValue(value ? permissionValue + permissions[index].role
       : permissionValue - permissions[index].role);
-  }, [otherPermissions, permissionValue, permissions]);
+  }, [otherPermissions, permissionValue, permissions, setPermissionValue]);
 
   useEffect(() => {
     updateUserRoles(userRole);
@@ -61,7 +61,9 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
     const temp = permissions.map((permission) => getAnyRole(permission.role));
 
     setOtherPermissions(temp);
-    setAll(temp.every((p) => p));
+
+    if (temp.length > 0) setAll(temp.every((p) => p));
+    else setAll(getAnyRole(allPermissions.role));
   }, [allPermissions, permissions, title, userRole]);
 
   return (

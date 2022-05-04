@@ -3,6 +3,23 @@
 /* eslint-disable no-bitwise */
 import { BitField } from 'easy-bits';
 
+interface IUserSchool {
+  school_id: string;
+  school_name: string;
+  role_name: string;
+  role: number;
+}
+
+export interface UserResponse {
+  id:string;
+  name:string;
+  email:string;
+  role_name:string;
+  avatar:string;
+  avatar_url:string;
+  registration_number:string;
+}
+
 export interface IUser {
   id: string;
   name: string;
@@ -17,6 +34,7 @@ export interface IUser {
   school_city: string;
   school_estate: string;
   school_initials: string;
+  schools: IUserSchool[];
 }
 
 export enum UserRoles {
@@ -49,21 +67,18 @@ export enum UserRoles {
   Remover_Matriculas = 1 << 19,
   Gerir_Matriculas = Criar_Matriculas | Editar_Matriculas | Remover_Matriculas,
 
-  Listar_Localizacoes = 1 << 20,
-  Editar_Localizacao = 1 << 21,
-  Gerir_Localizacoes = Listar_Localizacoes | Editar_Localizacao,
-
-  Criar_Parceiros = 1 << 22,
-  Editar_Parceiros = 1 << 23,
-  Remover_Parceiros = 1 << 24,
+  Criar_Parceiros = 1 << 20,
+  Editar_Parceiros = 1 << 21,
+  Remover_Parceiros = 1 << 22,
   Gerir_Parceiros = Criar_Parceiros | Editar_Parceiros | Remover_Parceiros,
 
-  Criar_Financas = 1 << 25,
-  Editar_Financas = 1 << 26,
-  Remover_Financas = 1 << 27,
+  Criar_Financas = 1 << 23,
+  Editar_Financas = 1 << 24,
+  Remover_Financas = 1 << 25,
   Gerir_Financas = Criar_Financas | Editar_Financas | Remover_Financas,
 
-  // Acessos Fixos
+  Gerir_Recursos = 1 << 26,
+
   Visitante = 0,
 
   Atendente = Gerir_Cursos | Gerir_Matriculas | Gerir_Turmas,
@@ -72,9 +87,9 @@ export enum UserRoles {
 
   Tesoureiro = 1 << 29 | Gerir_Propagandas | Gerir_Parceiros | Gerir_Financas,
 
-  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes | Gerir_Financas,
+  Diretor = 1 << 30 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Recursos | Gerir_Financas,
 
-  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Localizacoes | Gerir_Financas,
+  Desenvolvedor = 1 << 31 | Gerir_Usuarios | Gerir_Propagandas | Gerir_Turmas | Gerir_Cursos | Gerir_Matriculas | Gerir_Parceiros | Gerir_Recursos | Gerir_Financas,
 }
 
 export const roleOptions = [
@@ -161,11 +176,10 @@ export const userPermissions = [
     ],
   },
   {
-    title: 'Localizações',
-    allPermissions: { name: 'Localizações', role: UserRoles.Editar_Localizacao | UserRoles.Listar_Localizacoes },
+    title: 'Recursos da Unidade',
+    allPermissions: { name: 'Editar Recursos da Unidade', role: UserRoles.Gerir_Recursos },
     permissions: [
-      { name: 'Visualizar', role: UserRoles.Listar_Localizacoes },
-      { name: 'Editar', role: UserRoles.Editar_Localizacao },
+
     ],
   },
 ];

@@ -123,7 +123,7 @@ const FormCourse: React.FC = () => {
       tags,
       duration: data.duration,
       cost: removeMask(data.cost.toString()),
-      payment_installment: data.payment_installment,
+      payment_installment: paymentInstallmentSelected,
       enrollment_fee: removeMask(data.enrollment_fee.toString()),
       description: data.description,
       prerequisites: data.prerequisites,
@@ -138,7 +138,8 @@ const FormCourse: React.FC = () => {
         navigate(-1);
       }
     });
-  }, [fieldSelected, modalitySelected, tags, grades, configModal, handleVisible, navigate]);
+  }, [fieldSelected, modalitySelected, tags, grades,
+    paymentInstallmentSelected, configModal, handleVisible, navigate]);
 
   const updateCourse = useCallback(async (data: ICourse) => {
     const gradesToSend = grades.map(({ title, credits }) => ({
@@ -207,7 +208,7 @@ const FormCourse: React.FC = () => {
           .test('has-cost', 'Valor obrigatório', (value) => +removeMask(value) > 0),
         payment_installment: Yup.mixed()
           .typeError('Valor deve ser maior que 0')
-          .test('has-payment', 'Parcela obrigatória', (value) => value > 0),
+          .test('has-payment', 'Parcela obrigatória', () => !!paymentInstallmentSelected),
 
         description: Yup.string()
           .required('Descrição obrigatória'),
@@ -231,7 +232,8 @@ const FormCourse: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [grades, currentCourse, updateCourse, createCourse, fieldSelected]);
+  }, [grades, currentCourse, updateCourse, createCourse,
+    fieldSelected, paymentInstallmentSelected]);
 
   const configCourse = useCallback((value: ICourse) => {
     const temp:ICourse = {

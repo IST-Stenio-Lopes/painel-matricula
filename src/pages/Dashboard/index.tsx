@@ -11,8 +11,9 @@ import api, { initialValue, ResponseData } from '../../services/api';
 import DashboardCard from './components/DashboardCard';
 import wrapperNames from '../../utils/wrapper.json';
 import { getTimeDiff } from './utils/utilities';
-import { StatusOfClassroom } from '../../interfaces/IClassroom';
+import { IClassroomDetails, StatusOfClassroom } from '../../interfaces/IClassroom';
 import { StatusOfMessage } from '../../interfaces/IMessage';
+import { useClassroom } from '../../hooks/classroom';
 
 const listTitles = [
   {
@@ -102,6 +103,7 @@ const initialDataValue = {
 };
 
 const Dashboard: React.FC = () => {
+  const { setCurrentClassroom } = useClassroom();
   const [responseData, setResponseData] = useState<DataResponse>(
     initialDataValue,
   );
@@ -203,8 +205,9 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const handleClickClassroom = useCallback((item) => {
-    navigate('/turmas/detalhes', { state: { classroom: { ...item, extra: null } } });
-  }, [navigate]);
+    setCurrentClassroom({ classroom: { ...item, extra: null } } as IClassroomDetails);
+    navigate('/turmas/detalhes');
+  }, [navigate, setCurrentClassroom]);
 
   const handleClickMessage = useCallback((item) => {
     navigate('/mensagens/detalhes', { state: { message: item } });

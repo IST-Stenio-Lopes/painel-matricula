@@ -7,8 +7,9 @@ import { Button } from '../../../components/Forms/Buttons/Button';
 import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
+import { useModal } from '../../../hooks/modal';
 import { useRoles } from '../../../hooks/roles';
-import { roleOptions } from '../../../interfaces/IUser';
+import { roleOptions, UserResponse } from '../../../interfaces/IUser';
 import api, { initialValue, ResponseData } from '../../../services/api';
 import wrapperNames from '../../../utils/wrapper.json';
 
@@ -44,18 +45,9 @@ const listTitles = [
   },
 ];
 
-interface UserResponse {
-  id:string;
-  name:string;
-  email:string;
-  role_name:string;
-  avatar:string;
-  avatar_url:string;
-  registration_number:string;
-}
-
 const UserList: React.FC = () => {
   const { updateUserRoles } = useRoles();
+  const { configModal, handleVisible } = useModal();
 
   const [responseData, setResponseData] = useState<ResponseData<UserResponse>>(
     {} as ResponseData<UserResponse>,
@@ -95,10 +87,9 @@ const UserList: React.FC = () => {
         keywords,
         status: 'Ativado',
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const handleSubmitSearch = useCallback(() => {
@@ -107,17 +98,42 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     getUsersList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleClick = useCallback((item) => {
     updateUserRoles(item.role);
     navigate('detalhes', { state: { user: item } });
-  }, [navigate]);
+  }, [navigate, updateUserRoles]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);
     setOrder(newSort);
   }, []);
+
+  const deleteUsers = useCallback(async (userId) => {
+    await api.delete(`/users/dashboard/${userId}`).catch((err) => {
+      configModal(err.response.data.message, 'error');
+      handleVisible();
+    }).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        configModal('O usuário foi removido com sucesso', 'success');
+        handleVisible();
+        getUsersList();
+      }
+    });
+  }, [configModal, getUsersList, handleVisible]);
+
+  const handleRemove = useCallback((userId) => {
+    configModal(
+      'Deseja realmente remover o usuário selecionado?',
+      'message',
+      true,
+      true,
+      () => deleteUsers(userId),
+    );
+    handleVisible();
+  }, [configModal, deleteUsers, handleVisible]);
 
   return (
     <PageContainer gridTemplateRows="36px minmax(500px, 660px)" paddingTop="32px">
@@ -138,9 +154,11 @@ const UserList: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        onRemoveItem={handleRemove}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}
         onClickItem={handleClick}
+        changeItemsCount={setItemsPerPage}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}

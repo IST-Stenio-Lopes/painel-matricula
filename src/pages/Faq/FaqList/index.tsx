@@ -9,7 +9,7 @@ import ListTable from '../../../components/ListTable';
 import ListSearchArea from '../../../components/ListTable/components/ListSearchArea';
 import PageContainer from '../../../components/PageContainer';
 import { useModal } from '../../../hooks/modal';
-import api, { ResponseData } from '../../../services/api';
+import api, { initialValue, ResponseData } from '../../../services/api';
 import wrapperNames from '../../../utils/wrapper.json';
 
 const listTitles = [
@@ -59,12 +59,6 @@ interface FaqResponse {
   created_at: string,
   status: string,
 }
-
-const initialValue = {
-  max_pages: 1,
-  max_itens: 1,
-  object_list: [],
-};
 
 const FaqList: React.FC = () => {
   const { configModal, handleVisible } = useModal();

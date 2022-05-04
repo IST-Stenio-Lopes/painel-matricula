@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useEffect, useMemo, useRef, useState,
 } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { MdOutlineSearch } from 'react-icons/md';
 import { validateCPF, validateEmail, validatePhone } from 'validations-br';
@@ -33,12 +33,14 @@ import { useRoles } from '../../../../../hooks/roles';
 
 const FormUser: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const navigate = useNavigate();
   const location: any = useLocation();
   const { configModal, handleVisible } = useModal();
   const { updateUserRoles, getRole } = useRoles();
+  const [userName, setUserName] = useState('Nome');
   const [showSchoolList, setShowSchoolList] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingSearchStudent, setLoadingSearchStudent] = useState(false);
+  const [loadingSearchUser, setLoadingSearchUser] = useState(false);
   const [email, setEmail] = useState<string>();
   const [file, setFile] = useState<any>();
   const [responseSchoolsList, setResponseSchoolsList] = useState<any[]>([]);
@@ -69,14 +71,11 @@ const FormUser: React.FC = () => {
     setPermissionValue(currentRoleOptions.find(
       (role) => role.label === temp.role_name,
     )?.value as number || 0);
-  }, [currentRoleOptions]);
-
-  const handleChangeName = useCallback((e) => {
-    const temp = { ...currentUser as IUser };
-
-    temp.name = e.target.value;
-    setCurrentUser(temp);
-  }, [currentUser]);
+    schoolsList;
+    setSelectedSchool(temp.schools.map(({ school_id }) => school_id));
+    setUserName(temp.name);
+    setEmail(temp.email);
+  }, [currentRoleOptions, schoolsList]);
 
   const createUser = useCallback(async (data) => {
     const {
@@ -114,23 +113,21 @@ const FormUser: React.FC = () => {
 
           formData.append('avatar', file);
 
-          await api.patch('/users/dashboard/profile/avatar', formData);
+          await api.patch(`/users/dashboard/profile/avatar/${response.data.id}`, formData);
         }
+
+        configModal('Usuário cadastrado com sucesso', 'success');
+        handleVisible();
+        navigate(-1);
       }
     });
-  }, [
-    currentRoleOptions,
-    responseSchoolsList,
-    permissionValue,
-    email,
-    selectedRole,
-    selectedSchool,
-    file,
-  ]);
+  }, [currentRoleOptions, responseSchoolsList, permissionValue, email,
+    selectedRole, selectedSchool, file, configModal, handleVisible, navigate]);
 
   const updateCurrentUser = useCallback(async (data) => {
     await api.put(`/users/dashboard/${currentUser?.id}`, {
       name: data.name,
+
     }).catch((err: any) => {
       configModal(err.response.data.message, 'error');
       handleVisible();
@@ -187,9 +184,8 @@ const FormUser: React.FC = () => {
         abortEarly: false,
       });
 
-      await createUser(data);
-      // if (currentUser) await updateCurrentUser(data);
-      // else await createUser(data);
+      if (currentUser) await updateCurrentUser(data);
+      else await createUser(data);
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const erros = getValidationErros(err);
@@ -199,7 +195,7 @@ const FormUser: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedRole, createUser, selectedSchool, showSchoolList]);
+  }, [currentUser, updateCurrentUser, createUser, selectedRole, showSchoolList, selectedSchool]);
 
   const handleAvatarChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -227,7 +223,7 @@ const FormUser: React.FC = () => {
   }, []);
 
   const searchUser = useCallback(async (data) => {
-    setLoadingSearchStudent(true);
+    setLoadingSearchUser(true);
     try {
       formRef.current?.setErrors({});
 
@@ -266,7 +262,7 @@ const FormUser: React.FC = () => {
         formRef.current?.setErrors(erros);
       }
     } finally {
-      setLoadingSearchStudent(false);
+      setLoadingSearchUser(false);
     }
   }, [configModal, email, handleVisible, configUser]);
 
@@ -278,7 +274,8 @@ const FormUser: React.FC = () => {
     } else if (location.state?.user) getCurrentUser();
 
     formRef.current?.setErrors({});
-  }, [configUser, getCurrentUser, location.state, user, getSchoolsList]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     updateUserRoles(user.role);
@@ -298,6 +295,7 @@ const FormUser: React.FC = () => {
   return (
     <Container>
       <UserInfo
+        name={userName}
         user={currentUser || {} as IUser}
         handleChangePhoto={handleAvatarChange}
         img={file}
@@ -332,7 +330,7 @@ const FormUser: React.FC = () => {
               />
 
               <Button
-                loading={loadingSearchStudent}
+                loading={loadingSearchUser}
                 styleType="outline"
                 width="58px"
                 maxHeight="34px"
@@ -346,7 +344,7 @@ const FormUser: React.FC = () => {
             <InputLine
               name="name"
               label="Nome"
-              onChange={handleChangeName}
+              onChange={(e) => setUserName(e.target.value)}
             />
             <InputLine
               mask="cpf"
