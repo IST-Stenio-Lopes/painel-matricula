@@ -17,7 +17,7 @@ const CustomRoute: React.FC<RouteProps> = ({
 
   return (
     isPrivate === !!user ? Component
-      : <Navigate to={isPrivate ? '/dashboard' : '/'} />
+      : <Navigate to={isPrivate ? '/' : '/dashboard'} />
   );
 };
 

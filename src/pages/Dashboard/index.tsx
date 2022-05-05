@@ -21,35 +21,35 @@ const listTitles = [
     name: 'ID - Turma',
     hasSorting: true,
     hasFilter: true,
-    growFactor: '10%',
+    growFactor: 'minmax(200px, 10%)',
   },
   {
     id: '1',
     name: 'Curso',
     hasSorting: true,
     hasFilter: true,
-    growFactor: '20%',
+    growFactor: 'minmax(200px, 20%)',
   },
   {
     id: '2',
     name: 'Turno',
     hasSorting: true,
     hasFilter: true,
-    growFactor: '10%',
+    growFactor: 'minmax(200px, 10%)',
   },
   {
     id: '3',
     name: 'Modalidade',
     hasSorting: true,
     hasFilter: true,
-    growFactor: '15%',
+    growFactor: 'minmax(200px, 15%)',
   },
   {
     id: '5',
     name: 'Tipo',
     hasSorting: true,
     hasFilter: true,
-    growFactor: '10%',
+    growFactor: 'minmax(200px, 10%)',
   },
   {
     id: '6',
@@ -119,12 +119,12 @@ const Dashboard: React.FC = () => {
     initialValue,
   );
 
-  const [searchingValue, setSearchingValue] = useState('');
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState(null);
-  const [order, setOrder] = useState(null);
-  const [filters, setFilters] = useState<string[]>([]);
+  const searchingValue = useMemo(() => '', []);
+  const itemsPerPage = useMemo(() => 10, []);
+  const currentPage = useMemo(() => 1, []);
+  const sortType = useMemo(() => null, []);
+  const order = useMemo(() => null, []);
+  const filters = useMemo(() => [], []);
   const navigate = useNavigate();
 
   const listItems = useMemo(() => responseClassroomData.object_list
@@ -174,10 +174,9 @@ const Dashboard: React.FC = () => {
         keywords,
         status: [StatusOfClassroom.Aberta, StatusOfClassroom.Fechada],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseClassroomData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseClassroomData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const getMessageList = useCallback(async () => {
@@ -190,15 +189,13 @@ const Dashboard: React.FC = () => {
         keywords,
         status: [StatusOfMessage.NaoLida],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseMessageData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseMessageData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const geDataInfo = useCallback(async () => {
     await api.get('/enrollment/dashboard/data')
-      .catch((err) => console.dir(err.response.data))
       .then((response: any) => {
         setResponseData(response ? response.data : initialDataValue);
       });
@@ -223,6 +220,7 @@ const Dashboard: React.FC = () => {
       setResponseMessageData(initialValue);
       setResponseClassroomData(initialValue);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -247,6 +245,7 @@ const Dashboard: React.FC = () => {
         type="percent"
         color={theme.colors.yellow}
       />
+
       <DashboardCard
         title="META DE VAGAS PAGAS"
         value={responseData.enrollment_payed_goal}

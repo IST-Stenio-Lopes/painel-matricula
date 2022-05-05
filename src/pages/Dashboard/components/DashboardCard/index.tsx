@@ -10,7 +10,6 @@ import {
   Container, Content, IconArea, TextArea, Title, Number, Description, Percent, Footer,
 } from './styles';
 import ProgressBar from '../../../../components/ProgressBar';
-import { theme } from '../../../../global/styles/styles';
 
 interface DashboardCardProps {
   title: string;
@@ -60,7 +59,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
       <Content>
         <TextArea>
           <Title>{title}</Title>
-          <Number>{type === 'percent' ? `${value.value}%` : `${value.value}` }</Number>
+          <Number>{type === 'percent' ? `${value.percentage}%` : `${value.value}` }</Number>
         </TextArea>
         <IconArea>
           {currentIcon}
@@ -68,7 +67,13 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
       </Content>
       <Footer color={setColor()}>
         { type === 'percent'
-          ? <ProgressBar current={value.value} total={100} color={color} />
+          ? (
+            <ProgressBar
+              current={value.percentage >= 100 ? 100 : value.percentage}
+              total={100}
+              color={color}
+            />
+          )
           : (
             <>
               {value.percentage !== 0 && arrowIcon}

@@ -1,4 +1,5 @@
 import React, {
+  InputHTMLAttributes,
   useCallback,
   useEffect, useRef, useState,
 } from 'react';
@@ -9,7 +10,7 @@ import {
   Container,
 } from './styles';
 
-interface TextAreaLineProps {
+interface TextAreaLineProps extends InputHTMLAttributes<HTMLTextAreaElement> {
   name: string;
   rows: number;
   cols?: number;
