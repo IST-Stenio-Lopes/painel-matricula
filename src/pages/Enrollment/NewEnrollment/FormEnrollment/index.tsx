@@ -63,7 +63,7 @@ const FormEnrollment: React.FC = () => {
 
   const getStudent = useCallback(async (cpf) => {
     await api.get(`/student/dashboard/search/${removeMask(cpf as string)}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -112,7 +112,7 @@ const FormEnrollment: React.FC = () => {
 
   const getCurrentEnrollment = useCallback(async () => {
     await api.get(`/enrollment/dashboard/specific/${location.state?.enrollment.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

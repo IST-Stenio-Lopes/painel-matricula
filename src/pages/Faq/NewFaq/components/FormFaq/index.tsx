@@ -57,7 +57,7 @@ const FormFaq: React.FC = () => {
       category: categorySelected,
       content: data.content,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -72,7 +72,7 @@ const FormFaq: React.FC = () => {
       category: categorySelected,
       content: data.content,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -117,7 +117,7 @@ const FormFaq: React.FC = () => {
 
   const getCurrentFaq = useCallback(async () => {
     await api.get(`/faq/dashboard/specific/${location.state?.faq.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

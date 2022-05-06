@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import CheckboxInput from '../../../../../components/Forms/Checkbox';
 import { useRoles } from '../../../../../hooks/roles';
+import { getRole } from '../../../../../interfaces/IUser';
 
 import { Container, Header, Content } from './styles';
 
@@ -58,13 +59,16 @@ const PermissionSection: React.FC<PermissionSectionProps> = ({
   useEffect(() => {
     updateUserRoles(userRole);
 
+    console.log(userRole);
     const temp = permissions.map((permission) => getAnyRole(permission.role));
 
+    console.dir(temp);
     setOtherPermissions(temp);
 
-    if (temp.length > 0) setAll(temp.every((p) => p));
-    else setAll(getAnyRole(allPermissions.role));
-  }, [allPermissions, permissions, title, userRole]);
+    setAll(temp.every((p) => p));
+
+    console.log();
+  }, [allPermissions, getAnyRole, permissions, title, updateUserRoles, userRole]);
 
   return (
     <Container>

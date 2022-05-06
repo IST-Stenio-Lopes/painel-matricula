@@ -51,7 +51,7 @@ const NewClassroom: React.FC = () => {
 
   const getCurrentCoursesList = useCallback(async () => {
     await api.get(`/course/dashboard/list/${false}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -73,7 +73,7 @@ const NewClassroom: React.FC = () => {
       number_of_vacancies: data.number_of_vacancies,
       status: selectedStatus === 'Aberta' ? StatusOfClassroom.Aberta : StatusOfClassroom.Fechada,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -104,7 +104,7 @@ const NewClassroom: React.FC = () => {
       is_free: selectedType === 'Gratuito',
       number_of_vacancies: data.number_of_vacancies,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

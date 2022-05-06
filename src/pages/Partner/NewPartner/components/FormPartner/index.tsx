@@ -46,7 +46,7 @@ const FormPartner: React.FC = () => {
       cellphone: removeMask(data.cellphone),
       cnpj: removeMask(data.cnpj),
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -62,7 +62,7 @@ const FormPartner: React.FC = () => {
       cellphone: removeMask(data.cellphone),
       cnpj: removeMask(data.cnpj),
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -113,7 +113,7 @@ const FormPartner: React.FC = () => {
 
   const getCurrentPartner = useCallback(async () => {
     await api.get(`/partner/dashboard/specific/${location.state?.partner.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

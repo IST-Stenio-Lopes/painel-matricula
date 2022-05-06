@@ -12,13 +12,12 @@ export const FormContent = styled(Form)`
   display: grid;
   height: 100%;
 
-  grid-template-columns: minmax(520px, 50%) minmax(520px, 50%);
+  grid-template-columns: minmax(520px, 70%) minmax(520px, 30%);
 
   h3 {
     max-width: fit-content;
     text-align: justify;
-    text-transform: uppercase;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 15px;
     line-height: 18px;
     margin-bottom: 24px;

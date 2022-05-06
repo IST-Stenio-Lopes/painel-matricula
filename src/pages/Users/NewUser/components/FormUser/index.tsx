@@ -129,7 +129,7 @@ const FormUser: React.FC = () => {
       name: data.name,
 
     }).catch((err: any) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response: any) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -205,7 +205,7 @@ const FormUser: React.FC = () => {
 
   const getCurrentUser = useCallback(async () => {
     await api.get(`/users/dashboard/specific/id/${location.state?.user.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -241,7 +241,7 @@ const FormUser: React.FC = () => {
       });
 
       await api.get(`/users/dashboard/specific/email/${email}`).catch((err) => {
-        configModal(err.response.data.message, 'error');
+        configModal(err.response ? err.response.data.message : err.message, 'error');
         handleVisible();
       }).then((response) => {
         if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -400,7 +400,7 @@ const FormUser: React.FC = () => {
                   title={title}
                   allPermissions={allPermissions}
                   permissions={permissions}
-                  userRole={selectedRole}
+                  userRole={currentUser?.role || selectedRole}
                   permissionValue={permissionValue}
                   setPermissionValue={setPermissionValue}
                 />

@@ -23,12 +23,13 @@ export interface SelectOptions {
 interface SelectLineProps extends SelectProps {
   label: string;
   gridRow?: string;
+  disabled?: boolean;
   gridColumn?: string;
   isSearchable?: boolean;
 }
 
 const SelectLine: React.FC<SelectLineProps> = ({
-  name, label, options = [], gridRow, gridColumn, isSearchable = false, ...rest
+  name, label, options = [], disabled = false, gridRow, gridColumn, isSearchable = false, ...rest
 }) => {
   const selectRef = useRef(null);
 
@@ -76,6 +77,7 @@ const SelectLine: React.FC<SelectLineProps> = ({
       <h1>{label}</h1>
       <SelectContainer
         name={name}
+        isDisabled={disabled}
         placeholder="Selecione..."
         isSearchable={isSearchable}
         onFocus={handleInputFocus}

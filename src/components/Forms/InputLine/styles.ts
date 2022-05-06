@@ -18,7 +18,7 @@ export const Container = styled.div<ContainerPros>`
   flex-direction: column;
 
   > div {
-    min-height: 36px;
+    min-height: 38px;
     width: 100%;
 
     border-bottom: 2px solid ${theme.colors.secondary10};
@@ -70,7 +70,11 @@ export const Container = styled.div<ContainerPros>`
     font-size: 15px;
     line-height: 18px;
 
-    color: ${theme.colors.secondary100}
+    color: ${theme.colors.secondary100};
 
+  }
+
+  input::placeholder {
+    color: ${theme.colors.secondary10};
   }
 `;

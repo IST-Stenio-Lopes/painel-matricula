@@ -66,7 +66,7 @@ const FormAdvertising: React.FC = () => {
 
   const getCurrentCoursesList = useCallback(async () => {
     await api.get(`/course/dashboard/list/${false}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -99,7 +99,7 @@ const FormAdvertising: React.FC = () => {
       expiration_date: data.expiration_date,
       description: data.description,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then(async (response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

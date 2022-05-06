@@ -62,3 +62,9 @@ export enum StatusOfAdvertising
   Removido = 'Removido',
   Expirado = 'Expirado',
 }
+
+export enum EmailTypes {
+  Lean = 'new_lean_enrollment',
+  Matricula = 'new_enrollment',
+  Reservado = 'new_held_enrollment',
+}

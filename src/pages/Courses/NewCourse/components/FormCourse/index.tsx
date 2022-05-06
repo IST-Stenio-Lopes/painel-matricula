@@ -129,7 +129,7 @@ const FormCourse: React.FC = () => {
       prerequisites: data.prerequisites,
       grade: gradesToSend,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -160,7 +160,7 @@ const FormCourse: React.FC = () => {
       prerequisites: data.prerequisites,
       grade: gradesToSend,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -256,7 +256,7 @@ const FormCourse: React.FC = () => {
 
   const getCurrentCourse = useCallback(async () => {
     await api.get(`/course/dashboard/specific/${location.state?.course.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

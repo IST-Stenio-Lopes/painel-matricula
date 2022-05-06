@@ -135,7 +135,7 @@ const MessagesList: React.FC = () => {
 
   const deleteMessage = useCallback(async (messageId) => {
     await api.delete(`/message/dashboard/${messageId}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

@@ -85,7 +85,6 @@ export const InputTags: React.FC<InputProps> = ({
           inputFieldPosition="top"
           ref={inputRef}
           {...rest}
-
         />
       </div>
       {error && (

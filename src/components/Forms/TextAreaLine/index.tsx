@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, {
   InputHTMLAttributes,
   useCallback,
@@ -60,11 +62,12 @@ const TextAreaLine: React.FC<TextAreaLineProps> = ({
     >
 
       <h1>{label}</h1>
+
       <textarea
-        disabled={disable}
-        onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
         ref={inputRef}
+        disabled={disable}
+        onFocus={() => { handleInputFocus(); }}
+        onBlur={handleInputBlur}
         rows={rows}
         cols={cols}
         defaultValue={defaultValue}

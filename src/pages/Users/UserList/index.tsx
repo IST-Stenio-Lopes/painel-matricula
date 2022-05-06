@@ -113,7 +113,7 @@ const UserList: React.FC = () => {
 
   const deleteUsers = useCallback(async (userId) => {
     await api.delete(`/users/dashboard/${userId}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

@@ -77,7 +77,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
 
   const getCurrentClassroom = useCallback(async (classroom_id) => {
     await api.get(`/classroom/dashboard/specific/${classroom_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -94,7 +94,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
 
   const getClassroomList = useCallback(async (course_id) => {
     await api.get(`/classroom/dashboard/list/${course_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -109,7 +109,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
 
   const getCoursesList = useCallback(async () => {
     await api.get(`/course/dashboard/list/${true}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -155,7 +155,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
       sge_situation: false,
       payment_method: selectedPayment,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -177,7 +177,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
     await api.put(`/student/dashboard/${localEnrollment?.id}`, {
       ...data,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

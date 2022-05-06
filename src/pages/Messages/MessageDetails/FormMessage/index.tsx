@@ -48,7 +48,7 @@ const FormMessage: React.FC = () => {
 
   const getCurrentMessage = useCallback(async () => {
     await api.get(`/message/dashboard/specific/${location.state?.message.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

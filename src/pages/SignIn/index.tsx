@@ -27,6 +27,7 @@ import SelectLine from '../../components/Forms/SelectLine';
 import { theme } from '../../global/styles/styles';
 import BackButton from '../../components/Forms/Buttons/BackButton';
 import api from '../../services/api';
+import { useModal } from '../../hooks/modal';
 
 interface SessionInFormData{
   email: string;
@@ -50,6 +51,7 @@ const SignIn: React.FC = () => {
   const formRefSelectSchool = useRef<FormHandles>(null);
   const formRef = useRef<FormHandles>(null);
   const { signIn } = useAuth();
+  const { configModal, handleVisible } = useModal();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -101,9 +103,12 @@ const SignIn: React.FC = () => {
 
       const { email, password } = data;
 
-      const response = await api.post('/dashboard/lobby', { email, password });
+      const response: any = await api.post('/dashboard/lobby', { email, password })
+        .catch((err) => {
+          configModal(err.response ? err.response.data.message : err.message, 'error');
+          handleVisible();
+        });
 
-      console.dir(response.data);
       const { token, schools } = response.data;
 
       api.defaults.headers.common.authorization = `Bearer ${token}`;
@@ -122,7 +127,7 @@ const SignIn: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [configModal, handleVisible]);
 
   useEffect(() => {
     if (schoolsOptions && schoolsOptions.length >= 1) {

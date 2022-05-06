@@ -54,7 +54,7 @@ const UserProfile: React.FC = () => {
     await api.put(`/users/dashboard/${currentUser?.id}`, {
       name: data.name,
     }).catch((err: any) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response: any) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

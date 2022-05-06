@@ -81,7 +81,7 @@ const EnrollmentSettings: React.FC = () => {
     await api.post('/school/dashboard', {
       category: categorySelected,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -95,7 +95,7 @@ const EnrollmentSettings: React.FC = () => {
     await api.put(`/school/dashboard/${currentSchool?.object_id}`, {
       category: categorySelected,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -140,7 +140,7 @@ const EnrollmentSettings: React.FC = () => {
 
   const getCurrentSchool = useCallback(async () => {
     await api.get(`/school/dashboard/specific/${location.state?.school.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

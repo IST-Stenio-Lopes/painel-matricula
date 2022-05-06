@@ -114,7 +114,7 @@ const AttachmentsPanel: React.FC<AttachmentsPanel> = ({
 
   const deleteStudentAttachment = useCallback(async (attachmentId) => {
     await api.delete(`/student/dashboard/documents/${student_id}/${attachmentId}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -126,7 +126,7 @@ const AttachmentsPanel: React.FC<AttachmentsPanel> = ({
 
   const deleteEnrollmentAttachment = useCallback(async (attachmentId) => {
     await api.delete(`/enrollment/dashboard/documents/${enrollment_id}/${attachmentId}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

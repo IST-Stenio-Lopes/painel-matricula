@@ -66,7 +66,7 @@ const AttachmentModal: React.FC<AttachmentModalProps> = ({
     }]));
 
     await api.post(`/student/dashboard/documents/${studentId}`, formData).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -89,7 +89,7 @@ const AttachmentModal: React.FC<AttachmentModalProps> = ({
     }]));
 
     await api.post(`/enrollment/dashboard/documents/${enrollmentId}`, formData).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

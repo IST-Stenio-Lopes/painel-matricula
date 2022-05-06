@@ -181,7 +181,7 @@ const OpenClassrooms: React.FC = () => {
 
   const deleteClassroom = useCallback(async (classroomId) => {
     await api.delete(`/classroom/dashboard/${classroomId}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

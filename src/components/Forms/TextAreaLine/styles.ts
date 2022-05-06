@@ -40,6 +40,37 @@ export const Container = styled.div<ContainerPros>`
     margin: 8px 0;
   }
 
+  div {
+    height: 180px;
+    flex: 1;
+    background: transparent;
+    padding: 16px;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+
+    color: ${theme.colors.secondary100};
+    border: 2px solid ${theme.colors.secondary10};
+
+    ${(props) => props.isErrored && css`
+      border-color: ${theme.colors.red};
+    `}
+
+    ${(props) => props.isFocused && css`
+      border-color: ${theme.colors.primary50};
+    `}
+
+    width: 100%;
+
+    span {
+      padding: 0 18px;
+    }
+
+    &::placeholder {
+      color: ${theme.colors.secondary20};
+    }
+  }
+
   textarea {
     resize: none;
     flex: 1;

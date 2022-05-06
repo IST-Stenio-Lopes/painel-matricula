@@ -13,6 +13,8 @@ import SelectLine from '../../../../components/Forms/SelectLine';
 import TextAreaLine from '../../../../components/Forms/TextAreaLine';
 import ContentPanel from '../../../../components/Panels/ContentPanel';
 import { useModal } from '../../../../hooks/modal';
+import { useSchool } from '../../../../hooks/school';
+import { ISchool } from '../../../../interfaces/ISchool';
 import api from '../../../../services/api';
 import getValidationErros from '../../../../utils/getValidationErrors';
 import { telMasked } from '../../../../utils/masks';
@@ -21,90 +23,38 @@ import {
   Container, FormContent,
 } from './styles';
 
-export interface ISchool {
-  id: string,
-  object_id: string,
-  name: string,
-  initials: string,
-  street: string,
-  number: string,
-  neighborhood: string,
-  zipcode: string,
-  city: string,
-  estate: string,
-  phone: string,
-  whatsapp_enabled: true,
-  whatsapp_number: string,
-  email: string,
-  business_hours: string,
-  gps_location: string,
-  payment_pv: string,
-  payment_token: string,
-  business_model: string,
-  application_deadline: string,
-  application_payment_tax: string,
-  pre_registration_email: string,
-  application_email: string,
-  lean_office_email: string,
-  free_enrollment_block: true,
-  free_enrollment_block_time: string,
-  status: string,
-  updated_at: string,
-  created_at: string
-}
-
 const options = [
-  { value: 'dia/dias', label: 'dia/dias' },
-  { value: 'semana/semanas', label: 'semana/semanas' },
-  { value: 'mês/meses', label: 'mês/meses' },
-  { value: 'ano/anos', label: 'ano/anos' },
+  { value: 'dia(s)', label: 'dia(s)' },
+  { value: 'semana(a)', label: 'semana(a)' },
+  { value: 'mês(es)', label: 'mês(es)' },
+  { value: 'ano(s)', label: 'ano(s)' },
 ];
 const EnrollmentSettings: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { currentSchool } = useSchool();
   const { configModal, handleVisible } = useModal();
-  const [currentSchool, setCurrentSchool] = useState<ISchool | undefined>(undefined);
-  const [categorySelected, setCategorySelected] = useState(currentSchool ? currentSchool.status : '');
-  const location: any = useLocation();
-
-  const configSchool = useCallback((school: ISchool) => {
-    const temp = {
-      ...school,
-      phone: telMasked(school.phone),
-    };
-
-    setCurrentSchool(temp);
-  }, []);
-
-  const createSchool = useCallback(async (data: ISchool) => {
-    await api.post('/school/dashboard', {
-      category: categorySelected,
-    }).catch((err) => {
-      configModal(err.response.data.message, 'error');
-      handleVisible();
-    }).then((response) => {
-      if (response?.status && response.status >= 200 && response.status <= 299) {
-        console.log('sucesso');
-        navigate(-1);
-      }
-    });
-  }, [categorySelected, configModal, handleVisible, navigate]);
+  const [activateGracePeriod, setActivateGracePeriod] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState(currentSchool ? currentSchool.free_enrollment_block_time.split(' ')[1] : '');
 
   const updateSchool = useCallback(async (data: ISchool) => {
-    await api.put(`/school/dashboard/${currentSchool?.object_id}`, {
-      category: categorySelected,
+    await api.put(`/school/dashboard/${currentSchool?.id}`, {
+      ...currentSchool,
+      application_deadline: data.application_deadline,
+      free_enrollment_block: activateGracePeriod,
+      free_enrollment_block_time: activateGracePeriod ? `${data.free_enrollment_block_time} ${selectedPeriod}` : undefined,
+      application_payment_tax: 0,
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
         configModal('Atualizado com sucesso', 'success');
         handleVisible();
-        navigate(-1);
       }
     });
-  }, [categorySelected, configModal, currentSchool?.object_id, handleVisible, navigate]);
+  }, [currentSchool, activateGracePeriod, selectedPeriod, configModal, handleVisible]);
 
   const handleSubmit = useCallback(async (data) => {
     setLoading(true);
@@ -112,21 +62,22 @@ const EnrollmentSettings: React.FC = () => {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
-        name: Yup.string()
-          .required('Tópico obrigatório'),
-        category: Yup.string()
-          .test('has-category', 'Categoria obrigatória', () => !!categorySelected),
-
-        content: Yup.string()
-          .required('Texto obrigatório'),
+        application_deadline: Yup.number()
+          .typeError('O valor deve ser maior que 0')
+          .test('is-more-than', 'O valor deve ser maior que 0', (value) => +(value as number) >= 1),
+        free_enrollment_block_time: Yup.mixed()
+          .test('is-more-than', 'O valor deve ser maior que 0', (value) => {
+            if (activateGracePeriod) {
+              return +(value as number) >= 1;
+            } return true;
+          }),
       });
 
       await schema.validate(data, {
         abortEarly: false,
       });
 
-      if (currentSchool) await updateSchool(data);
-      else await createSchool(data);
+      await updateSchool(data);
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const erros = getValidationErros(err);
@@ -136,70 +87,78 @@ const EnrollmentSettings: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [categorySelected, createSchool, currentSchool, updateSchool]);
-
-  const getCurrentSchool = useCallback(async () => {
-    await api.get(`/school/dashboard/specific/${location.state?.school.object_id}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
-      handleVisible();
-    }).then((response) => {
-      if (response?.status && response.status >= 200 && response.status <= 299) {
-        configSchool(response.data);
-        console.dir(response.data);
-      } else {
-        setCurrentSchool(undefined);
-      }
-    });
-  }, [configModal, configSchool, handleVisible, location.state?.school.object_id]);
+  }, [activateGracePeriod, updateSchool]);
 
   useEffect(() => {
-    if (location.state?.school) {
-      getCurrentSchool();
-    } else setCurrentSchool(undefined);
-
-    formRef.current?.setErrors({});
-  }, []);
+    console.dir(currentSchool);
+  }, [currentSchool]);
 
   return (
     <Container>
       <ContentPanel
         title="Configuração de Matrículas"
         subTitle="As informações abaixo afetam as matrículas gratuitas e pré-matrículas"
-        footerContent={<Button maxWidth="150px" minHeight="44px">salvar</Button>}
         width="50%"
+        footerContent={(
+          <Button
+            loading={loading}
+            onClick={() => formRef.current?.submitForm()}
+            maxWidth="150px"
+            minHeight="44px"
+          >
+            salvar
+          </Button>
+      )}
       >
         <FormContent ref={formRef} onSubmit={handleSubmit} initialData={currentSchool}>
           <FormSection gridColumn="1 / 2">
-            <InputSection grid_template_column="1fr 1fr">
-              <InputLine
-                name="free_enrollment_block_time"
-                label="Prazo pré-matrícula"
-              />
-            </InputSection>
-
-            {/* <CheckboxInput
-              name="free_enrollment_block"
-              label="Ativar"
-            /> */}
-            <InputSection grid_template_column="1fr 1fr">
-
+            <InputSection grid_template_column="50% 50%">
               <InputLine
                 mask="numeric"
-                name="free_enrollment_block_time"
-                label="Tempo de carência para matrícula"
-              />
-
-              <SelectLine
-                name="time"
-                label="Período"
-                options={options}
+                name="application_deadline"
+                label="Expirar pré-matrícula em: (dias)"
               />
             </InputSection>
+
+            <CheckboxInput
+              name="free_enrollment_block"
+              label="Ativar tempo de carência para cursos gratuitos"
+              onChange={() => setActivateGracePeriod(!activateGracePeriod)}
+              contentStyle={{
+                marginBottom: 18,
+                marginTop: 18,
+              }}
+            />
+
+            {activateGracePeriod && (
+              <InputSection grid_template_column="50% 50%">
+
+                <InputLine
+                  disable={!activateGracePeriod}
+                  mask="numeric"
+                  placeholder="Ex: 3"
+                  name="free_enrollment_block_time"
+                  label="Tempo de carência"
+                />
+
+                <SelectLine
+                  disabled={!activateGracePeriod}
+                  name="time"
+                  label="Período"
+                  options={options}
+                  value={options.filter((item) => item.value === selectedPeriod)}
+                  onChange={(newValue: any) => {
+                    setSelectedPeriod(newValue.value);
+                  }}
+                />
+              </InputSection>
+            )}
 
             <h3>
               Ao ativar a função de tempo de carência, o estudante que tenha
               ingressado em um curso gratuito ficará impossibilitado
               de matricular-se em cursos gratuitos até o fim do prazo estipulado
+              contado a partir da data de sua matrícula
               <br />
               <br />
               OBS: Mesmo com o tempo de carência ativado, é possível forçar a

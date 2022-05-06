@@ -154,7 +154,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
       });
 
       await api.get(`/student/dashboard/search/${removeMask(cpf as string)}`).catch((err) => {
-        configModal(err.response.data.message, 'error');
+        configModal(err.response ? err.response.data.message : err.message, 'error');
         handleVisible();
       }).then((response) => {
         if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -197,7 +197,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
       whatsapp: removeMask(data.whatsapp),
       cpf: cpf && removeMask(cpf),
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then(async (response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
@@ -249,7 +249,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
       whatsapp: removeMask(data.whatsapp),
       cpf: cpf && removeMask(cpf),
     }).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then(async (response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

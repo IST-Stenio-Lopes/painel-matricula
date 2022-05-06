@@ -152,7 +152,7 @@ const CoursesList: React.FC = () => {
 
   const deleteCourse = useCallback(async (courseId) => {
     await api.delete(`/course/dashboard/${courseId}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

@@ -95,7 +95,7 @@ const PartnerList: React.FC = () => {
 
   const deletePartner = useCallback(async (partnerId) => {
     await api.delete(`/partner/dashboard/${partnerId}`).catch((err) => {
-      configModal(err.response.data.message, 'error');
+      configModal(err.response ? err.response.data.message : err.message, 'error');
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {

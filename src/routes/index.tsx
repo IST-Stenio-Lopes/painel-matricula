@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Routes as RoutesDOM, useLocation, Route,
 } from 'react-router-dom';
@@ -20,9 +20,28 @@ import AdvertisingRoutes from './advertising.routes';
 import EnrollmentsRoutes from './enrollments.routes';
 import CustomRoute from './Route';
 import PartnerRoutes from './partner.routes';
+import { service } from '../services/api';
+import { useModal } from '../hooks/modal';
 
 const Routes: React.FC = () => {
   const location: any = useLocation();
+  const { configModal, handleVisible } = useModal();
+
+  // useEffect(() => {
+  //   service.register({
+  //     onResponseError(error: any) {
+  //       if (!error.response) {
+  //         configModal(error.message, 'error');
+  //         handleVisible();
+  //       } else {
+  //         configModal(error.response.data.message, 'error');
+  //         handleVisible();
+  //       }
+
+  //       return error;
+  //     },
+  //   });
+  // }, [configModal, handleVisible]);
 
   return (
     <>
