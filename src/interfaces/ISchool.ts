@@ -8,6 +8,14 @@ export interface AdvertisingResponse {
   status: string
 }
 
+export interface IEmailType {
+  subject: string;
+  header: string;
+  body: string;
+  legal_documents: string[];
+  student_documents: string[];
+}
+
 export interface ISchool {
   id: string,
   object_id: string,
@@ -30,9 +38,9 @@ export interface ISchool {
   business_model: string,
   application_deadline: string,
   application_payment_tax: string,
-  pre_registration_email: string,
-  application_email: string,
-  lean_office_email: string,
+  pre_registration_email: IEmailType,
+  application_email: IEmailType,
+  lean_office_email: IEmailType,
   free_enrollment_block: true,
   free_enrollment_block_time: string,
   status: string,

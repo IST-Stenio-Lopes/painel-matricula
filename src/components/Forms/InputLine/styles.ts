@@ -8,6 +8,7 @@ interface ContainerPros {
   disable: boolean;
   gridRow?: string;
   gridColumn?: string;
+  textTransform?: string;
 }
 
 export const Container = styled.div<ContainerPros>`
@@ -71,6 +72,9 @@ export const Container = styled.div<ContainerPros>`
     line-height: 18px;
 
     color: ${theme.colors.secondary100};
+
+    text-transform: ${({ textTransform }) => textTransform && textTransform};
+
 
   }
 

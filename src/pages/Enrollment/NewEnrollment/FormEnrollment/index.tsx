@@ -67,7 +67,6 @@ const FormEnrollment: React.FC = () => {
       handleVisible();
     }).then((response) => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
-        console.dir(response.data);
         setCurrentStudent(response.data);
         nextStage(1);
       }

@@ -1,5 +1,5 @@
 import React, {
-  createContext, useContext, useState, useMemo,
+  createContext, useContext, useState, useMemo, useCallback,
 } from 'react';
 import { ISchool } from '../interfaces/ISchool';
 
@@ -16,12 +16,41 @@ const SchoolProvider: React.FC = ({ children }) => {
   const [currentSchool, setCurrentSchool] = useState<ISchool>();
   const [isEditing, setIsEditing] = useState(false);
 
+  const updateSchool = useCallback((school) => {
+    const applicationEmail = {
+      ...school.application_email,
+      header: school.application_email.header.join('\n'),
+      body: school.application_email.body.join('\n'),
+    };
+
+    const reservedEmail = {
+      ...school.pre_registration_email,
+      header: school.pre_registration_email.header.join('\n'),
+      body: school.pre_registration_email.body.join('\n'),
+    };
+
+    const leanEmail = {
+      ...school.lean_office_email,
+      header: school.lean_office_email.header.join('\n'),
+      body: school.lean_office_email.body.join('\n'),
+    };
+
+    const temp: ISchool = {
+      ...school,
+      application_email: applicationEmail,
+      pre_registration_email: reservedEmail,
+      lean_office_email: leanEmail,
+    };
+
+    setCurrentSchool(temp);
+  }, []);
+
   const dataValue = useMemo(() => ({
     currentSchool,
-    setCurrentSchool,
+    setCurrentSchool: updateSchool,
     isEditing,
     setIsEditing,
-  }), [currentSchool, isEditing]);
+  }), [currentSchool, isEditing, updateSchool]);
 
   return (
     <SchoolContext.Provider value={dataValue}>

@@ -1,6 +1,6 @@
 import { FormHandles } from '@unform/core';
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 import * as Yup from 'yup';
 import { Button } from '../../../../../../components/Forms/Buttons/Button';
@@ -11,77 +11,47 @@ import TextAreaLine from '../../../../../../components/Forms/TextAreaLine';
 import ContentPanel from '../../../../../../components/Panels/ContentPanel';
 import { useAuth } from '../../../../../../hooks/auth';
 import { useModal } from '../../../../../../hooks/modal';
-import { EmailTypes } from '../../../../../../interfaces/ISchool';
+import { EmailTypes, IEmailType } from '../../../../../../interfaces/ISchool';
 import api, { baseURL } from '../../../../../../services/api';
 import getValidationErros from '../../../../../../utils/getValidationErrors';
 import { hasAllKeys } from '../../utils/utilities';
 
 import { Container, FormContent } from './styles';
 
-const neededKeys = [
-  'Nome do Aluno',
-  'Curso',
-  'Turno',
-  'Unidade',
-  'Email',
-  'Dias',
-];
-
 interface EmailPanelProps {
   selectedEmailType: EmailTypes;
+  neededKeys: string[];
+  initialValue: IEmailType | undefined;
 }
-const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType }) => {
+const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, initialValue }) => {
   const formRef = useRef<FormHandles>(null);
   const { user } = useAuth();
   const { configModal, handleVisible } = useModal();
-  const initialValue = useMemo(() => ({
-    subject: 'A um passo de concluir sua matrícula*',
-    header: 'Olá [Nome do Aluno]!\n\nVocê acabou de se pré-matricular no curso [Curso] no turno da [Turno] da unidade [Unidade].\n\nSua vaga ficará reservada por [Dias] dias. Para confirmar sua matrícula será necessário que preencha os documentos em anexo e envie-os para o e-mail da unidade [Email] com os seguintes documentos:',
-    student_documents: [
-      {
-        id: 'RG ou CNH',
-        text: 'RG ou CNH',
-      },
-      {
-        id: 'CPF',
-        text: 'CPF',
-      },
-      {
-        id: 'Comprovante de residência (atualizado)',
-        text: 'Comprovante de residência (atualizado)',
-      },
-      {
-        id: 'Certificado de escolaridade ou Declaração escolar',
-        text: 'Certificado de escolaridade ou Declaração escolar',
-      },
-      {
-        id: 'Cartão de Vacina (Covid-19)',
-        text: 'Cartão de Vacina (Covid-19)',
-      },
-      {
-        id: 'Carteira de trabalho (Se industriário)',
-        text: 'Carteira de trabalho (Se industriário)',
-      },
-      {
-        id: 'Documentos em anexo preenchidos',
-        text: 'Documentos em anexo preenchidos',
-      },
-    ],
-    body: 'Quer tornar seu atendimento presencial mais rápido? \n \n Responda este e-mail, anexe as cópias dos documentos citados anteriormente. E no ato do atendimento, verificaremos os documentos originais.\n \n Para menores de 18 anos, o responsável legal também deverá comparecer munido de seu documento de identificação:',
-    legal_documents: [
-      {
-        id: 'RG ou CNH',
-        text: 'RG ou CNH',
-      },
-    ],
-  }), []);
   const [loading, setLoading] = useState(false);
-  const [urlDoc, setUrlDoc] = useState();
   const [studentName, setStudentName] = useState<string>();
   const [urlTemplate, setUrlTemplate] = useState<string>();
 
-  const [documents, setDocuments] = useState<ITag[]>(initialValue.student_documents);
-  const [legalDocuments, setLegalDocuments] = useState<ITag[]>(initialValue.legal_documents);
+  const [
+    documents,
+    setDocuments,
+  ] = useState<ITag[]>(initialValue?.student_documents
+    ? initialValue?.student_documents
+      .map((doc) => ({
+        id: doc,
+        text: doc,
+      })) : []);
+
+  const [
+    legalDocuments,
+    setLegalDocuments,
+  ] = useState<ITag[]>(
+    initialValue?.legal_documents
+      ? initialValue?.legal_documents
+        .map((doc) => ({
+          id: doc,
+          text: doc,
+        })) : [],
+  );
 
   // const [headerValue, setHeaderValue] = useState(initialValue.header.replaceAll('\n', '<br/>'));
 
@@ -105,8 +75,8 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType }) => {
       subject: data.subject + time,
       header: data.header.split('\n'),
       body: data.body.split('\n'),
-      legal_documents: legalDocuments.map((item) => item.text),
-      student_documents: documents.map((item) => item.text),
+      legal_documents: legalDocuments?.map((item) => item.text),
+      student_documents: documents?.map((item) => item.text),
     };
 
     const url = `${baseURL}:2223/school/dashboard/email/template?email_template=${JSON.stringify(temp)}&school_id=${user.school_id}&user_id=${user.id}`;
@@ -120,8 +90,8 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType }) => {
         subject: data.subject,
         header: data.header.split('\n'),
         body: data.body.split('\n'),
-        legal_documents: legalDocuments.map((item) => item.text),
-        student_documents: documents.map((item) => item.text),
+        legal_documents: legalDocuments?.map((item) => item.text),
+        student_documents: documents?.map((item) => item.text),
       },
     };
 
@@ -149,9 +119,9 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType }) => {
           .test('has-all-keys', 'Insira todas as palavras chaves informadas ao lado', (value) => hasAllKeys(value as string, neededKeys)),
 
         student_documents: Yup.string()
-          .test('has-documents', 'Informe ao menos um documento', () => documents && documents.length >= 1),
+          .test('has-documents', 'Informe ao menos um documento', () => (documents ? documents.length >= 1 : false)),
         legal_documents: Yup.string()
-          .test('has-documents', 'Informe ao menos um documento', () => legalDocuments && legalDocuments.length >= 1),
+          .test('has-documents', 'Informe ao menos um documento', () => (legalDocuments ? legalDocuments.length >= 1 : false)),
 
       });
 
@@ -171,11 +141,11 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType }) => {
     } finally {
       setLoading(false);
     }
-  }, [documents, handleSaveEmail, legalDocuments]);
+  }, [documents, handleSaveEmail, legalDocuments, neededKeys]);
 
   useEffect(() => {
     handleChangeURL(formRef.current?.getData());
-  }, []);
+  }, [handleChangeURL]);
 
   return (
     <Container>
@@ -226,7 +196,7 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType }) => {
               name="student_documents"
               label="Documentos pessoais"
               placeholder="Pressione enter para incluir um novo documento"
-              tags={documents}
+              tags={documents as ITag[]}
               setTags={setDocuments}
             />
 
@@ -240,7 +210,7 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType }) => {
               name="legal_documents"
               label="Documentos do responsável legal"
               placeholder="Pressione enter para incluir um novo documento"
-              tags={legalDocuments}
+              tags={legalDocuments as ITag[]}
               setTags={setLegalDocuments}
             />
 

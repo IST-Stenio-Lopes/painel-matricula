@@ -158,15 +158,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
         handleVisible();
       }).then((response) => {
         if (response?.status && response.status >= 200 && response.status <= 299) {
-          console.dir(response.data);
-          configModal(
-            `O CPF digitado pertence à ${response.data.name} , deseja carrega suas informações?`,
-            'message',
-            true,
-            false,
-            () => { studentSetup(response.data); },
-          );
-          handleVisible();
+          studentSetup(response.data);
         }
       });
     } catch (err) {
@@ -447,12 +439,12 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
                 />
 
                 <Button
-                  loading={loadingGetAddress}
                   styleType="outline"
                   gridColumn="2 / 3"
                   width="58px"
                   maxHeight="34px"
                   iconWithMargin={false}
+                  loading={loadingGetAddress}
                   onClick={() => getAddress(formRef.current?.getData())}
                 >
                   <MdOutlineSearch size={24} />
@@ -549,7 +541,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
               />
               <InputLine
                 name="estate"
-                label="Estado"
+                label="Estado (UF)"
               />
               <InputLine
                 name="number"

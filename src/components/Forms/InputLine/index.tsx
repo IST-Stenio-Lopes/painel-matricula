@@ -31,6 +31,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   disable?: boolean;
   gridRow?: string;
   gridColumn?: string;
+  textTransform?: string;
   mask?:'alpha-numeric' | 'cep' | 'tel' | 'cell-phone' | 'cpf'| 'cnpj' | 'date' | 'numeric' | 'time' | 'currency' | 'cpfOrCnpj' | 'meters' | undefined
 }
 
@@ -38,6 +39,7 @@ export const InputLine: React.FC<InputProps> = ({
   name,
   disable = false,
   containerStyle = {},
+  textTransform,
   icon: Icon, label, mask, gridRow, gridColumn, onHandleChange = () => {}, setValue, ...rest
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -113,6 +115,7 @@ export const InputLine: React.FC<InputProps> = ({
   return (
     <Container
       style={containerStyle}
+      textTransform={textTransform}
       gridRow={gridRow}
       gridColumn={gridColumn}
       isErrored={!!error}

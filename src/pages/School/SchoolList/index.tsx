@@ -127,10 +127,9 @@ const SchoolList: React.FC = () => {
         sort_type: order,
         keywords,
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const handleSubmitSearch = useCallback(() => {
@@ -143,6 +142,7 @@ const SchoolList: React.FC = () => {
 
   useEffect(() => {
     getSchoolList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
@@ -169,6 +169,7 @@ const SchoolList: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        changeItemsCount={setItemsPerPage}
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}

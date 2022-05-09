@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import MenuSelect from '../../../../components/MenuSelect';
 import SelectMenuButton from '../../../../components/MenuSelect/components/SelectMenuButton';
 import { useSchool } from '../../../../hooks/school';
-import { EmailTypes } from '../../../../interfaces/ISchool';
+import { EmailTypes, IEmailType } from '../../../../interfaces/ISchool';
 import EmailPanel from './components/EmailPanel';
 import Instructions from './components/Instructions';
 
@@ -12,6 +12,23 @@ const buttonsMenu = [
   'Editar Email - Pré Matrícula',
   'Editar Email -  Matrícula',
   'Editar Email - Lean Office',
+];
+
+const neededKeysToReserved = [
+  'Nome do Aluno',
+  'Curso',
+  'Turno',
+  'Unidade',
+  'Email',
+  'Dias',
+];
+
+const neededKeys = [
+  'Nome do Aluno',
+  'Curso',
+  'Turno',
+  'Unidade',
+  'Email',
 ];
 
 const SchoolEmails: React.FC = () => {
@@ -40,6 +57,28 @@ const SchoolEmails: React.FC = () => {
     }
   }, [instructionsType]);
 
+  const keys = useMemo(() => {
+    switch (instructionsType) {
+      case 'Reserva':
+        return neededKeysToReserved;
+      case 'Matricula':
+        return neededKeys;
+      default:
+        return neededKeys;
+    }
+  }, [instructionsType]);
+
+  const initialEmailValue = useMemo(() => {
+    switch (instructionsType) {
+      case 'Reserva':
+        return currentSchool?.pre_registration_email;
+      case 'Matricula':
+        return currentSchool?.application_email;
+      default:
+        return currentSchool?.lean_office_email;
+    }
+  }, [instructionsType, currentSchool]);
+
   return (
     <Container>
       <Content>
@@ -56,7 +95,11 @@ const SchoolEmails: React.FC = () => {
         <Instructions instructionType={instructionsType} />
 
       </Content>
-      <EmailPanel selectedEmailType={selectedEmailType} />
+      <EmailPanel
+        initialValue={initialEmailValue as IEmailType}
+        selectedEmailType={selectedEmailType}
+        neededKeys={keys}
+      />
     </Container>
   );
 };

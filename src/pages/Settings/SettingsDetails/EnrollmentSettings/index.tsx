@@ -1,8 +1,7 @@
 import { FormHandles } from '@unform/core';
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useRef, useState,
 } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import CheckboxInput from '../../../../components/Forms/Checkbox';
@@ -10,14 +9,12 @@ import { FormSection } from '../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../components/Forms/InputLine';
 import { InputSection } from '../../../../components/Forms/InputSection';
 import SelectLine from '../../../../components/Forms/SelectLine';
-import TextAreaLine from '../../../../components/Forms/TextAreaLine';
 import ContentPanel from '../../../../components/Panels/ContentPanel';
 import { useModal } from '../../../../hooks/modal';
 import { useSchool } from '../../../../hooks/school';
 import { ISchool } from '../../../../interfaces/ISchool';
 import api from '../../../../services/api';
 import getValidationErros from '../../../../utils/getValidationErrors';
-import { telMasked } from '../../../../utils/masks';
 
 import {
   Container, FormContent,
@@ -31,10 +28,12 @@ const options = [
 ];
 const EnrollmentSettings: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const navigate = useNavigate();
   const { currentSchool } = useSchool();
   const { configModal, handleVisible } = useModal();
-  const [activateGracePeriod, setActivateGracePeriod] = useState(false);
+  const [
+    activateGracePeriod,
+    setActivateGracePeriod] = useState(!!currentSchool?.free_enrollment_block);
+
   const [loading, setLoading] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState(currentSchool ? currentSchool.free_enrollment_block_time.split(' ')[1] : '');
 
@@ -89,10 +88,6 @@ const EnrollmentSettings: React.FC = () => {
     }
   }, [activateGracePeriod, updateSchool]);
 
-  useEffect(() => {
-    console.dir(currentSchool);
-  }, [currentSchool]);
-
   return (
     <Container>
       <ContentPanel
@@ -123,6 +118,7 @@ const EnrollmentSettings: React.FC = () => {
             <CheckboxInput
               name="free_enrollment_block"
               label="Ativar tempo de carência para cursos gratuitos"
+              defaultChecked={activateGracePeriod}
               onChange={() => setActivateGracePeriod(!activateGracePeriod)}
               contentStyle={{
                 marginBottom: 18,
