@@ -180,6 +180,7 @@ const AttachmentModal: React.FC<AttachmentModalProps> = ({
             styleType="outline"
             maxWidth="150px"
             minHeight="44px"
+            onClick={() => handleClose()}
           >
             cancelar
           </Button>

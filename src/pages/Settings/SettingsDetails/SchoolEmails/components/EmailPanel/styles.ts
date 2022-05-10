@@ -28,3 +28,20 @@ export const FormContent = styled(Form)`
     border: none;
   }
 `;
+
+export const AttachmentContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+
+`;
+
+export const ButtonArea = styled.div`
+  display: flex;
+  min-width: 230px;
+`;
+
+export const Attachments = styled.div`
+
+`;

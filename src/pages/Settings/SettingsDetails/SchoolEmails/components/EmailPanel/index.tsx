@@ -2,7 +2,9 @@ import { FormHandles } from '@unform/core';
 import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
+import { MdAttachFile } from 'react-icons/md';
 import * as Yup from 'yup';
+import AttachmentModal from '../../../../../../components/AttachmentModal';
 import { Button } from '../../../../../../components/Forms/Buttons/Button';
 import { FormSection } from '../../../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../../../components/Forms/InputLine';
@@ -15,8 +17,11 @@ import { EmailTypes, IEmailType } from '../../../../../../interfaces/ISchool';
 import api, { baseURL } from '../../../../../../services/api';
 import getValidationErros from '../../../../../../utils/getValidationErrors';
 import { hasAllKeys } from '../../utils/utilities';
+import Attachment from '../Attachment';
 
-import { Container, FormContent } from './styles';
+import {
+  AttachmentContent, Attachments, ButtonArea, Container, FormContent,
+} from './styles';
 
 interface EmailPanelProps {
   selectedEmailType: EmailTypes;
@@ -30,6 +35,7 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
   const [loading, setLoading] = useState(false);
   const [studentName, setStudentName] = useState<string>();
   const [urlTemplate, setUrlTemplate] = useState<string>();
+  const [showAttachmentModal, setShowAttachmentModal] = useState(false);
 
   const [
     documents,
@@ -214,6 +220,30 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
               setTags={setLegalDocuments}
             />
 
+            <AttachmentContent>
+              <ButtonArea>
+                <Button
+                  styleType="outline"
+                  gridColumn="1 / 1"
+                  maxHeight="44px"
+                  leftIcon={<MdAttachFile size={18} />}
+                  onClick={() => setShowAttachmentModal(!showAttachmentModal)}
+                >
+                  Adicionar anexo
+                </Button>
+
+              </ButtonArea>
+              <h3>Anexos para esse email</h3>
+
+              <Attachments>
+                <Attachment name="comprovante.pdf" onRemove={() => {}} />
+                <Attachment name="comprovante.pdf" onRemove={() => {}} />
+                <Attachment name="comprovante.pdf" onRemove={() => {}} />
+                <Attachment name="comprovante.pdf" onRemove={() => {}} />
+                <Attachment name="comprovante.pdf" onRemove={() => {}} />
+              </Attachments>
+            </AttachmentContent>
+
           </FormSection>
           <FormSection gridColumn="2 / 3">
             <h3>Preview</h3>
@@ -221,6 +251,14 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
           </FormSection>
         </FormContent>
       </ContentPanel>
+
+      {showAttachmentModal && (
+        <AttachmentModal
+          handleClose={() => setShowAttachmentModal(false)}
+          studentId="student_id"
+          enrollmentId="enrollment_id"
+        />
+      )}
     </Container>
   );
 };

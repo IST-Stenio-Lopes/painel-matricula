@@ -4,6 +4,7 @@ import { theme } from '../../../../global/styles/styles';
 
 interface ButtonProps {
   hasMargin?: boolean;
+  hasRipple?: boolean;
 }
 
 export const Container = styled.button<ButtonProps>`
@@ -19,8 +20,10 @@ export const Container = styled.button<ButtonProps>`
 
   :hover {
     color:  ${shade(0, theme.colors.primary50)};
-    background-color:  ${shade(0, theme.colors.primary20)};
 
+    ${({ hasRipple }) => hasRipple && css`
+      background-color:  ${shade(0, theme.colors.primary20)};
+    `}
   }
 
   ${({ hasMargin }) => hasMargin && css`
