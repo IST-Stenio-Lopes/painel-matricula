@@ -148,7 +148,7 @@ const StartedClassrooms: React.FC = () => {
    is_free: is_free ? 'Gratuito' : 'Pago',
    status,
    extra: <StatusButton
-     classroomId={id}
+     objectId={id}
      actionButtons={actionButtons}
      handleClick={handleChangeStatus}
      status={status}
@@ -166,6 +166,7 @@ const StartedClassrooms: React.FC = () => {
 
   useEffect(() => {
     getClassroomList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {

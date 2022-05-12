@@ -6,11 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
+import { useModal } from '../../../../hooks/modal';
 import { useStudent } from '../../../../hooks/student';
 import { EnrollmentResponse, StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
 import api, { initialValue, ResponseData } from '../../../../services/api';
 import { cpfMasked, telMasked } from '../../../../utils/masks';
 import wrapperNames from '../../../../utils/wrapper.json';
+import StatusButton, { ActionButtonProps } from '../../../Classroom/components/StatusButton';
 
 import { Container } from './styles';
 
@@ -68,6 +70,7 @@ const listTitles = [
 
 const Others: React.FC = () => {
   const { setCurrentStudent } = useStudent();
+  const { configModal, handleVisible } = useModal();
 
   const [responseData, setResponseData] = useState<ResponseData<EnrollmentResponse>>(
     {} as ResponseData<EnrollmentResponse>,
@@ -81,19 +84,16 @@ const Others: React.FC = () => {
   const [filters, setFilters] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const listItems = useMemo(() => responseData.object_list
-  && responseData.object_list.map(({
-    id, student_name, student_cpf, course_name, student_whatsapp, student_email, status,
-  }) => ({
-    student_name,
-    student_cpf: cpfMasked(student_cpf),
-    course_name,
-    student_whatsapp: telMasked(student_whatsapp),
-    student_email,
-    status,
-    object_id: id,
-  })), [responseData]);
-  // extra: <DownloadButton />,
+  const actionButtons: ActionButtonProps[] = useMemo(() => [
+    {
+      name: 'Matriculado',
+      status: StatusOfEnrollment.Matriculado,
+    },
+    {
+      name: 'reservado',
+      status: StatusOfEnrollment.Reservado,
+    },
+  ], []);
 
   const keywords = useMemo(() => {
     const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
@@ -113,11 +113,44 @@ const Others: React.FC = () => {
           .filter((value) => value !== StatusOfEnrollment.Matriculado
         && value !== StatusOfEnrollment.Reservado),
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
+
+  const handleChangeStatus = useCallback(async (enrollmentId, status) => {
+    await api.patch(`/enrollment/dashboard/${enrollmentId}`, { status })
+      .catch((error) => {
+        configModal(error.response.data.message, 'error');
+        handleVisible();
+      })
+      .then((response) => {
+        if (response?.status && response.status >= 200 && response.status <= 299) {
+          getEnrollmentList();
+          configModal('Alteração de status feita com sucesso', 'success');
+          handleVisible();
+        }
+      });
+  }, [configModal, handleVisible, getEnrollmentList]);
+
+  const listItems = useMemo(() => responseData.object_list
+  && responseData.object_list.map(({
+    id, student_name, student_cpf, course_name, student_whatsapp, student_email, status,
+  }) => ({
+    student_name,
+    student_cpf: cpfMasked(student_cpf),
+    course_name,
+    student_whatsapp: telMasked(student_whatsapp),
+    student_email,
+    status,
+    object_id: id,
+    extra: <StatusButton
+      objectId={id}
+      actionButtons={actionButtons}
+      handleClick={handleChangeStatus}
+      status={status}
+    />,
+  })), [actionButtons, handleChangeStatus, responseData.object_list]);
 
   const handleSubmitSearch = useCallback(() => {
     getEnrollmentList();
@@ -129,6 +162,7 @@ const Others: React.FC = () => {
 
   useEffect(() => {
     getEnrollmentList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
@@ -155,6 +189,7 @@ const Others: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        changeItemsCount={setItemsPerPage}
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}

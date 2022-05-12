@@ -120,9 +120,10 @@ const AttachmentsPanel: React.FC<AttachmentsPanel> = ({
       if (response?.status && response.status >= 200 && response.status <= 299) {
         configModal('O Documento foi removido com sucesso', 'success');
         handleVisible();
+        getAttachments();
       }
     });
-  }, [configModal, handleVisible, student_id]);
+  }, [configModal, getAttachments, handleVisible, student_id]);
 
   const deleteEnrollmentAttachment = useCallback(async (attachmentId) => {
     await api.delete(`/enrollment/dashboard/documents/${enrollment_id}/${attachmentId}`).catch((err) => {
@@ -132,9 +133,10 @@ const AttachmentsPanel: React.FC<AttachmentsPanel> = ({
       if (response?.status && response.status >= 200 && response.status <= 299) {
         configModal('O Documento foi removido com sucesso', 'success');
         handleVisible();
+        getAttachments();
       }
     });
-  }, [configModal, enrollment_id, handleVisible]);
+  }, [configModal, enrollment_id, getAttachments, handleVisible]);
 
   const handleRemove = useCallback((attachmentId) => {
     const foundAttachment = listItems.find((att) => att.object_id === attachmentId);

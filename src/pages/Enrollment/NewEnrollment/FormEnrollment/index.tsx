@@ -15,7 +15,7 @@ import { removeMask } from '../../../../utils/masks';
 import AttachmentsPanel from './components/AttachmentsPanel';
 import EnrollmentsPanel from './components/EnrollmentsPanel';
 import StudentPanel from './components/StudentPanel';
-import { IEnrollment, IStudent } from './data/types';
+import { IStudent } from './data/types';
 
 import { Container, Content } from './styles';
 
@@ -45,10 +45,6 @@ const FormEnrollment: React.FC = () => {
       setFile(e.target.files[0]);
     }
   }, []);
-
-  const handleNewEnrollment = useCallback(() => {
-    setCurrentEnrollment({} as IEnrollment);
-  }, [setCurrentEnrollment]);
 
   const handleCancelEnrollment = useCallback(() => {
     setCurrentEnrollment(undefined);
@@ -80,6 +76,7 @@ const FormEnrollment: React.FC = () => {
           <StudentPanel
             avatar={file}
             handleChangeName={setStudentName}
+            setCurrentStudent={setCurrentStudent}
             student={currentStudent}
             nextStage={nextStage}
             getStudent={getStudent}
@@ -107,7 +104,7 @@ const FormEnrollment: React.FC = () => {
     }
   }, [selectedMenu, file, currentStudent, nextStage, getStudent,
     currentEnrollment, setCurrentEnrollment, showAttachmentModal,
-    handleCancelEnrollment]);
+    handleCancelEnrollment, setCurrentStudent]);
 
   const getCurrentEnrollment = useCallback(async () => {
     await api.get(`/enrollment/dashboard/specific/${location.state?.enrollment.object_id}`).catch((err) => {
@@ -117,6 +114,7 @@ const FormEnrollment: React.FC = () => {
       if (response?.status && response.status >= 200 && response.status <= 299) {
         setCurrentEnrollment(response.data);
         setCurrentStudent(response.data.student);
+        setStudentName(response.data.student.name);
         setIsEditing(true);
       } else {
         setCurrentEnrollment(undefined);

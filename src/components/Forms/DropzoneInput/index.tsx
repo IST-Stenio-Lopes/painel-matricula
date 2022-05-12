@@ -42,7 +42,7 @@ const DropzoneInput: React.FC<DropzoneProps> = ({
     onDrop,
     noClick: true,
     noKeyboard: true,
-    accept: 'image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/zip,application/vnd.rar,application/x-zip-compressed',
+    accept: 'image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   });
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const DropzoneInput: React.FC<DropzoneProps> = ({
         {!isFileAccepted ? (
           <>
             <IoCloudUploadOutline size={40} />
-            <h3>. PDF  . JPG  . PNG  . DOC  . ZIP</h3>
+            <h3>. PDF  . JPG  . PNG  . DOC</h3>
             <p>Arraste um arquivo para cá ou, se preferir...</p>
             <button type="button" onClick={open}>Procurar e selecionar arquivo</button>
           </>

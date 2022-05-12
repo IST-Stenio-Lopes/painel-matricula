@@ -20,13 +20,13 @@ export interface ActionButtonProps {
 
 interface StatusButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   actionButtons: ActionButtonProps[];
-  classroomId: string;
+  objectId: string;
   status?: string;
-  handleClick?: Function;
+  handleClick?: (id: string, status: string) => void;
 }
 
 const StatusButton: React.FC<StatusButtonProps> = ({
-  classroomId, handleClick = () => {}, actionButtons, status = 'close', ...rest
+  objectId, handleClick = () => {}, actionButtons, status = 'close', ...rest
 }) => {
   const [isOpenOptions, setIsOpenOptions] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,10 +34,10 @@ const StatusButton: React.FC<StatusButtonProps> = ({
   const setStatus = useCallback(async (newStatus) => {
     setLoading(true);
 
-    await handleClick(classroomId, newStatus);
+    await handleClick(objectId, newStatus);
 
     setLoading(false);
-  }, [classroomId, handleClick]);
+  }, [objectId, handleClick]);
 
   const actionsButtons = useMemo(
     () => actionButtons.map((item) => ({ ...item, onClick: () => setStatus(item.status) })),

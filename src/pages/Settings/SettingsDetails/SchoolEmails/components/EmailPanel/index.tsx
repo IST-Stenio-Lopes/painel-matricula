@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import { MdAttachFile } from 'react-icons/md';
 import * as Yup from 'yup';
-import AttachmentModal from '../../../../../../components/AttachmentModal';
 import { Button } from '../../../../../../components/Forms/Buttons/Button';
 import { FormSection } from '../../../../../../components/Forms/FormSection';
 import { InputLine } from '../../../../../../components/Forms/InputLine';
@@ -18,6 +17,7 @@ import api, { baseURL } from '../../../../../../services/api';
 import getValidationErros from '../../../../../../utils/getValidationErrors';
 import { hasAllKeys } from '../../utils/utilities';
 import Attachment from '../Attachment';
+import EmailAttachmentModal from '../EmailAttachmentModal';
 
 import {
   AttachmentContent, Attachments, ButtonArea, Container, FormContent,
@@ -36,6 +36,7 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
   const [studentName, setStudentName] = useState<string>();
   const [urlTemplate, setUrlTemplate] = useState<string>();
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+  const [attachmentLis, setAttachmentList] = useState<any[]>([]);
 
   const [
     documents,
@@ -59,22 +60,22 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
         })) : [],
   );
 
-  // const [headerValue, setHeaderValue] = useState(initialValue.header.replaceAll('\n', '<br/>'));
+  const handleSaveDoc = useCallback((doc: any) => {
+    setAttachmentList([...attachmentLis, doc]);
+  }, [attachmentLis]);
 
-  // const onChangeHeader = useCallback((newValue) => {
-  //   let temp = newValue.replaceAll('\n', '<br/>');
-  //   const editor = document.getElementById('Header Input');
-  //   const newValueMatches: string[] = temp.match(/(?<=\[)[^\][]*(?=])/g);
+  const handleRemoveDoc = useCallback(async (doc) => {
+    await api.delete(`/school/dashboard/email/${selectedEmailType}/${doc.id}`).catch((err) => {
+      configModal(err.response.data.message || err.message, 'error');
+      handleVisible();
+    }).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        const temp = [...attachmentLis];
 
-  //   newValueMatches.forEach((value) => {
-  //     if (neededKeys.includes(value)) {
-  //       temp = temp.replaceAll(`[${value}]`, `<b style='color:blue'>[${value}]</b>`);
-  //     } else {
-  //       temp = temp.replaceAll(`[${value}]`, `<b style='color:red'>[${value}]</b>`);
-  //     }
-  //   });
-  //   (editor as HTMLElement).innerHTML = temp;
-  // }, []);
+        setAttachmentList([...temp.filter((file) => doc.name !== file.name)]);
+      }
+    });
+  }, [attachmentLis, configModal, handleVisible, selectedEmailType]);
 
   const handleChangeURL = useCallback(async (data, time = '') => {
     const temp = {
@@ -101,7 +102,7 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
       },
     };
 
-    await api.patch(`/school/dashboard/email/${selectedEmailType}`, { ...temp })
+    await api.patch(`/school/dashboard/email/${selectedEmailType}`, temp)
       .catch((err) => {
         configModal(err.response ? err.response.data.message : err.message, 'error');
         handleVisible();
@@ -111,7 +112,34 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
           handleVisible();
         }
       });
-  }, [configModal, documents, handleVisible, legalDocuments, selectedEmailType]);
+
+    const formData = new FormData();
+
+    const attachmentsToSend: any[] = [];
+
+    attachmentLis.forEach(({ name, file }) => {
+      if (file) {
+        attachmentsToSend.push({
+          name,
+          type: selectedEmailType,
+        });
+
+        file.forEach((attachment: any) => {
+          formData.append('school_template_files', attachment);
+        });
+      }
+    });
+
+    formData.append('school_template_files_data', JSON.stringify(attachmentsToSend));
+
+    if (attachmentsToSend.length >= 1) {
+      await api.post(`/school/dashboard/documents/${selectedEmailType}`, formData)
+        .catch((err) => {
+          configModal(err.response ? err.response.data.message : err.message, 'error');
+          handleVisible();
+        });
+    }
+  }, [configModal, documents, attachmentLis, handleVisible, legalDocuments, selectedEmailType]);
 
   const handleSubmit = useCallback(async (data) => {
     setLoading(true);
@@ -152,6 +180,14 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
   useEffect(() => {
     handleChangeURL(formRef.current?.getData());
   }, [handleChangeURL]);
+
+  useEffect(() => {
+    const temp = initialValue?.files && initialValue.files.map(({ name }) => (
+      { name }
+    ));
+
+    if (temp) setAttachmentList([...temp]);
+  }, [initialValue?.files]);
 
   return (
     <Container>
@@ -236,11 +272,13 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
               <h3>Anexos para esse email</h3>
 
               <Attachments>
-                <Attachment name="comprovante.pdf" onRemove={() => {}} />
-                <Attachment name="comprovante.pdf" onRemove={() => {}} />
-                <Attachment name="comprovante.pdf" onRemove={() => {}} />
-                <Attachment name="comprovante.pdf" onRemove={() => {}} />
-                <Attachment name="comprovante.pdf" onRemove={() => {}} />
+                {attachmentLis.map((doc) => (
+                  <Attachment
+                    key={doc.name}
+                    name={doc.name}
+                    onRemove={() => handleRemoveDoc(doc)}
+                  />
+                ))}
               </Attachments>
             </AttachmentContent>
 
@@ -253,10 +291,10 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
       </ContentPanel>
 
       {showAttachmentModal && (
-        <AttachmentModal
+        <EmailAttachmentModal
           handleClose={() => setShowAttachmentModal(false)}
-          studentId="student_id"
-          enrollmentId="enrollment_id"
+          onSaveDoc={handleSaveDoc}
+          allFiles={attachmentLis}
         />
       )}
     </Container>

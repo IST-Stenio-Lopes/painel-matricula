@@ -152,7 +152,7 @@ const OpenClassrooms: React.FC = () => {
      label={`${number_of_enrollments}/${number_of_vacancies}`}
    />,
    extra: <StatusButton
-     classroomId={id}
+     objectId={id}
      actionButtons={actionButtons}
      handleClick={handleChangeStatus}
      status={status}

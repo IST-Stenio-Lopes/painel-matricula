@@ -7,7 +7,7 @@ import EnrollmentSettings from './EnrollmentSettings';
 import SchoolEmails from './SchoolEmails';
 
 const SettingsDetails: React.FC = () => {
-  const { setCurrentSchool } = useSchool();
+  const { currentSchool, setCurrentSchool } = useSchool();
   const { user } = useAuth();
 
   const getCurrentSchool = useCallback(async (schoolId) => {
@@ -21,8 +21,9 @@ const SettingsDetails: React.FC = () => {
   }, [setCurrentSchool]);
 
   useEffect(() => {
+    console.log(currentSchool);
     getCurrentSchool(user.school_id);
-  }, [getCurrentSchool, user.school_id]);
+  }, [user, getCurrentSchool]);
 
   return (
     <MenuTab

@@ -38,12 +38,13 @@ interface StudentPanelProps {
   getStudent: (cpf: string) => void;
   nextStage: (value: number) => void;
   handleChangeName: (value: string) => void;
+  setCurrentStudent: (value: any) => void;
   avatar?: any;
 }
 
 // 321.548.330-04
 const StudentPanel: React.FC<StudentPanelProps> = ({
-  student, getStudent, nextStage, handleChangeName, avatar,
+  student, getStudent, nextStage, handleChangeName, setCurrentStudent, avatar,
 }) => {
   const formRef = useRef<FormHandles>(null);
   const { configModal, handleVisible } = useModal();
@@ -158,7 +159,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
         handleVisible();
       }).then((response) => {
         if (response?.status && response.status >= 200 && response.status <= 299) {
-          studentSetup(response.data);
+          setCurrentStudent(response.data);
         }
       });
     } catch (err) {
@@ -170,7 +171,7 @@ const StudentPanel: React.FC<StudentPanelProps> = ({
     } finally {
       setLoadingSearchStudent(false);
     }
-  }, [configModal, cpf, handleVisible, studentSetup]);
+  }, [configModal, cpf, handleVisible, setCurrentStudent]);
 
   const createStudent = useCallback(async (data: IStudent) => {
     await api.post('/student/dashboard', {

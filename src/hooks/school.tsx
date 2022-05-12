@@ -2,10 +2,12 @@ import React, {
   createContext, useContext, useState, useMemo, useCallback,
 } from 'react';
 import { ISchool } from '../interfaces/ISchool';
+import api from '../services/api';
 
 interface SchoolContextData {
   currentSchool: ISchool | undefined;
   setCurrentSchool: (value: ISchool | undefined) => void;
+  getCurrentSchool: () => void;
   isEditing: boolean;
   setIsEditing: (value: boolean) => void;
 }
@@ -45,12 +47,21 @@ const SchoolProvider: React.FC = ({ children }) => {
     setCurrentSchool(temp);
   }, []);
 
+  const getCurrentSchool = useCallback(async () => {
+    await api.get(`/school/dashboard/specific/${currentSchool?.id}`).then((response) => {
+      if (response?.status && response.status >= 200 && response.status <= 299) {
+        setCurrentSchool(response.data);
+      }
+    });
+  }, [currentSchool, setCurrentSchool]);
+
   const dataValue = useMemo(() => ({
     currentSchool,
     setCurrentSchool: updateSchool,
+    getCurrentSchool,
     isEditing,
     setIsEditing,
-  }), [currentSchool, isEditing, updateSchool]);
+  }), [currentSchool, isEditing, updateSchool, getCurrentSchool]);
 
   return (
     <SchoolContext.Provider value={dataValue}>

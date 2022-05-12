@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
-import PageContainer from '../../../../components/PageContainer';
-import ProgressBar from '../../../../components/ProgressBar';
 import { useModal } from '../../../../hooks/modal';
 import { IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
 import api, { initialValue, ResponseData } from '../../../../services/api';
@@ -97,10 +95,9 @@ const OthersClassrooms: React.FC = () => {
           StatusOfClassroom.Finalizada,
           StatusOfClassroom.Removido],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
 
   const handleChangeStatus = useCallback(async (classroomId, status) => {
@@ -145,7 +142,7 @@ const OthersClassrooms: React.FC = () => {
    is_free: is_free ? 'Gratuito' : 'Pago',
    status,
    extra: <StatusButton
-     classroomId={id}
+     objectId={id}
      actionButtons={actionButtons}
      handleClick={handleChangeStatus}
      status={status}
@@ -163,6 +160,7 @@ const OthersClassrooms: React.FC = () => {
 
   useEffect(() => {
     getClassroomList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
@@ -189,6 +187,7 @@ const OthersClassrooms: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        changeItemsCount={setItemsPerPage}
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}

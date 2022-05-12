@@ -7,11 +7,13 @@ import { Button } from '../../../../components/Forms/Buttons/Button';
 import DownloadButton from '../../../../components/Forms/Buttons/DownloadButton';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
+import { useModal } from '../../../../hooks/modal';
 import { useStudent } from '../../../../hooks/student';
 import { StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
 import api, { initialValue, ResponseData } from '../../../../services/api';
 import { cpfMasked, telMasked } from '../../../../utils/masks';
 import wrapperNames from '../../../../utils/wrapper.json';
+import StatusButton, { ActionButtonProps } from '../../../Classroom/components/StatusButton';
 
 import { Container } from './styles';
 
@@ -81,6 +83,8 @@ export interface EnrollmentResponse {
 }
 
 const Enrollments: React.FC = () => {
+  const navigate = useNavigate();
+
   const { setCurrentStudent } = useStudent();
 
   const [responseData, setResponseData] = useState<ResponseData<EnrollmentResponse>>(
@@ -93,21 +97,6 @@ const Enrollments: React.FC = () => {
   const [sortType, setSortType] = useState(null);
   const [order, setOrder] = useState(null);
   const [filters, setFilters] = useState<string[]>([]);
-  const navigate = useNavigate();
-
-  const listItems = useMemo(() => responseData.object_list
-  && responseData.object_list.map(({
-    id, student_name, student_cpf, course_name, student_whatsapp, student_email, secondary_status,
-  }) => ({
-    student_name,
-    student_cpf: cpfMasked(student_cpf),
-    course_name,
-    student_whatsapp: telMasked(student_whatsapp),
-    student_email,
-    secondary_status,
-    object_id: id,
-  })), [responseData]);
-  // extra: <DownloadButton />,
 
   const keywords = useMemo(() => {
     const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
@@ -125,11 +114,25 @@ const Enrollments: React.FC = () => {
         keywords,
         status: [StatusOfEnrollment.Matriculado],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
   }, [currentPage, keywords, itemsPerPage, order, sortType]);
+
+  const listItems = useMemo(() => responseData.object_list
+  && responseData.object_list.map(({
+    id, student_name, student_cpf, course_name,
+    student_whatsapp, student_email, secondary_status,
+  }) => ({
+    student_name,
+    student_cpf: cpfMasked(student_cpf),
+    course_name,
+    student_whatsapp: telMasked(student_whatsapp),
+    student_email,
+    secondary_status,
+    object_id: id,
+  })), [responseData.object_list]);
+  // extra: <DownloadButton />,
 
   const handleSubmitSearch = useCallback(() => {
     getEnrollmentList();
@@ -141,6 +144,7 @@ const Enrollments: React.FC = () => {
 
   useEffect(() => {
     getEnrollmentList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, sortType, currentPage]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
@@ -167,6 +171,7 @@ const Enrollments: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        changeItemsCount={setItemsPerPage}
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}

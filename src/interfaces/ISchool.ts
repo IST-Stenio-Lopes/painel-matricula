@@ -14,6 +14,7 @@ export interface IEmailType {
   body: string;
   legal_documents: string[];
   student_documents: string[];
+  files: any[];
 }
 
 export interface ISchool {

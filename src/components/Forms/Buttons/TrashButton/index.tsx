@@ -17,7 +17,7 @@ const TrashButton: React.FC<TrashButtonProps> = ({
   loading = false,
   ...rest
 }) => (
-  <Container hasMargin={hasMargin} hasRipple={hasRipple} {...rest}>
+  <Container type="button" hasMargin={hasMargin} hasRipple={hasRipple} {...rest}>
     {loading ? <Spinner /> : <GoTrashcan size={24} />}
 
   </Container>
