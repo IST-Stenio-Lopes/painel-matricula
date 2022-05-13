@@ -262,6 +262,7 @@ const EnrollmentsPanel: React.FC<EnrollmentsPanelProps> = ({
               cancelar
             </Button>
             <Button
+              loading={loading}
               maxWidth="150px"
               minHeight="44px"
               onClick={() => formRef.current?.submitForm()}

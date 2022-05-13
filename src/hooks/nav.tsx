@@ -4,6 +4,8 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { service } from '../services/api';
+import { useAuth } from './auth';
+import { useModal } from './modal';
 
 interface NavContextData {
   hasBackButton: boolean;
@@ -18,6 +20,9 @@ const NavContext = createContext<NavContextData>({} as NavContextData);
 const NavProvider: React.FC = ({ children }) => {
   const [hasBackButton, setHasBackButton] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const { configModal, handleVisible } = useModal();
+  const { signOut } = useAuth();
+
   const history = useNavigate();
 
   const setEditing = useCallback((show) => {
@@ -41,6 +46,10 @@ const NavProvider: React.FC = ({ children }) => {
     onResponse(response: AxiosResponse) {
       if (response?.status && response.status >= 200 && response.status <= 299) {
         setEditing(false);
+      } else if (response?.status && response.status === 426) {
+        configModal('Sessão expirada, por favor inicie um anova sessão', 'error');
+        handleVisible();
+        signOut();
       }
       return response;
     },

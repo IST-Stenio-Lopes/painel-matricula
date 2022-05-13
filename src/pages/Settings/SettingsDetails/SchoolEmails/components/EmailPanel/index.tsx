@@ -65,16 +65,22 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
   }, [attachmentLis]);
 
   const handleRemoveDoc = useCallback(async (doc) => {
-    await api.delete(`/school/dashboard/email/${selectedEmailType}/${doc.id}`).catch((err) => {
-      configModal(err.response.data.message || err.message, 'error');
-      handleVisible();
-    }).then((response) => {
-      if (response?.status && response.status >= 200 && response.status <= 299) {
-        const temp = [...attachmentLis];
+    if (doc.id) {
+      await api.delete(`/school/dashboard/email/${selectedEmailType}/${doc.id}`).catch((err) => {
+        configModal(err.response.data.message || err.message, 'error');
+        handleVisible();
+      }).then((response) => {
+        if (response?.status && response.status >= 200 && response.status <= 299) {
+          const temp = [...attachmentLis];
 
-        setAttachmentList([...temp.filter((file) => doc.name !== file.name)]);
-      }
-    });
+          setAttachmentList([...temp.filter((file) => doc.name !== file.name)]);
+        }
+      });
+    } else {
+      const temp = [...attachmentLis];
+
+      setAttachmentList([...temp.filter((file) => doc.name !== file.name)]);
+    }
   }, [attachmentLis, configModal, handleVisible, selectedEmailType]);
 
   const handleChangeURL = useCallback(async (data, time = '') => {
@@ -137,6 +143,14 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
         .catch((err) => {
           configModal(err.response ? err.response.data.message : err.message, 'error');
           handleVisible();
+        }).then((response) => {
+          if (response?.status && response.status >= 200 && response.status <= 299) {
+            const fileArray = [...attachmentLis.filter((doc) => !doc.file)];
+
+            setAttachmentList([...fileArray, ...response.data.map(({ id, name }: any) => (
+              { id, name }
+            ))]);
+          }
         });
     }
   }, [configModal, documents, attachmentLis, handleVisible, legalDocuments, selectedEmailType]);
@@ -178,16 +192,16 @@ const EmailPanel: React.FC<EmailPanelProps> = ({ selectedEmailType, neededKeys, 
   }, [documents, handleSaveEmail, legalDocuments, neededKeys]);
 
   useEffect(() => {
-    handleChangeURL(formRef.current?.getData());
-  }, [handleChangeURL]);
+    handleChangeURL(initialValue);
+  }, [handleChangeURL, initialValue]);
 
   useEffect(() => {
-    const temp = initialValue?.files && initialValue.files.map(({ name }) => (
-      { name }
+    const temp = initialValue?.files && initialValue.files.map(({ id, name }) => (
+      { id, name }
     ));
 
-    if (temp) setAttachmentList([...temp]);
-  }, [initialValue?.files]);
+    setAttachmentList(temp ? [...temp] : []);
+  }, [initialValue]);
 
   return (
     <Container>

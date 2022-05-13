@@ -112,7 +112,7 @@ const EmailAttachmentModal: React.FC<EmailAttachmentModalProps> = ({
             minHeight="44px"
             onClick={() => formRef.current?.submitForm()}
           >
-            salvar
+            carregar
           </Button>
         </Footer>
       </Content>

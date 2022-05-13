@@ -73,7 +73,7 @@ export enum StatusOfAdvertising
 }
 
 export enum EmailTypes {
-  Lean = 'new_lean_enrollment',
-  Matricula = 'new_enrollment',
-  Reservado = 'new_held_enrollment',
+  Lean = 'lean_office_email',
+  Matricula = 'application_email',
+  Reservado = 'pre_registration_email',
 }
