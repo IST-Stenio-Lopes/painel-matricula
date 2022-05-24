@@ -158,41 +158,41 @@ const Dashboard: React.FC = () => {
    object_id: id,
  })), [responseMessageData]);
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getClassroomList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/classroom/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: [StatusOfClassroom.Aberta, StatusOfClassroom.Fechada],
       },
     }).then((response: any) => {
       setResponseClassroomData(response ? response.data : initialValue);
     });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const getMessageList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/message/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: [StatusOfMessage.NaoLida],
       },
     }).then((response: any) => {
       setResponseMessageData(response ? response.data : initialValue);
     });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const geDataInfo = useCallback(async () => {
     await api.get('/enrollment/dashboard/data')

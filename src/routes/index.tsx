@@ -20,35 +20,23 @@ import AdvertisingRoutes from './advertising.routes';
 import EnrollmentsRoutes from './enrollments.routes';
 import CustomRoute from './Route';
 import PartnerRoutes from './partner.routes';
+import AppRoutes from './app.routes';
 
 const Routes: React.FC = () => {
   const location: any = useLocation();
 
   return (
     <>
-      { location.pathname !== '/'
+      {/* { location.pathname !== '/'
        && location.pathname !== '/forgot'
        && location.pathname !== '/404'
        && !location.pathname.includes('esqueceu-senha')
       && (
-        <MenuBar />
-      )}
+      )} */}
       <RoutesDOM>
         <Route path="/" element={<CustomRoute component={<SignIn />} />} />
         <Route path="/esqueceu-senha" element={<CustomRoute component={<ForgotPassword />} />} />
-        <Route path="/dashboard" element={<CustomRoute isPrivate component={<Dashboard />} />} />
-        <Route path="/matricula/*" element={<CustomRoute isPrivate component={<EnrollmentsRoutes />} />} />
-        <Route path="/turmas/*" element={<CustomRoute isPrivate component={<ClassroomRoutes />} />} />
-        <Route path="/cursos/*" element={<CustomRoute isPrivate component={<CoursesRoutes />} />} />
-        <Route path="/anuncios/*" element={<CustomRoute isPrivate component={<AdvertisingRoutes />} />} />
-        <Route path="/unidade/*" element={<CustomRoute isPrivate component={<SchoolRoutes />} />} />
-        <Route path="/mensagens/*" element={<CustomRoute isPrivate component={<MessagesRoutes />} />} />
-        <Route path="/relatorio" element={<CustomRoute isPrivate component={<Report />} />} />
-        <Route path="/faq/*" element={<CustomRoute isPrivate component={<FaqRoutes />} />} />
-        <Route path="/financeiro" element={<CustomRoute isPrivate component={<FinancialList />} />} />
-        <Route path="/usuarios/*" element={<CustomRoute isPrivate component={<UsersRoutes />} />} />
-        <Route path="/parceiros/*" element={<CustomRoute isPrivate component={<PartnerRoutes />} />} />
-        <Route path="/configuracoes/*" element={<CustomRoute isPrivate component={<SettingsRoutes />} />} />
+        <Route path="*" element={<AppRoutes />} />
       </RoutesDOM>
     </>
   );

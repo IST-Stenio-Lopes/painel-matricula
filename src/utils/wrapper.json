@@ -14,5 +14,7 @@
   "Turno": "shift",
   "Tipo": "type",
   "Status": "status",
-  "Enviado em": "created_at"
+  "Enviado em": "created_at",
+  "Telefone": "phone_number",
+  "CPF": "cpf"
 }

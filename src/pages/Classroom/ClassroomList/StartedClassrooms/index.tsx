@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
-import PageContainer from '../../../../components/PageContainer';
-import ProgressBar from '../../../../components/ProgressBar';
 import { useModal } from '../../../../hooks/modal';
 import { IClassroomResponse, StatusOfClassroom } from '../../../../interfaces/IClassroom';
 import api, { initialValue, ResponseData } from '../../../../services/api';
@@ -79,27 +77,24 @@ const StartedClassrooms: React.FC = () => {
   const [filters, setFilters] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getClassroomList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/classroom/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: [StatusOfClassroom.Iniciada],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const handleChangeStatus = useCallback(async (classroomId, status) => {
     await api.patch(`/classroom/dashboard/${classroomId}`, { status })
@@ -138,8 +133,7 @@ const StartedClassrooms: React.FC = () => {
   const listItems = useMemo(() => responseData.object_list
  && responseData.object_list.map(({
    id, code, course_name, shift,
-   category, is_free, number_of_enrollments,
-   number_of_vacancies, status,
+   category, is_free, status,
  }) => ({
    code,
    course_name,
@@ -167,7 +161,7 @@ const StartedClassrooms: React.FC = () => {
   useEffect(() => {
     getClassroomList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortType, currentPage]);
+  }, [order, sortType, currentPage, filters]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);
@@ -193,6 +187,7 @@ const StartedClassrooms: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        changeItemsCount={setItemsPerPage}
         onClickItem={handleClick}
         changePage={setCurrentPage}
         onSortChange={handleChangeSort}

@@ -60,11 +60,7 @@ const UserList: React.FC = () => {
   const [filters, setFilters] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const listItems = useMemo(() => responseData.object_list
   && responseData.object_list.map(({
@@ -78,19 +74,21 @@ const UserList: React.FC = () => {
   })), [responseData]);
 
   const getUsersList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/users/dashboard', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: 'Ativado',
       },
     }).then((response: any) => {
       setResponseData(response ? response.data : initialValue);
     });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const handleSubmitSearch = useCallback(() => {
     getUsersList();
@@ -99,7 +97,8 @@ const UserList: React.FC = () => {
   useEffect(() => {
     getUsersList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortType, currentPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, sortType, currentPage, filters]);
 
   const handleClick = useCallback((item) => {
     updateUserRoles(item.role);

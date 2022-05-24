@@ -4,16 +4,13 @@ import React, {
 import { HiPlus } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Forms/Buttons/Button';
-import DownloadButton from '../../../../components/Forms/Buttons/DownloadButton';
 import ListTable from '../../../../components/ListTable';
 import ListSearchArea from '../../../../components/ListTable/components/ListSearchArea';
-import { useModal } from '../../../../hooks/modal';
 import { useStudent } from '../../../../hooks/student';
 import { StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
 import api, { initialValue, ResponseData } from '../../../../services/api';
 import { cpfMasked, telMasked } from '../../../../utils/masks';
 import wrapperNames from '../../../../utils/wrapper.json';
-import StatusButton, { ActionButtonProps } from '../../../Classroom/components/StatusButton';
 
 import { Container } from './styles';
 
@@ -98,26 +95,24 @@ const Enrollments: React.FC = () => {
   const [order, setOrder] = useState(null);
   const [filters, setFilters] = useState<string[]>([]);
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getEnrollmentList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/enrollment/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: [StatusOfEnrollment.Matriculado],
       },
     }).then((response: any) => {
       setResponseData(response ? response.data : initialValue);
     });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const listItems = useMemo(() => responseData.object_list
   && responseData.object_list.map(({
@@ -145,7 +140,8 @@ const Enrollments: React.FC = () => {
   useEffect(() => {
     getEnrollmentList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortType, currentPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, sortType, currentPage, filters]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

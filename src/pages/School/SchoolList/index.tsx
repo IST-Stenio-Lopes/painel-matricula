@@ -112,25 +112,23 @@ const SchoolList: React.FC = () => {
    object_id: id,
  })), [responseData]);
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getSchoolList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/school/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
       },
     }).then((response: any) => {
       setResponseData(response ? response.data : initialValue);
     });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const handleSubmitSearch = useCallback(() => {
     getSchoolList();
@@ -143,7 +141,8 @@ const SchoolList: React.FC = () => {
   useEffect(() => {
     getSchoolList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortType, currentPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, sortType, currentPage, filters]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

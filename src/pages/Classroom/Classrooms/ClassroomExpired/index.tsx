@@ -1,7 +1,6 @@
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ListTable from '../../../../components/ListTable';
 import { EnrollmentResponse, StatusOfEnrollment } from '../../../../interfaces/IEnrollment';
 import api, { initialValue, ResponseData } from '../../../../services/api';
@@ -54,13 +53,12 @@ const ClassroomExpired: React.FC = () => {
     {} as ResponseData<EnrollmentResponse>,
   );
 
-  const [searchingValue, setSearchingValue] = useState('');
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const searchingValue = useMemo(() => '', []);
+  const itemsPerPage = useMemo(() => 10, []);
+  const filters = useMemo(() => [], []);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState(null);
   const [order, setOrder] = useState(null);
-  const [filters, setFilters] = useState<string[]>([]);
-  const navigate = useNavigate();
 
   const listItems = useMemo(() => responseData.object_list
   && responseData.object_list.map(({
@@ -75,34 +73,29 @@ const ClassroomExpired: React.FC = () => {
   })), [responseData]);
   // extra: <DownloadButton />,
 
-  const keywords = useMemo(() => {
-    // const searchWords = [`:${currentClassroom?.classroom.id}`];
-    const searchWords = searchingValue.split(' ')
-      .filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getEnrollmentList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get(`/enrollment/dashboard/list/${currentClassroom?.classroom.id}`, {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: [StatusOfEnrollment.Expirada],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        console.log(response.data);
-        setResponseData(response ? response.data : initialValue);
-      });
-  }, [currentPage, keywords, itemsPerPage, order, sortType, currentClassroom]);
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
+  }, [keywords, filters, currentClassroom, itemsPerPage, currentPage, sortType, order]);
 
   useEffect(() => {
     getEnrollmentList();
-  }, [order, sortType, currentPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, sortType, currentPage, filters]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

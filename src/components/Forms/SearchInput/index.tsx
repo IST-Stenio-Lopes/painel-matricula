@@ -63,7 +63,6 @@ const SearchInput: React.FC<InputProps> = ({
   useEffect(() => {
     const keywords = filtersApplied.map(
       (value) => `:${Object.values(value)[0]}`,
-      [],
     );
     setKeyWords(keywords);
   }, [filtersApplied, setKeyWords]);
@@ -89,20 +88,20 @@ const SearchInput: React.FC<InputProps> = ({
           )}
         </Content>
         { isOpenOptions && (
-        <FiltersPanel
-          showPanel={setIsOpenOptions}
-          listFilters={listFilters}
-          applyFilters={setFiltersApplied}
-          filtersApplied={filtersApplied}
-          onSubmitFilters={onSubmitFilters}
-        />
+          <FiltersPanel
+            showPanel={setIsOpenOptions}
+            listFilters={listFilters}
+            applyFilters={setFiltersApplied}
+            filtersApplied={filtersApplied}
+            onSubmitFilters={() => {}}
+          />
         )}
       </Container>
 
       {filtersApplied && (
       <FiltersContent>
         {filtersApplied.map((filter) => (
-          <FilterBox key={filter[0]} value={filter} handleDelete={removeFilter} />
+          <FilterBox key={filter.toString()} value={filter} handleDelete={removeFilter} />
         ))}
 
         {filtersApplied.length > 0 && (

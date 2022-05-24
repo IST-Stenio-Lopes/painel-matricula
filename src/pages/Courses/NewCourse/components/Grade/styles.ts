@@ -9,8 +9,7 @@ export const Container = styled.div`
 
 export const ButtonArea = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-end;
-  padding-top: 15px;
+  justify-content: flex-end;
+  align-items: flex-start;
+
 `;

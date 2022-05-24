@@ -83,28 +83,30 @@ const Reservations: React.FC = () => {
    object_id: id,
  })), [responseData]);
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getEnrollmentList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/enrollment/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
+
         status: [StatusOfEnrollment.Reservado],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-        console.dir(response.data);
-      });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
+
+  const handleChangeSort = useCallback((newSortType, newSort) => {
+    setSortType(newSortType);
+    setOrder(newSort);
+  }, []);
 
   const handleSubmitSearch = useCallback(() => {
     getEnrollmentList();
@@ -116,7 +118,8 @@ const Reservations: React.FC = () => {
 
   useEffect(() => {
     getEnrollmentList();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, sortType, currentPage, filters]);
 
   return (
     <Container>
@@ -137,7 +140,10 @@ const Reservations: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        changeItemsCount={setItemsPerPage}
         onClickItem={handleClick}
+        changePage={setCurrentPage}
+        onSortChange={handleChangeSort}
         indexToBold={0}
         listTitles={listTitles}
         listItems={listItems}

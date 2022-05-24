@@ -10,6 +10,7 @@ interface ButtonProps {
 export const Container = styled.button<ButtonProps>`
   color: ${theme.colors.secondary10};
   width: 44px;
+  height: 44px;
   border: 0;
   border-radius: 50%;
   background-color: transparent;

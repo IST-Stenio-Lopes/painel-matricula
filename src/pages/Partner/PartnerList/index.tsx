@@ -1,4 +1,3 @@
-import { String } from 'lodash';
 import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
@@ -72,26 +71,24 @@ const PartnerList: React.FC = () => {
     object_id: id,
   })), [responseData]);
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getPartnerList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/partner/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: ['Ativado'],
       },
     }).then((response: any) => {
       setResponseData(response ? response.data : initialValue);
     });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const deletePartner = useCallback(async (partnerId) => {
     await api.delete(`/partner/dashboard/${partnerId}`).catch((err) => {
@@ -136,7 +133,8 @@ const PartnerList: React.FC = () => {
     getPartnerList();
     setPageConfig();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortType, currentPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, sortType, currentPage, filters]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);

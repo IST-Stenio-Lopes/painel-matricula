@@ -81,27 +81,24 @@ const AdvertisingList: React.FC = () => {
    object_id: id,
  })), [responseData]);
 
-  const keywords = useMemo(() => {
-    const searchWords = searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase());
-
-    return searchWords.concat(filters);
-  }, [filters, searchingValue]);
+  const keywords = useMemo(() => searchingValue.split(' ').filter((str) => !!str).map((value) => value.toLowerCase()), [searchingValue]);
 
   const getAdvertisingList = useCallback(async () => {
+    const currentKeywords = keywords.concat(filters);
+
     await api.get('/advertising/dashboard/list', {
       params: {
         itens_per_page: itemsPerPage,
         page: currentPage - 1,
         sort: sortType && wrapperNames[sortType],
         sort_type: order,
-        keywords,
+        keywords: currentKeywords.length > 0 ? currentKeywords : undefined,
         status: [StatusOfAdvertising.Ativado],
       },
-    }).catch((err) => console.dir(err.response.data))
-      .then((response: any) => {
-        setResponseData(response ? response.data : initialValue);
-      });
-  }, [currentPage, keywords, itemsPerPage, order, sortType]);
+    }).then((response: any) => {
+      setResponseData(response ? response.data : initialValue);
+    });
+  }, [currentPage, keywords, itemsPerPage, order, sortType, filters]);
 
   const deleteAdvertising = useCallback(async (advertisingId) => {
     await api.delete(`/advertising/dashboard/${advertisingId}`).catch((err) => {
@@ -137,7 +134,8 @@ const AdvertisingList: React.FC = () => {
 
   useEffect(() => {
     getAdvertisingList();
-  }, [order, sortType, currentPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, sortType, currentPage, filters]);
 
   const handleChangeSort = useCallback((newSortType, newSort) => {
     setSortType(newSortType);
@@ -163,6 +161,7 @@ const AdvertisingList: React.FC = () => {
         </Button>
       </ListSearchArea>
       <ListTable
+        changeItemsCount={setItemsPerPage}
         onRemoveItem={handleRemove}
         onClickItem={handleClick}
         changePage={setCurrentPage}
